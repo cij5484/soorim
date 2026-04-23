@@ -1373,7 +1373,34 @@
     </div>
   </div>
 
-  <script>
+  <script type="module">
+
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+    import {
+      getFirestore,
+      collection,
+      addDoc,
+      doc,
+      setDoc,
+      deleteDoc,
+      onSnapshot,
+      query,
+      orderBy
+    } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyDq4M4_n_JUtqW1hLXB5DHP-gtJIvtC4tU",
+      authDomain: "soorim-f809b.firebaseapp.com",
+      projectId: "soorim-f809b",
+      storageBucket: "soorim-f809b.firebasestorage.app",
+      messagingSenderId: "504887647964",
+      appId: "1:504887647964:web:e2599692a6597f3cda1e19",
+      measurementId: "G-J6XMH8FRXD"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+    const reservationsCollection = collection(db, "reservations");
 
     function onlyNumber(value) {
       return String(value || '').replace(/\D/g, '');
@@ -1442,7 +1469,7 @@
     }
     
     // ====== 데이터 (브라우저에 저장) ======
-    let reservations = JSON.parse(localStorage.getItem('reservations') || '[]');
+    let reservations = [];
     let editingIndex = null;
     let importPreviewList = [];
     let currentView = 'month';
@@ -1617,6 +1644,22 @@
           </div>
         `;
       }).join('');
+    }
+
+    function subscribeReservations() {
+      const q = query(reservationsCollection, orderBy("date"), orderBy("time"));
+
+      onSnapshot(q, (snapshot) => {
+        reservations = snapshot.docs.map(docSnap => ({
+          id: docSnap.id,
+          ...docSnap.data()
+        }));
+
+        render();
+      }, (error) => {
+        console.error("Firestore 불러오기 오류:", error);
+        alert("예약 데이터를 불러오지 못했습니다.");
+      });
     }
 
     function goToReservationFromSearch(index) {
@@ -2732,7 +2775,7 @@
     
     // 데이터를 브라우저에 저장
     function save() {
-      localStorage.setItem('reservations', JSON.stringify(reservations));
+      // Firestore 사용 중이므로 localStorage 저장 안 함
     }
 
     // ====== 예약 추가 ======
@@ -2938,7 +2981,7 @@
     initTimeSelects();
     ensureReservationDates();
     syncSelectedDateUI();
-    render();
+    subscribeReservations();
     updateTotalPeople();
 
     document.getElementById('modal').addEventListener('click', function (e) {
