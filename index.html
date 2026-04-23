@@ -1563,6 +1563,11 @@
       openSearchModal();
     }
 
+    function setView(view) {
+      currentView = view;
+      render();
+    }
+    
     function renderSearchResults() {
       const summary = document.getElementById('search-result-summary');
       const list = document.getElementById('search-result-list');
