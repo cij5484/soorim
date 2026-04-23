@@ -1,0 +1,2974 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>횟집 예약관리</title>
+  
+  <style>
+
+    .nav-row {
+      display: grid;
+      grid-template-columns: 44px 1fr 44px;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .search-dim {
+      opacity: 0.35;
+    }
+
+    .month-title-custom {
+      font-size: 24px;
+      font-weight: bold;
+      color: #1f2d3d;
+      padding: 6px 10px;
+      border-radius: 8px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px; /* ← 여기서 간격 완벽 제어 */
+    }
+
+    .month-title-custom:hover {
+      background: #eaf3ff;
+    }
+
+    .calendar-icon {
+      font-size: 20px;
+    }
+
+    .day-calendar-icon {
+      font-size: 20px;
+    }
+
+    /* 날짜 input (일간 + 월간 공통) 간격 줄이기 */
+    .month-title-input,
+    .day-date-input {
+      appearance: none;
+      -webkit-appearance: none;
+      position: relative;
+      padding-right: 10px;
+    }
+
+    .month-title-input::-webkit-calendar-picker-indicator,
+    .day-date-input::-webkit-calendar-picker-indicator {
+      margin-left: 4px;
+      cursor: pointer;
+      opacity: 1;
+    }
+
+    .day-date-input::-webkit-calendar-picker-indicator {
+      filter: brightness(0) invert(1);
+    }
+
+    .day-date-input {
+      font-size: 16px;
+      font-weight: bold;
+      color: white;
+      background: transparent;
+      border: none;
+      padding: 8px 10px;
+      border-radius: 8px;
+      font-family: inherit;
+      cursor: pointer;
+    }
+
+    .day-date-input:hover,
+    .day-date-input:focus {
+      background: rgba(255,255,255,0.16);
+      outline: none;
+    }
+    #selected-date-label:hover {
+      background: rgba(255,255,255,0.16);
+    }
+    /* ====== 기본 스타일 ====== */
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: 'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif;
+      background: #eef2f5;
+      color: #1f2d3d;
+    }
+    header {
+      background: #1f4e79;
+      color: white;
+      padding: 20px 32px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.12);
+    }
+    header h1 { margin: 0; font-size: 26px; }
+    header button {
+      background: #ffb703;
+      color: #1f2d3d;
+      border: none;
+      padding: 14px 22px;
+      font-size: 16px;
+      font-weight: bold;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+    header button:hover { background: #ffa000; }
+
+    main {
+      max-width: 1000px;
+      margin: 20px auto 32px;
+      padding: 0 20px;
+    }
+
+    /* ====== 예약 카드 ====== */
+    .reservation {
+      background: white;
+      padding: 24px;
+      margin-bottom: 20px;
+      border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    }
+
+    /* 상태별 카드 왼쪽 색깔 (한눈에 구분) */
+    .reservation.status-예약 { background: #f5faff; }
+    .reservation.status-도착 { background: #fff8f0; }
+    .reservation.status-착석 { background: #f4fbf5; }
+    .reservation.status-퇴장 { background: #f5f5f5; opacity: 0.75; }
+
+    .reservation-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+
+    .reservation .name {
+      font-size: 22px;
+      font-weight: bold;
+      margin: 0 0 6px 0;
+      word-break: keep-all;
+    }
+    .reservation .time {
+      font-size: 16px;
+      color: #555;
+    }
+
+    .status-badge {
+      display: inline-block;
+      padding: 8px 16px;
+      border-radius: 20px;
+      font-size: 15px;
+      font-weight: bold;
+      color: white;
+    }
+    .badge-예약 { background: #1976d2; }
+    .badge-도착 { background: #ef6c00; }
+    .badge-착석 { background: #2e7d32; }
+    .badge-퇴장 { background: #757575; }
+    .reservation.status-예약.room-highlight {
+      border: 2px solid #1976d2;
+    }
+
+    .reservation.status-도착.room-highlight {
+      border: 2px solid #ef6c00;
+    }
+
+    .reservation.status-착석.room-highlight {
+      border: 2px solid #2e7d32;
+    }
+
+    .reservation.status-퇴장.room-highlight {
+      border: 2px solid #757575;
+    }
+    /* 예약 상세 정보 그리드 */
+    .info-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+    .info-item {
+      background: rgba(255,255,255,0.7);
+      padding: 12px 14px;
+      border-radius: 8px;
+      border: 1px solid #e0e0e0;
+    }
+    .info-label {
+      font-size: 13px;
+      color: #777;
+      margin-bottom: 4px;
+    }
+    .info-value {
+      font-size: 16px;
+      font-weight: 600;
+      color: #1f2d3d;
+    }
+
+    .memo {
+      background: #fffbe6;
+      border: 1px dashed #f0c14b;
+      padding: 12px 14px;
+      border-radius: 8px;
+      font-size: 15px;
+      color: #5c4400;
+      margin-bottom: 16px;
+    }
+    .memo .memo-label {
+      font-weight: bold;
+      margin-right: 6px;
+    }
+
+    .actions {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+    .actions select {
+      padding: 10px 12px;
+      border-radius: 8px;
+      border: 1px solid #bbb;
+      font-size: 15px;
+      background: white;
+      cursor: pointer;
+    }
+    .actions .delete-btn {
+      background: #e74c3c;
+      color: white;
+      border: none;
+      padding: 10px 16px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 15px;
+    }
+    .actions .delete-btn:hover { background: #c0392b; }
+
+    .empty {
+      text-align: center;
+      color: #888;
+      padding: 60px 20px;
+      background: white;
+      border-radius: 12px;
+      font-size: 16px;
+    }
+    .month-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 20px;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .month-title {
+      font-size: 24px;
+      font-weight: bold;
+      color: #1f2d3d;
+      cursor: pointer;
+      padding: 6px 10px;
+      border-radius: 8px;
+    }
+
+    .month-title-input {
+      font-size: 24px;
+      font-weight: bold;
+      color: #1f2d3d;
+      padding: 6px 10px;
+      border: none;
+      border-radius: 8px;
+      background: transparent;
+      font-family: inherit;
+      cursor: pointer;
+      appearance: none;
+      -webkit-appearance: none;
+    }
+
+    .month-title-input:hover {
+      background: #eaf3ff;
+    }
+
+    .month-title-input:focus {
+      outline: none;
+      background: #eaf3ff;
+    }
+
+    .month-title:hover {
+      background: #eaf3ff;
+    }
+
+    .month-grid {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 10px;
+    }
+
+    .weekday-cell {
+      background: transparent;
+      padding: 8px 4px;
+      text-align: center;
+      font-weight: bold;
+      color: #4b5563;
+    }
+
+    .calendar-cell {
+      background: white;
+      border-radius: 12px;
+      min-height: 120px;
+      padding: 10px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+      cursor: pointer;
+      border: 2px solid transparent;
+    }
+
+    .calendar-cell:hover {
+      border-color: #93c5fd;
+    }
+
+    .calendar-cell.other-month {
+      opacity: 0.35;
+    }
+
+    .calendar-cell.selected-date {
+      border-color: #1f4e79;
+    }
+
+    .calendar-date {
+      font-size: 16px;
+      font-weight: bold;
+      margin-bottom: 10px;
+    }
+
+    .calendar-summary {
+      font-size: 13px;
+      line-height: 1.5;
+      color: #374151;
+    }
+
+    
+    .calendar-reservation-item.room-item {
+      background: #eaf3ff;
+    }
+
+    .calendar-reservation-item.naver-item {
+      border-left: 3px solid #03c75a;
+    }
+
+    
+    /* ====== 모달(예약 추가) ====== */
+    .modal-bg {
+      display: none;
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0,0,0,0.5);
+      justify-content: center;
+      align-items: center;
+      z-index: 2000;
+      padding: 20px;
+    }
+    .modal-bg.show { display: flex; }
+    .modal {
+      background: white;
+      width: 100%;
+      max-width: 420px;
+      padding: 20px;
+      border-radius: 12px;
+      max-height: none;
+      overflow-y: visible;
+    }
+    .modal h2 { margin-top: 0; font-size: 22px; }
+    .modal label {
+      display: block;
+      margin-top: 8px;
+      margin-bottom: 6px;
+      font-size: 15px;
+      color: #333;
+      font-weight: 600;
+    }
+    .modal input,
+    .modal select,
+    .modal textarea {
+      width: 100%;
+      padding: 12px;
+      font-size: 15px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      font-family: inherit;
+    }
+    .modal textarea {
+      resize: vertical;
+      min-height: 70px;
+    }
+    .modal-actions {
+      margin-top: 24px;
+      display: flex;
+      gap: 10px;
+      justify-content: flex-end;
+    }
+    .modal-actions button {
+      padding: 12px 20px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 15px;
+    }
+    .btn-cancel { background: #eee; color: #333; }
+    .btn-save { background: #1f4e79; color: white; font-weight: bold; }
+
+    .picker-wrap {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+    }
+
+    .picker-native {
+      position: absolute;
+      inset: 0;
+      opacity: 0;
+      cursor: pointer;
+      width: 100%;
+      height: 100%;
+      border: none;
+    }
+
+    .picker-native::-webkit-calendar-picker-indicator {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      cursor: pointer;
+    }
+
+    .week-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-bottom: 20px;
+    }
+
+    .week-title {
+      font-size: 22px;
+      font-weight: bold;
+      color: #1f2d3d;
+    }
+
+    .week-list {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .week-card {
+      background: white;
+      border-radius: 14px;
+      padding: 16px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+      border: 2px solid transparent;
+      cursor: pointer;
+    }
+
+    .week-card:hover {
+      border-color: #93c5fd;
+    }
+
+    .week-card.selected-date {
+      border-color: #1f4e79;
+    }
+
+    .week-card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-bottom: 10px;
+    }
+
+    .week-card-date {
+      font-size: 18px;
+      font-weight: bold;
+      color: #1f2d3d;
+    }
+
+    .week-card-summary {
+      font-size: 14px;
+      color: #4b5563;
+    }
+
+    .week-card-reservations {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      margin-top: 10px;
+    }
+
+    .week-card-item {
+      font-size: 14px;
+      line-height: 1.45;
+      color: #1f2d3d;
+      background: #f8fafc;
+      border-radius: 8px;
+      padding: 8px 10px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .week-card-main {
+      min-width: 0;
+      flex: 1;
+    }
+
+    .week-card-seat {
+      flex: none;
+      min-width: 140px;
+      text-align: right;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      justify-content: center;
+      white-space: nowrap;
+    }
+
+    .week-card-seat-type {
+      font-size: 12px;
+      font-weight: 700;
+      color: #6b7280;
+      line-height: 1.2;
+    }
+
+    .week-card-seat-value {
+      font-size: 14px;
+      font-weight: 700;
+      color: #dc2626;
+      line-height: 1.2;
+    }
+
+    .week-card-item.room-item {
+      background: #eaf3ff;
+    }
+
+    .week-card-item.naver-item {
+      border-left: 3px solid #03c75a;
+    }
+
+    .week-card-empty {
+      font-size: 14px;
+      color: #9ca3af;
+      margin-top: 10px;
+    }
+
+    .week-more {
+      margin-top: 6px;
+      font-size: 13px;
+      font-weight: 600;
+      color: #6b7280;
+    }
+
+       
+    .week-nav-header {
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+
+    .week-nav-left {
+      justify-self: start;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .week-nav-center {
+      justify-self: center;
+    }
+
+    .week-nav-right {
+      justify-self: end;
+    }
+
+    .week-range-picker {
+      font-size: 20px;
+      font-weight: bold;
+      color: #1f2d3d;
+      padding: 8px 10px;
+      border-radius: 8px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .week-range-picker:hover {
+      background: #eaf3ff;
+    }
+
+    .week-range-text {
+      font-size: 20px;
+      font-weight: bold;
+      color: #1f2d3d;
+    }
+
+    .week-nav-btn {
+      background: #dbeafe;
+      color: #1f2d3d;
+      font-size: 16px;
+      font-weight: 700;
+      padding: 6px 10px;
+      border-radius: 6px;
+    }
+
+    .week-nav-today {
+      background: #e5e7eb;
+      color: #1f2d3d;
+      font-size: 14px;
+      font-weight: 600;
+      padding: 6px 12px;
+      border-radius: 6px;
+    }
+
+    .view-tab-btn {
+      background: #dbeafe;
+      color: #1f2d3d;
+      border: none;
+      padding: 12px 18px;
+      font-size: 15px;
+      font-weight: 700;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    .view-tab-btn:hover {
+      background: #bfdbfe;
+    }
+
+    .view-tab-btn.active {
+      background: #ffffff;
+      color: #1f4e79;
+      box-shadow: 0 4px 14px rgba(0,0,0,0.14);
+      transform: translateY(-1px);
+    }
+
+    .header-actions {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    .header-action-btn {
+      height: 44px;
+      padding: 0 16px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 15px;
+      font-weight: 700;
+      line-height: 1;
+    }
+
+    .header-action-btn.clear-btn {
+      background: #ef4444;
+      color: white;
+    }
+
+    .header-action-btn.clear-btn:hover {
+      background: #dc2626;
+    }
+
+    .header-action-btn.import-btn {
+      background: #e5e7eb;
+      color: #1f2d3d;
+    }
+
+    .header-action-btn.import-btn:hover {
+      background: #d1d5db;
+    }
+
+    .header-action-btn.add-btn {
+      background: #ffb703;
+      color: #1f2d3d;
+      width: 44px;
+      min-width: 44px;
+      padding: 0;
+      font-size: 24px;
+      font-weight: 800;
+    }
+
+    .header-action-btn.add-btn:hover {
+      background: #ffa000;
+    }
+
+    .day-delete-btn {
+      background: #ef4444;
+      color: white;
+      border: none;
+      height: 44px;
+      padding: 0 14px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 700;
+      line-height: 1;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .nav-row {
+      display: grid;
+      grid-template-columns: 44px 88px 44px;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .day-delete-btn:hover {
+      background: #dc2626;
+    }
+
+    .nav-arrow-btn {
+      background: #dbeafe;
+      color: #1f2d3d;
+      border: none;
+      width: 44px;
+      height: 44px;
+      padding: 0;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 16px;
+      font-weight: 700;
+      line-height: 1;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      box-sizing: border-box;
+    }
+
+    .nav-arrow-btn:hover {
+      background: #bfdbfe;
+    }
+
+    .nav-jump-btn {
+      background: #e5e7eb;
+      color: #1f2d3d;
+      border: none;
+      width: 88px;
+      height: 44px;
+      min-width: 88px;
+      padding: 0 14px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 700;
+      line-height: 1;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      white-space: nowrap;
+      box-sizing: border-box;
+    }
+
+    .nav-jump-btn:hover {
+      background: #d1d5db;
+    }
+
+    @media (max-width: 768px) {
+      body {
+        font-size: 14px;
+      }
+
+      header {
+        padding: 14px 16px;
+        flex-direction: column;
+        align-items: stretch;
+        gap: 12px;
+      }
+
+      header h1 {
+        font-size: 22px;
+      }
+
+      main {
+        margin: 14px auto 24px;
+        padding: 0 12px;
+      }
+
+      /* 상단 탭 */
+      header > div:first-child > div {
+        display: grid !important;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 8px;
+        margin-bottom: 0 !important;
+      }
+
+      .view-tab-btn {
+        width: 100%;
+        height: 42px;
+        padding: 0 10px;
+        font-size: 14px;
+      }
+
+      /* 검색창 */
+      #search-input {
+        width: 100% !important;
+        max-width: 100% !important;
+        font-size: 16px;
+      }
+
+      /* 헤더 오른쪽 버튼들 */
+      .header-actions {
+        display: grid;
+        grid-template-columns: 1fr 52px;
+        gap: 8px;
+        width: 100%;
+      }
+
+      .header-action-btn.import-btn {
+        width: 100%;
+        justify-content: center;
+      }
+
+      .header-action-btn.add-btn {
+        width: 52px;
+        min-width: 52px;
+        height: 44px;
+      }
+
+      /* 월간 달력 */
+      .month-grid {
+        gap: 6px;
+      }
+
+      .weekday-cell {
+        font-size: 12px;
+        padding: 6px 2px;
+      }
+
+      .calendar-cell {
+        min-height: 88px;
+        padding: 6px;
+        border-radius: 10px;
+      }
+
+      .calendar-date {
+        font-size: 13px;
+        margin-bottom: 6px;
+      }
+
+      .calendar-summary {
+        font-size: 11px;
+        line-height: 1.35;
+      }
+
+      .calendar-reservation-item {
+        font-size: 10px;
+        padding: 3px 5px;
+      }
+
+      .calendar-more {
+        font-size: 10px;
+      }
+
+      /* 월/주/일 상단 네비 */
+      .nav-arrow-btn,
+      .nav-jump-btn,
+      .day-delete-btn {
+        height: 40px;
+        font-size: 13px;
+        padding: 0 10px;
+      }
+
+      .month-title-custom,
+      .week-range-text {
+        font-size: 17px;
+      }
+
+      .calendar-icon,
+      .day-calendar-icon {
+        font-size: 16px;
+      }
+
+      /* 주간 보기 */
+      .week-nav-header {
+        grid-template-columns: 1fr;
+        gap: 10px;
+      }
+
+      .week-nav-left,
+      .week-nav-center,
+      .week-nav-right {
+        justify-self: stretch;
+      }
+
+      .week-nav-left {
+        justify-content: space-between;
+      }
+
+      .week-nav-center {
+        text-align: center;
+      }
+
+      .week-card {
+        padding: 12px;
+        border-radius: 12px;
+      }
+
+      .week-card-header {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 4px;
+      }
+
+      .week-card-date {
+        font-size: 16px;
+      }
+
+      .week-card-summary {
+        font-size: 13px;
+      }
+
+      .week-card-item {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 6px;
+        padding: 10px;
+      }
+
+      .week-card-main {
+        width: 100%;
+        font-size: 13px;
+        line-height: 1.4;
+      }
+
+      .week-card-seat {
+        width: 100%;
+        min-width: 0;
+        text-align: left;
+        align-items: flex-start;
+      }
+
+      .week-card-seat-type {
+        font-size: 11px;
+      }
+
+      .week-card-seat-value {
+        font-size: 13px;
+      }
+
+      /* 일간 헤더 */
+      #day-view-header > div {
+        grid-template-columns: 1fr !important;
+        gap: 10px !important;
+      }
+
+      #day-view-header > div > div:nth-child(1),
+      #day-view-header > div > div:nth-child(2),
+      #day-view-header > div > div:nth-child(3) {
+        justify-self: stretch !important;
+        justify-content: center !important;
+      }
+
+      
+      #day-view-header > div > div:nth-child(3) .day-delete-btn {
+        width: 100%;
+      }
+
+      /* 예약 카드 */
+      .reservation {
+        padding: 16px;
+        margin-bottom: 14px;
+        border-radius: 10px;
+      }
+
+      .reservation-top {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+        margin-bottom: 12px;
+      }
+
+      .reservation .name {
+        font-size: 18px;
+      }
+
+      .reservation .time {
+        font-size: 14px;
+      }
+
+      .status-badge {
+        font-size: 13px;
+        padding: 6px 12px;
+      }
+
+      .info-grid {
+        grid-template-columns: 1fr;
+        gap: 8px;
+        margin-bottom: 12px;
+      }
+
+      .info-item {
+        padding: 10px 12px;
+      }
+
+      .info-label {
+        font-size: 12px;
+      }
+
+      .info-value {
+        font-size: 14px;
+      }
+
+      .memo {
+        font-size: 14px;
+        padding: 10px 12px;
+        margin-bottom: 12px;
+      }
+
+      .actions {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 8px;
+      }
+
+      .actions > div:first-child {
+        display: grid !important;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 6px;
+        width: 100%;
+      }
+
+      .actions > div:first-child button {
+        width: 100%;
+        padding: 10px 8px !important;
+        font-size: 13px;
+      }
+
+      .actions > div[style*="flex:1"] {
+        display: none;
+      }
+
+      .actions > button,
+      .actions .delete-btn {
+        width: 100%;
+        justify-content: center;
+      }
+
+      /* 모달 */
+      .modal-bg {
+        padding: 8px 10px 10px;
+        align-items: flex-start;
+        justify-content: center;
+        overflow-y: auto;
+      }
+
+      .modal {
+        width: 100%;
+        max-width: 100%;
+        margin-top: 0;
+        padding: 14px 14px;
+        border-radius: 14px;
+        max-height: calc(100vh - 18px);
+        overflow-y: auto;
+        -webkit-overflow-scrolling: touch;
+      }
+
+      .modal h2 {
+        font-size: 20px;
+        line-height: 1.2;
+        margin-bottom: 8px;
+      }
+
+      .modal label {
+        margin-top: 8px;
+        margin-bottom: 4px;
+        font-size: 14px;
+      }
+
+      .modal input,
+      .modal select,
+      .modal textarea {
+        font-size: 16px;
+        min-height: 38px;
+        padding-top: 8px;
+        padding-bottom: 8px;
+      }
+
+      .modal textarea {
+        min-height: 72px;
+      }
+
+      .modal-actions {
+        flex-direction: column;
+        gap: 8px;
+        margin-top: 18px;
+      }
+
+      .modal-actions button {
+        width: 100%;
+        height: 44px;
+      }
+
+      /* 연락처 3칸 입력 대응 */
+      .phone-input-group {
+        gap: 6px;
+      }
+
+      .phone-input {
+        width: 100%;
+        min-width: 0;
+        max-width: none;
+        flex: 1;
+      }
+
+      /* 좌석/인원 한 줄 영역 */
+      #room-checkboxes {
+        width: 100%;
+      }
+
+      /* 빈 화면 */
+      .empty {
+        padding: 40px 16px;
+        font-size: 14px;
+      }
+    }
+
+    .phone-input-group {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .phone-input {
+      width: 100%;
+      max-width: 110px;
+      text-align: center;
+      font-size: 15px;
+      font-weight: 600;
+    }
+
+    .phone-dash {
+      color: #666;
+      font-weight: bold;
+      font-size: 16px;
+      flex: none;
+    }
+        
+  </style>
+</head>
+<body>
+
+  <header>
+    <div>
+      <h1 style="margin:0 0 10px 0;">수림횟집 예약관리</h1>
+
+      <div style="display:flex; gap:8px; flex-wrap:wrap; margin-bottom:10px;">
+        <button id="btn-month-view" onclick="setView('month')" class="view-tab-btn">월</button>
+        <button id="btn-week-view" onclick="setView('week')" class="view-tab-btn">주</button>
+        <button id="btn-day-view" onclick="setView('day')" class="view-tab-btn">일</button>
+      </div>
+    </div>
+
+    <div style="margin-top:10px;">
+      <input
+        type="text"
+        id="search-input"
+        placeholder="이름, 전화번호, 메뉴, 좌석 검색"
+        onkeydown="handleSearchKeydown(event)"
+        style="width:280px; max-width:100%; padding:10px 12px; border:none; border-radius:8px; font-size:14px;"
+      />
+    </div>
+
+    <div class="header-actions">
+     
+      <button onclick="openImportModal()" class="header-action-btn import-btn">
+        불러오기
+      </button>
+
+      <button id="btn-add" onclick="openModal()" class="header-action-btn add-btn">
+        +
+      </button>
+    </div>
+  </header>
+
+  <main>
+    <div id="month-view" style="display:none;"></div>
+    <div id="week-view" style="display:none;"></div>
+    <div id="day-view-header" style="display:none;"></div>
+    <div id="reservation-list"></div>
+  </main>
+
+  <!-- 예약 추가 모달 -->
+  <div class="modal-bg" id="modal">
+    <div class="modal">
+      <div style="display:flex; justify-content:space-between; align-items:center;">
+        <h2 id="modal-title" style="margin:0;">새 예약 추가</h2>
+
+        <label style="display:flex; align-items:center; gap:6px; font-size:14px; color:#03c75a; font-weight:bold; margin:0;">
+          <input type="checkbox" id="input-naver" style="width:auto;" />
+          네이버
+        </label>
+      </div>
+
+      <label for="input-date">날짜</label>
+      <input type="date" id="input-date" />
+
+      <label for="input-name">이름</label>
+      <input type="text" id="input-name" placeholder="홍길동" />
+
+      <label>연락처</label>
+      <div class="phone-input-group">
+        <input
+          type="text"
+          id="input-phone-1"
+          class="phone-input"
+          inputmode="numeric"
+          maxlength="3"
+          placeholder="010"
+          oninput="movePhoneNext(this, 'input-phone-2', 3)"
+          onkeydown="movePhonePrev(event, this, 'input-phone-1')"
+        />
+        <span class="phone-dash">-</span>
+        <input
+          type="text"
+          id="input-phone-2"
+          class="phone-input"
+          inputmode="numeric"
+          maxlength="4"
+          placeholder="1234"
+          oninput="movePhoneNext(this, 'input-phone-3', 4)"
+          onkeydown="movePhonePrev(event, this, 'input-phone-1')"
+        />
+        <span class="phone-dash">-</span>
+        <input
+          type="text"
+          id="input-phone-3"
+          class="phone-input"
+          inputmode="numeric"
+          maxlength="4"
+          placeholder="5678"
+          oninput="movePhoneNext(this, null, 4)"
+          onkeydown="movePhonePrev(event, this, 'input-phone-2')"
+        />
+      </div>
+
+      <label>시간</label>
+        <div style="display:flex; gap:10px; align-items:flex-start;">
+        <select id="input-hour"></select>
+        <select id="input-minute"></select>
+      </div>
+
+      <label for="input-people">인원</label>
+      <div style="display:flex; gap:10px; align-items:flex-end; justify-content:center;">
+
+        <div style="text-align:center;">
+          <div style="font-size:12px; color:#666; margin-bottom:4px;">성인</div>
+          <input type="number" id="input-adult" min="0" value="2"
+            oninput="updateTotalPeople()"
+            style="width:80px; text-align:center;" />
+        </div>
+
+        <div style="text-align:center;">
+          <div style="font-size:12px; color:#666; margin-bottom:4px;">아이</div>
+          <input type="number" id="input-child" min="0" value="0"
+            oninput="updateTotalPeople()"
+            style="width:80px; text-align:center;" />
+        </div>
+
+        <div style="text-align:center;">
+          <div style="font-size:12px; color:#666; margin-bottom:4px;">총</div>
+          <div style="width:80px; font-weight:bold; font-size:18px; padding:10px 0; background:#f4f6f8; border-radius:6px;">
+            <span id="total-people">0</span>명
+          </div>
+        </div>
+
+      </div>
+
+      
+      <label>좌석</label>
+      <div style="display:flex; gap:10px; align-items:flex-start;">
+        <select id="input-seat" style="width:50px; flex:none;" onchange="toggleRoomSelect()">
+          <option value="홀">홀</option>
+          <option value="룸">룸</option>
+        </select>
+
+          <div id="room-checkboxes" style="display:none; border:1px solid #ddd; border-radius:8px; padding:10px; background:#fafafa; flex:2;">
+          <div style="display:grid; grid-template-columns: repeat(3, auto); gap:4px 8px; align-items:center;">
+            <label style="margin:0; font-weight:normal; display:flex; align-items:center; gap:4px;"><input type="checkbox" value="1실" style="width:auto; margin:0;">1</label>
+            <label style="margin:0; font-weight:normal; display:flex; align-items:center; gap:4px;"><input type="checkbox" value="2실" style="width:auto; margin:0;">2</label>
+            <label style="margin:0; font-weight:normal; display:flex; align-items:center; gap:4px;"><input type="checkbox" value="3실" style="width:auto; margin:0;">3</label>
+            <label style="margin:0; font-weight:normal; display:flex; align-items:center; gap:4px;"><input type="checkbox" value="4실" style="width:auto; margin:0;">4</label>
+            <label style="margin:0; font-weight:normal; display:flex; align-items:center; gap:4px;"><input type="checkbox" value="5실" style="width:auto; margin:0;">5</label>
+          </div>
+        </div>
+
+        <input type="text" id="input-table" placeholder="테이블 번호" style="width:180px; flex:none;" />
+      </div>
+
+      <label for="input-menu">메뉴</label>
+      <input type="text" id="input-menu" placeholder="A코스 4인" />
+
+      <label for="input-memo">메모</label>
+      <textarea id="input-memo" placeholder="알러지, 기념일, 요청사항 등"></textarea>
+
+      <div class="modal-actions">
+        <button class="btn-cancel" onclick="closeModal()">취소</button>
+        <button class="btn-save" onclick="addReservation()">저장</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-bg" id="import-modal">
+    <div class="modal">
+      <h2 style="margin:0 0 12px 0;">불러오기</h2>
+
+      <div style="font-size:14px; color:#555; margin-bottom:12px;">
+        현재 선택된 날짜로 불러옵니다.
+      </div>
+
+      <label for="import-text">복붙 내용</label>
+      <textarea id="import-text" placeholder="바탕화면 캘린더 내용을 여기에 붙여넣기" style="min-height:220px;"></textarea>
+
+      <div class="modal-actions">
+        <button class="btn-cancel" onclick="closeImportModal()">취소</button>
+        <button class="btn-save" onclick="previewImport()">분석</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-bg" id="import-preview-modal">
+    <div class="modal" style="max-width:700px;">
+      <h2 style="margin:0 0 12px 0;">불러오기 미리보기</h2>
+
+      <div id="import-preview-list" style="max-height:420px; overflow-y:auto; display:flex; flex-direction:column; gap:10px;"></div>
+
+      <div class="modal-actions">
+        <button class="btn-cancel" onclick="closeImportPreviewModal()">취소</button>
+        <button class="btn-save" onclick="confirmImport()">예약 추가</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-bg" id="search-modal">
+    <div class="modal" style="max-width:760px;">
+      <h2 style="margin:0 0 12px 0;">검색 결과</h2>
+
+      <div id="search-result-summary" style="font-size:14px; color:#555; margin-bottom:12px;"></div>
+
+      <div id="search-result-list" style="max-height:500px; overflow-y:auto; display:flex; flex-direction:column; gap:10px;"></div>
+
+      <div class="modal-actions">
+        <button class="btn-cancel" onclick="closeSearchModal()">닫기</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+
+    function onlyNumber(value) {
+      return String(value || '').replace(/\D/g, '');
+    }
+
+    function movePhoneNext(currentEl, nextId, maxLength) {
+      currentEl.value = onlyNumber(currentEl.value);
+
+      if (currentEl.value.length >= maxLength && nextId) {
+        const nextEl = document.getElementById(nextId);
+        if (nextEl) nextEl.focus();
+      }
+    }
+
+    function movePhonePrev(event, currentEl, prevId) {
+      if (event.key === 'Backspace' && currentEl.value.length === 0 && prevId) {
+        const prevEl = document.getElementById(prevId);
+        if (prevEl) {
+          prevEl.focus();
+          prevEl.setSelectionRange(prevEl.value.length, prevEl.value.length);
+        }
+      }
+    }
+
+    function getPhoneValue() {
+      const p1 = onlyNumber(document.getElementById('input-phone-1')?.value || '');
+      const p2 = onlyNumber(document.getElementById('input-phone-2')?.value || '');
+      const p3 = onlyNumber(document.getElementById('input-phone-3')?.value || '');
+
+      if (!p1 && !p2 && !p3) return '';
+      return `${p1}-${p2}-${p3}`;
+    }
+
+    function setPhoneValue(phone) {
+      const numbers = onlyNumber(phone);
+
+      let p1 = '';
+      let p2 = '';
+      let p3 = '';
+
+      if (numbers.length >= 11) {
+        p1 = numbers.slice(0, 3);
+        p2 = numbers.slice(3, 7);
+        p3 = numbers.slice(7, 11);
+      } else if (numbers.length >= 10) {
+        p1 = numbers.slice(0, 3);
+        p2 = numbers.slice(3, 6);
+        p3 = numbers.slice(6, 10);
+      } else {
+        p1 = numbers.slice(0, 3);
+        p2 = numbers.slice(3, 7);
+        p3 = numbers.slice(7, 11);
+      }
+
+      const el1 = document.getElementById('input-phone-1');
+      const el2 = document.getElementById('input-phone-2');
+      const el3 = document.getElementById('input-phone-3');
+
+      if (el1) el1.value = p1;
+      if (el2) el2.value = p2;
+      if (el3) el3.value = p3;
+    }
+
+    function clearPhoneInputs() {
+      setPhoneValue('');
+    }
+    
+    // ====== 데이터 (브라우저에 저장) ======
+    let reservations = JSON.parse(localStorage.getItem('reservations') || '[]');
+    let editingIndex = null;
+    let importPreviewList = [];
+    let currentView = 'month';
+    let selectedDate = getTodayString();
+    let searchKeyword = '';
+    let searchResults = [];
+
+    function openImportModal() {
+      closeAllModals();
+      document.getElementById('import-text').value = '';
+      document.getElementById('import-modal').classList.add('show');
+    }
+
+    function closeImportModal() {
+      document.getElementById('import-modal').classList.remove('show');
+    }
+
+    function openImportPreviewModal() {
+      closeModal();
+      closeImportModal();
+      document.getElementById('import-preview-modal').classList.add('show');
+    }
+
+    function closeImportPreviewModal() {
+      document.getElementById('import-preview-modal').classList.remove('show');
+    }
+
+    function openSearchModal() {
+      closeModal();
+      closeImportModal();
+      closeImportPreviewModal();
+      document.getElementById('search-modal').classList.add('show');
+    }
+
+    function closeSearchModal() {
+      document.getElementById('search-modal').classList.remove('show');
+    }
+
+    function handleSearchKeydown(event) {
+      if (event.key !== 'Enter') return;
+
+      const input = document.getElementById('search-input');
+      const keyword = String(input.value || '').trim();
+
+      if (!keyword) {
+        alert('검색어를 입력해주세요.');
+        return;
+      }
+
+      event.preventDefault();
+      searchKeyword = keyword;
+      runSearch();
+    }
+
+    function getReservationSearchText(r) {
+      return [
+        r.date,
+        r.name,
+        r.phone,
+        r.time,
+        r.seat,
+        r.room,
+        r.table,
+        r.menu,
+        r.memo,
+        r.isNaver ? '네이버' : '',
+        r.status
+      ]
+        .filter(Boolean)
+        .join(' ')
+        .toLowerCase();
+    }
+
+    function runSearch() {
+      const keyword = String(searchKeyword || '').trim().toLowerCase();
+
+      if (!keyword) {
+        searchResults = [];
+        return;
+      }
+
+      searchResults = reservations
+        .filter(r => getReservationSearchText(r).includes(keyword))
+        .sort((a, b) => {
+          const dateCompare = String(a.date || '').localeCompare(String(b.date || ''));
+          if (dateCompare !== 0) return dateCompare;
+          return String(a.time || '').localeCompare(String(b.time || ''));
+        });
+
+      renderSearchResults();
+      openSearchModal();
+    }
+
+    function renderSearchResults() {
+      const summary = document.getElementById('search-result-summary');
+      const list = document.getElementById('search-result-list');
+
+      if (!summary || !list) return;
+
+      summary.textContent = `"${searchKeyword}" 검색 결과 ${searchResults.length}건`;
+
+      if (!searchResults.length) {
+        list.innerHTML = `
+          <div class="empty" style="padding:30px 20px;">
+            검색 결과가 없습니다.
+          </div>
+        `;
+        return;
+      }
+
+      list.innerHTML = searchResults.map((r, index) => {
+        const realIndex = reservations.indexOf(r);
+
+        return `
+          <div class="reservation status-${r.status} ${r.seat === '룸' ? 'room-highlight' : ''}" style="margin-bottom:0;">
+            <div class="reservation-top">
+              <div>
+                <div class="name">
+                  ${escapeHtml(r.name)}
+                  <span style="font-size:14px; color:#666; margin-left:8px;">
+                    ${escapeHtml(r.phone || '')}
+                  </span>
+                </div>
+                <div class="time">📅 ${escapeHtml(r.date || '')} / ⏰ ${escapeHtml(r.time || '')}</div>
+              </div>
+              <div style="display:flex; align-items:center; gap:8px;">
+                ${r.isNaver ? `<span style="background:#03c75a; color:white; font-size:12px; font-weight:bold; padding:6px 10px; border-radius:999px;">네이버</span>` : ''}
+                <span class="status-badge badge-${r.status}">${r.status}</span>
+              </div>
+            </div>
+
+            <div class="info-grid">
+              <div class="info-item">
+                <div class="info-label">인원</div>
+                <div class="info-value">👥 성인 ${r.adult || 0} / 아이 ${r.child || 0} (총 ${r.people || 0}명)</div>
+              </div>
+              <div class="info-item">
+                <div class="info-label">좌석</div>
+                <div class="info-value">
+                  🪑 ${escapeHtml(r.seat || '-')}
+                  ${r.seat === '룸' ? ' ' + escapeHtml(r.room || '') : ''}
+                  ${r.table ? ' ' + escapeHtml(r.table) : ''}
+                </div>
+              </div>
+              <div class="info-item">
+                <div class="info-label">메뉴</div>
+                <div class="info-value">🍣 ${escapeHtml(r.menu || '-')}</div>
+              </div>
+            </div>
+
+            ${r.memo ? `
+              <div class="memo">
+                <span class="memo-label">📝 메모:</span>${escapeHtml(r.memo)}
+              </div>
+            ` : ''}
+
+            <div class="actions">
+              <button
+                onclick="goToReservationFromSearch(${realIndex})"
+                style="background:#1f4e79; color:white; border:none; padding:10px 16px; border-radius:8px; cursor:pointer; font-size:15px;"
+              >
+                해당 날짜 보기
+              </button>
+
+              <button
+                onclick="editReservationFromSearch(${realIndex})"
+                style="background:#2563eb; color:white; border:none; padding:10px 16px; border-radius:8px; cursor:pointer; font-size:15px;"
+              >
+                바로 수정
+              </button>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function goToReservationFromSearch(index) {
+      const r = reservations[index];
+      if (!r) return;
+
+      closeSearchModal();
+      selectedDate = r.date || getTodayString();
+      currentView = 'day';
+      syncSelectedDateUI();
+      render();
+    }
+
+    function editReservationFromSearch(index) {
+      closeSearchModal();
+      editReservation(index);
+    }
+
+    function closeAllModals() {
+      closeModal();
+      closeImportModal();
+      closeImportPreviewModal();
+      closeSearchModal();
+    }
+
+    function renderImportPreview() {
+      const list = document.getElementById('import-preview-list');
+
+      if (!importPreviewList.length) {
+        list.innerHTML = '<div style="padding:20px; background:#f8fafc; border-radius:8px;">미리보기 데이터가 없습니다.</div>';
+        return;
+      }
+
+      list.innerHTML = importPreviewList.map((r, index) => `
+        <div style="border:1px solid #ddd; border-radius:10px; padding:14px; background:#fafafa;">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+            <div style="font-size:18px; font-weight:bold;">
+              ${escapeHtml(r.name)}
+              ${r.isNaver ? `<span style="margin-left:8px; background:#03c75a; color:white; font-size:12px; font-weight:bold; padding:4px 8px; border-radius:999px;">네이버</span>` : ''}
+            </div>
+            <div style="font-size:15px; color:#555;">${escapeHtml(r.time)}</div>
+          </div>
+
+          <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(140px,1fr)); gap:8px; font-size:14px;">
+            <div><strong>연락처</strong><br>${escapeHtml(r.phone || '-')}</div>
+            <div><strong>인원</strong><br>성인 ${r.adult || 0} / 아이 ${r.child || 0} / 총 ${r.people || 0}</div>
+            <div><strong>좌석</strong><br>${escapeHtml(r.seat || '-')}</div>
+            <div><strong>룸</strong><br>${escapeHtml(r.room || '-')}</div>
+            <div><strong>테이블</strong><br>${escapeHtml(r.table || '-')}</div>
+            <div><strong>메뉴</strong><br>${escapeHtml(r.menu || '-')}</div>
+          </div>
+
+          <div style="margin-top:10px; display:flex; justify-content:flex-end;">
+            <button
+              onclick="removePreviewItem(${index})"
+              style="background:#e74c3c; color:white; border:none; padding:8px 12px; border-radius:8px; cursor:pointer;"
+            >
+              제외
+            </button>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function removePreviewItem(index) {
+      importPreviewList.splice(index, 1);
+      renderImportPreview();
+    }
+
+    function confirmImport() {
+      if (!importPreviewList.length) {
+        alert('추가할 예약이 없습니다.');
+        return;
+      }
+
+      let addedCount = 0;
+      let skippedCount = 0;
+
+      importPreviewList.forEach(newReservation => {
+        const hasConflict = reservations.some(existing => {
+          const newTables = splitValues(newReservation.table);
+          const oldTables = splitValues(existing.table);
+
+          const newRooms = splitValues(newReservation.room);
+          const oldRooms = splitValues(existing.room);
+
+          const sameTable = newTables.some(t => oldTables.includes(t));
+          const sameRoom =
+            newReservation.seat === '룸' &&
+            existing.seat === '룸' &&
+            newRooms.some(r => oldRooms.includes(r));
+
+          return (sameTable || sameRoom) &&
+            isTimeConflict(newReservation.time, existing.time, newReservation.seat, existing.seat);
+        });
+
+        if (hasConflict) {
+          skippedCount++;
+          return;
+        }
+
+        reservations.push(newReservation);
+        addedCount++;
+      });
+
+      save();
+      render();
+
+      importPreviewList = [];
+      closeImportPreviewModal();
+      closeImportModal();
+
+      alert(`완료\n추가: ${addedCount}건\n건너뜀(충돌): ${skippedCount}건`);
+    }
+
+    function previewImport() {
+      const date = selectedDate;
+      const text = document.getElementById('import-text').value.trim();
+
+      if (!date) {
+        alert('선택된 날짜가 없습니다.');
+        return;
+      }
+
+      if (!text) {
+        alert('불러올 데이터를 붙여넣어주세요.');
+        return;
+      }
+
+      const blocks = text
+        .split('***')
+        .map(block => block.trim())
+        .filter(Boolean);
+
+      const parsedReservations = [];
+
+      blocks.forEach(block => {
+        const parsed = parseReservationBlock(block, date);
+        if (parsed) {
+          parsedReservations.push(parsed);
+        }
+      });
+
+      if (parsedReservations.length === 0) {
+        alert('파싱된 예약이 없습니다.');
+        return;
+      }
+
+      importPreviewList = parsedReservations;
+      renderImportPreview();
+      openImportPreviewModal();
+    }
+    function parseReservationBlock(block, date) {
+      const lines = block
+        .split('\n')
+        .map(line => line.trim())
+        .filter(Boolean);
+
+      const time = extractTime(block);
+      if (!time) return null;
+
+      const isNaver = /\(네이버(?:-[^)]+)?\)|네이버/.test(block);
+
+      const seat = extractSeat(block);
+      const room = extractRoom(block);
+      const table = extractTable(block);
+      const phone = extractPhone(block);
+      const phoneLine = extractPhoneLine(lines);
+      const peopleInfo = extractPeople(block);
+      const menu = extractMenu(block, peopleInfo);
+      const name = extractName(phoneLine);
+
+      return {
+        date,
+        name: name || '이름없음',
+        phone,
+        time,
+        people: peopleInfo.people,
+        adult: peopleInfo.adult,
+        child: peopleInfo.child,
+        seat,
+        room,
+        table,
+        menu,
+        isNaver,
+        memo: '',
+        status: '예약'
+      };
+    }
+    function extractTime(text) {
+      const match = text.match(/(\d{1,2}):(\d{2})/);
+      if (!match) return '';
+
+      let hour = Number(match[1]);
+      const minute = match[2];
+
+      // 1~9시는 저녁 예약으로 간주
+      if (hour >= 1 && hour <= 9) {
+        hour += 12;
+      }
+
+      return `${String(hour).padStart(2, '0')}:${minute}`;
+    }
+
+    function extractSeat(text) {
+      if (/\(네이버-룸\)|\(룸\)/.test(text)) return '룸';
+      if (/\(네이버-홀\)|\(홀\)/.test(text)) return '홀';
+      return '';
+    }
+
+    function extractRoom(text) {
+      const rooms = new Set();
+
+      // 1) 예약 1,2,3실 / 예약 1.2.3실 / 예약 1 2 3실
+      const groupedMatch = text.match(/예약\s*([1-5][\d,\.\s]*)실/);
+      if (groupedMatch) {
+        const numbers = groupedMatch[1]
+          .split(/[,\.\s]+/)
+          .map(v => v.trim())
+          .filter(Boolean);
+
+        numbers.forEach(num => {
+          if (/^[1-5]$/.test(num)) {
+            rooms.add(`${num}실`);
+          }
+        });
+      }
+
+      // 2) 단일/개별 표기 보완: 1실, 2실, 3실
+      const singleMatches = text.match(/\b([1-5])실\b/g);
+      if (singleMatches) {
+        singleMatches.forEach(item => rooms.add(item.trim()));
+      }
+
+      return Array.from(rooms).join(', ');
+    }
+
+    function extractTable(text) {
+      const tables = new Set();
+
+      // (테이블 10,19)
+      const tableMatch = text.match(/테이블\s*([\d,\s]+)/);
+      if (tableMatch) {
+        tableMatch[1]
+          .split(',')
+          .map(v => v.trim())
+          .filter(Boolean)
+          .forEach(v => tables.add(v));
+      }
+
+      // (예약 5실 62)
+      const roomTableMatch = text.match(/예약\s*[1-5]실\s+(\d{1,3})\b/);
+      if (roomTableMatch) {
+        tables.add(roomTableMatch[1]);
+      }
+
+      return Array.from(tables).join(', ');
+    }
+
+    function extractPhone(text) {
+      const match = text.match(/01[0-9][-\s]?\d{3,4}[-\s]?\d{4}/);
+      return match ? match[0].replace(/\s/g, '') : '';
+    }
+
+    function extractPhoneLine(lines) {
+      for (const line of lines) {
+        if (/01[0-9][-\s]?\d{3,4}[-\s]?\d{4}/.test(line)) {
+          return line;
+        }
+      }
+      return '';
+    }
+
+    function extractName(phoneLine) {
+      if (!phoneLine) return '';
+
+      let line = phoneLine;
+
+      // 전화번호 제거
+      line = line.replace(/01[0-9][-\s]?\d{3,4}[-\s]?\d{4}/g, ' ');
+
+      // 불필요한 단어 제거 (핵심만)
+      line = line
+        .replace(/메뉴전화/g, ' ')
+        .replace(/네이버/g, ' ')
+        .replace(/예약/g, ' ')
+        .replace(/테이블/g, ' ')
+        .replace(/룸/g, ' ')
+        .replace(/홀/g, ' ')
+        .replace(/\([^)]*\)/g, ' ') // 괄호 제거
+        .replace(/\b[A-Z가-힣]코스\b/g, ' ')
+        .replace(/성인\s*\d+/g, ' ')
+        .replace(/어른\s*\d+/g, ' ')
+        .replace(/아이\s*\d+/g, ' ')
+        .replace(/\d+\s*명/g, ' ')
+        .replace(/\d+\s*인/g, ' ')
+        .replace(/[<>[\]{}*]/g, ' ')
+        .replace(/[-–—/,:]/g, ' ')
+        .replace(/\s+/g, ' ')
+        .trim();
+
+      return line;
+    }
+    function cleanLineForName(line) {
+      return line
+        // 괄호 정보 제거
+        .replace(/\([^)]*\)/g, ' ')
+
+        // 인원/성인/아이 관련
+        .replace(/성인\s*\d+/g, ' ')
+        .replace(/어른\s*\d+/g, ' ')
+        .replace(/아이\s*\d+/g, ' ')
+        .replace(/유아\s*\d+/g, ' ')
+        .replace(/초등\s*\d+/g, ' ')
+        .replace(/\d+\s*명/g, ' ')
+        .replace(/\d+\s*인/g, ' ')
+
+        // 좌석/예약/테이블/룸 정보
+        .replace(/예약/g, ' ')
+        .replace(/테이블\s*[\d,\s]+/g, ' ')
+        .replace(/[1-5](?:\.[1-5])*실/g, ' ')
+        .replace(/룸만석/g, ' ')
+        .replace(/룸예약/g, ' ')
+        .replace(/룸/g, ' ')
+        .replace(/홀/g, ' ')
+
+        // 메뉴
+        .replace(/\b[A-Z]코스\b/g, ' ')
+        .replace(/\b[가-힣A-Z]코스\b/g, ' ')
+
+        // 네이버
+        .replace(/네이버/g, ' ')
+
+        // 특수문자 정리
+        .replace(/[<>[\]{}*]/g, ' ')
+        .replace(/[-–—/,:]/g, ' ')
+        .replace(/\s+/g, ' ')
+        .trim();
+    }
+
+    function looksLikeName(text) {
+      if (!text) return false;
+
+      // 숫자만 남은 경우 제외
+      if (/^\d+$/.test(text)) return false;
+
+      // 너무 긴 문장 제외
+      if (text.length < 2 || text.length > 12) return false;
+
+      // 한글 이름 / 한글+짧은 호칭 / 아주 짧은 영문명 정도 허용
+      if (/^[가-힣]{2,5}$/.test(text)) return true;
+      if (/^[가-힣]{2,8}\s?[가-힣]{0,4}$/.test(text)) return true;
+      if (/^[A-Za-z]{2,12}$/.test(text)) return true;
+
+      return false;
+    }
+
+    function extractPeople(text) {
+      let adult = 0;
+      let child = 0;
+      let people = 0;
+
+      const adultMatch = text.match(/(?:성인|어른)\s*(\d+)/);
+      const childMatch = text.match(/(?:아이|유아|초등)\s*(\d+)/);
+      const totalMatch = text.match(/(\d+)\s*(?:명|인)/);
+
+      if (adultMatch) adult = Number(adultMatch[1]);
+      if (childMatch) child = Number(childMatch[1]);
+
+      people = adult + child;
+
+      if (people === 0 && totalMatch) {
+        people = Number(totalMatch[1]);
+        adult = people;
+      }
+
+      return { adult, child, people };
+    }
+
+    function extractMenu(text, peopleInfo = {}) {
+      const normalized = String(text || '')
+        .replace(/\s+/g, ' ')
+        .trim();
+
+      if (!normalized) return '';
+
+      // 1. 메뉴전화
+      if (normalized.includes('메뉴전화')) {
+        return '메뉴전화';
+      }
+
+      // 2. B코스3 / A코스2 / C코스10 형태
+      const courseWithCountMatch = normalized.match(/([A-Z가-힣])코스\s*(\d+)/);
+      if (courseWithCountMatch) {
+        const courseName = `${courseWithCountMatch[1]}코스`;
+        const count = Number(courseWithCountMatch[2]);
+        return `${courseName} ${count}`;
+      }
+
+      // 3. B코스 / A코스 / C코스 형태
+      const courseOnlyMatch = normalized.match(/([A-Z가-힣])코스/);
+      if (courseOnlyMatch) {
+        const courseName = `${courseOnlyMatch[1]}코스`;
+        const count = peopleInfo.people || 0;
+
+        if (count > 0) {
+          return `${courseName} ${count}`;
+        }
+
+        return courseName;
+      }
+
+      return '';
+    }
+
+    function splitValues(value) {
+      return String(value || '')
+        .split(',')
+        .map(v => v.trim())
+        .filter(Boolean);
+    }
+
+    // 예약 상태 종류
+    const STATUS_LIST = ['예약', '도착', '착석', '퇴장'];
+    
+      function initTimeSelects() {
+      const hourSelect = document.getElementById('input-hour');
+      const minuteSelect = document.getElementById('input-minute');
+
+      hourSelect.innerHTML = '';
+      minuteSelect.innerHTML = '';
+
+      for (let h = 0; h < 24; h++) {
+        const hh = String(h).padStart(2, '0');
+        hourSelect.innerHTML += `<option value="${hh}">${hh}</option>`;
+      }
+
+      for (let m = 0; m < 60; m += 5) {
+        const mm = String(m).padStart(2, '0');
+        minuteSelect.innerHTML += `<option value="${mm}">${mm}</option>`;
+      }
+
+      hourSelect.value = '12';
+      minuteSelect.value = '00';
+    }
+
+    function isTimeConflict(newTime, existingTime, seat, newSeat) {
+      const toMin = (t) => {
+        const [h, m] = t.split(':').map(Number);
+        return h * 60 + m;
+      };
+
+      const diff = Math.abs(toMin(newTime) - toMin(existingTime));
+
+      // 홀: 120분 / 룸: 150분
+      const limit = (seat === '룸' || newSeat === '룸') ? 150 : 120;
+
+      return diff < limit;
+    }
+
+    function toggleRoomSelect() {
+      const seat = document.getElementById('input-seat').value;
+      const roomBox = document.getElementById('room-checkboxes');
+
+      if (seat === '룸') {
+        roomBox.style.display = 'block';
+      } else {
+        roomBox.style.display = 'none';
+
+        // 체크 초기화
+        roomBox.querySelectorAll('input[type=checkbox]').forEach(cb => cb.checked = false);
+      }
+    }
+
+        function renderMonthView() {
+        const monthView = document.getElementById('month-view');
+        const weekView = document.getElementById('week-view');
+        const dayHeader = document.getElementById('day-view-header');
+        const list = document.getElementById('reservation-list');
+
+        monthView.style.display = 'block';
+        if (weekView) weekView.style.display = 'none';
+        if (dayHeader) dayHeader.style.display = 'none';
+        list.style.display = 'none';
+
+      const monthStart = getMonthStart(selectedDate);
+      const monthEnd = getMonthEnd(selectedDate);
+
+      const startDay = monthStart.getDay(); // 0=일
+      const daysInMonth = monthEnd.getDate();
+
+      const weekdayNames = ['일', '월', '화', '수', '목', '금', '토'];
+
+      let html = `
+        <div style="display:flex; align-items:center; gap:10px; flex-wrap:wrap;">
+  <button onclick="moveMonth(-1)" class="nav-arrow-btn">←</button>
+
+  <div class="picker-wrap month-title-custom">
+  <span>${formatMonthTitle(selectedDate)}</span>
+  <span class="calendar-icon">📅</span>
+
+  <input
+    type="month"
+    class="picker-native"
+    value="${getMonthKey(selectedDate)}"
+    onchange="changeMonthFromPicker(this.value)"
+  />
+</div>
+
+  <button onclick="moveMonth(1)" class="nav-arrow-btn">→</button>
+</div>
+
+        <div class="month-grid">
+      `;
+
+      weekdayNames.forEach(name => {
+        html += `<div class="weekday-cell">${name}</div>`;
+      });
+
+      for (let i = 0; i < startDay; i++) {
+        html += `<div class="calendar-cell other-month"></div>`;
+      }
+
+      for (let day = 1; day <= daysInMonth; day++) {
+        const dateObj = new Date(monthStart.getFullYear(), monthStart.getMonth(), day);
+        const dateString = formatDateString(dateObj);
+        const dayReservations = getReservationsByDate(dateString);
+
+        const totalPeople = dayReservations.reduce((sum, r) => sum + (Number(r.people) || 0), 0);
+        const roomCount = dayReservations.filter(r => r.seat === '룸').length;
+       
+
+        html += `
+          <div
+            class="calendar-cell ${dateString === selectedDate ? 'selected-date' : ''} ${searchKeyword && !dayReservations.length ? 'search-dim' : ''}"
+            onclick="openDayView('${dateString}')"
+          >
+            <div class="calendar-date">${day}</div>
+
+            <div class="calendar-summary">
+              ${dayReservations.length ? `예약 ${dayReservations.length}건` : '<span style="color:#9ca3af;">예약 없음</span>'}
+              ${totalPeople ? `<br>총 ${totalPeople}명` : ''}
+              ${roomCount ? `<br>룸 ${roomCount}건` : ''}
+            </div>
+
+          </div>
+        `;
+      }
+
+      html += `</div>`;
+      monthView.innerHTML = html;
+    }
+
+      function renderWeekView() {
+      const monthView = document.getElementById('month-view');
+      const weekView = document.getElementById('week-view');
+      const dayHeader = document.getElementById('day-view-header');
+      const list = document.getElementById('reservation-list');
+
+      monthView.style.display = 'none';
+      weekView.style.display = 'block';
+      if (dayHeader) dayHeader.style.display = 'none';
+      list.style.display = 'none';
+
+      const weekDates = getWeekDates(selectedDate);
+      const weekNames = ['월', '화', '수', '목', '금', '토', '일'];
+
+        let html = `
+          <div class="week-nav-header">
+            <div class="week-nav-left">
+            <button onclick="moveWeek(-1)" class="nav-arrow-btn">←</button>
+            <button onclick="goToCurrentWeek()" class="nav-jump-btn">이번주</button>
+            <button onclick="moveWeek(1)" class="nav-arrow-btn">→</button>
+          </div>
+
+            <div class="week-nav-center">
+              <div class="week-range-text">${formatWeekRange(selectedDate)}</div>
+            </div>
+
+            <div class="week-nav-right"></div>
+          </div>
+
+          <div class="week-list">
+        `;
+
+      weekDates.forEach((dateString, index) => {
+        const dayReservations = getReservationsByDate(dateString)
+        .sort((a, b) => a.time.localeCompare(b.time));
+        const totalPeople = dayReservations.reduce((sum, r) => sum + (Number(r.people) || 0), 0);
+        const roomCount = dayReservations.filter(r => r.seat === '룸').length;
+
+        const previewReservations = dayReservations.slice(0, 3);
+        const remainingCount = dayReservations.length - previewReservations.length;
+
+        const previewHtml = previewReservations.map(r => {
+          const classes = [
+            'week-card-item',
+            r.seat === '룸' ? 'room-item' : '',
+            r.isNaver ? 'naver-item' : ''
+          ].filter(Boolean).join(' ');
+
+          const peopleLabel = Number(r.people) || 0;
+          const menuLabel = r.menu ? ` / ${escapeHtml(r.menu)}` : '';
+
+          let seatType = '';
+          let seatValue = '-';
+
+          if (r.seat === '룸') {
+            seatType = '[룸]';
+            seatValue = r.room || '-';
+          } else if (r.seat === '홀') {
+            seatType = '[홀]';
+            seatValue = r.table ? `${escapeHtml(r.table)}번` : '-';
+          }
+
+          return `
+            <div class="${classes}">
+              <div class="week-card-main">
+                ${escapeHtml(r.time || '')}
+                ${escapeHtml(r.name || '이름없음')}
+                (${peopleLabel})
+                ${menuLabel}
+              </div>
+              <div class="week-card-seat">
+                <div class="week-card-seat-type">${seatType}</div>
+                <div class="week-card-seat-value">${seatValue}</div>
+              </div>
+            </div>
+          `;
+        }).join('');
+
+        html += `
+          <div class="week-card ${dateString === selectedDate ? 'selected-date' : ''}" onclick="openDayView('${dateString}')">
+            <div class="week-card-header">
+              <div class="week-card-date">${dateString} (${weekNames[index]})</div>
+              <div class="week-card-summary">
+                예약 ${dayReservations.length}건
+                ${totalPeople ? ` / 총 ${totalPeople}명` : ''}
+                ${roomCount ? ` / 룸 ${roomCount}건` : ''}
+              </div>
+            </div>
+
+            ${dayReservations.length ? `
+              <div class="week-card-reservations">
+                ${previewHtml}
+              </div>
+              ${remainingCount > 0 ? `<div class="week-more">+${remainingCount}건 더</div>` : ''}
+            ` : `
+              <div class="week-card-empty">예약 없음</div>
+            `}
+          </div>
+        `;
+      });
+
+      html += `</div>`;
+      weekView.innerHTML = html;
+    }
+
+    
+    // ====== 화면 그리기 ======
+    function render() {
+      updateViewButtons();
+      updateViewVisibility();
+      
+      if (currentView === 'month') {
+        renderMonthView();
+        return;
+      }
+
+      if (currentView === 'week') {
+        renderWeekView();
+        return;
+      }
+
+      renderDayView();
+    }
+
+    function renderDayViewHeader() {
+      const header = document.getElementById('day-view-header');
+      if (!header) return;
+
+      header.style.display = 'block';
+      header.innerHTML = `
+        <div style="
+          display:grid;
+          grid-template-columns:auto 1fr auto;
+          align-items:center;
+          gap:8px;
+          margin-bottom:20px;
+        ">
+          <div class="nav-row" style="justify-self:start;">
+            <button onclick="moveDate(-1)" class="nav-arrow-btn">←</button>
+            <button onclick="goToToday()" class="nav-jump-btn">오늘</button>
+            <button onclick="moveDate(1)" class="nav-arrow-btn">→</button>
+          </div>
+
+          <div style="
+            display:flex;
+            justify-content:center;
+            align-items:center;
+          ">
+           <div
+  class="picker-wrap day-date-custom"
+  style="
+    font-size:20px;
+    color:#1f2d3d;
+    font-weight:700;
+    white-space:nowrap;
+  "
+>
+  <span id="selected-date-text"></span>
+  <span class="calendar-icon day-calendar-icon" style="font-size:20px;">📅</span>
+  <input
+    type="date"
+    id="selected-date"
+    class="picker-native"
+    onchange="changeSelectedDate(this.value)"
+  />
+</div>
+          </div>
+
+          <div style="
+            display:flex;
+            justify-content:flex-end;
+            align-items:center;
+          ">
+            <button
+              onclick="clearAllReservations()"
+              class="day-delete-btn"
+            >
+              당일삭제
+            </button>
+          </div>
+        </div>
+      `;
+
+      syncSelectedDateUI();
+    }
+
+        function renderDayView() {
+        const monthView = document.getElementById('month-view');
+        const weekView = document.getElementById('week-view');
+        const dayHeader = document.getElementById('day-view-header');
+        const list = document.getElementById('reservation-list');
+
+        monthView.style.display = 'none';
+        if (weekView) weekView.style.display = 'none';
+        if (dayHeader) dayHeader.style.display = 'block';
+        list.style.display = 'block';
+
+        renderDayViewHeader();
+
+          const dailyReservations = reservations
+          .filter(r => (r.date || '') === selectedDate)
+          .sort((a, b) => a.time.localeCompare(b.time));
+
+      if (dailyReservations.length === 0) {
+        list.innerHTML = `
+          <div class="empty">
+            ${formatDateLabel(selectedDate)} ${searchKeyword ? '검색 결과가 없습니다.' : '예약이 없습니다.'}<br>
+            오른쪽 위 "예약 추가" 또는 "불러오기"를 눌러주세요.
+          </div>
+        `;
+        return;
+      }
+
+      list.innerHTML = dailyReservations.map((r) => {
+        const realIndex = reservations.indexOf(r);
+
+        return `
+          <div class="reservation status-${r.status} ${r.seat === '룸' ? 'room-highlight' : ''}">
+            <div class="reservation-top">
+              <div>
+                <div class="name">
+                  ${escapeHtml(r.name)}
+                  <span style="font-size:14px; color:#666; margin-left:8px;">
+                    ${escapeHtml(r.phone || '')}
+                  </span>
+                </div>
+                <div class="time">📅 ${escapeHtml(r.date || '')} / ⏰ ${escapeHtml(r.time)}</div>
+              </div>
+              <div style="display:flex; align-items:center; gap:8px;">
+                ${r.isNaver ? `<span style="background:#03c75a; color:white; font-size:12px; font-weight:bold; padding:6px 10px; border-radius:999px;">네이버</span>` : ''}
+                <span class="status-badge badge-${r.status}">${r.status}</span>
+              </div>
+            </div>
+
+            <div class="info-grid">
+              <div class="info-item">
+                <div class="info-label">인원</div>
+                <div class="info-value">👥 성인 ${r.adult || 0} / 아이 ${r.child || 0} (총 ${r.people}명)</div>
+              </div>
+              <div class="info-item">
+                <div class="info-label">좌석</div>
+                <div class="info-value">
+                  🪑 ${escapeHtml(r.seat || '-')}
+                  ${r.seat === '룸' ? escapeHtml(r.room || '') : ''}
+                  ${escapeHtml(r.table || '')}
+                </div>
+              </div>
+              <div class="info-item">
+                <div class="info-label">메뉴</div>
+                <div class="info-value">🍣 ${escapeHtml(r.menu || '-')}</div>
+              </div>
+            </div>
+
+            ${r.memo ? `
+              <div class="memo">
+                <span class="memo-label">📝 메모:</span>${escapeHtml(r.memo)}
+              </div>
+            ` : ''}
+
+            <div class="actions">
+              <div style="display:flex; gap:6px;">
+                <button
+                  onclick="changeStatus(${realIndex}, '예약')"
+                  style="
+                    padding:8px 12px; border:none; border-radius:8px; cursor:pointer;
+                    background:${r.status === '예약' ? '#1976d2' : '#dbeafe'};
+                    color:${r.status === '예약' ? 'white' : '#1976d2'};
+                    font-weight:${r.status === '예약' ? 'bold' : 'normal'};
+                  "
+                >예약</button>
+
+                <button
+                  onclick="changeStatus(${realIndex}, '착석')"
+                  style="
+                    padding:8px 12px; border:none; border-radius:8px; cursor:pointer;
+                    background:${r.status === '착석' ? '#2e7d32' : '#dcfce7'};
+                    color:${r.status === '착석' ? 'white' : '#2e7d32'};
+                    font-weight:${r.status === '착석' ? 'bold' : 'normal'};
+                  "
+                >착석</button>
+
+                <button
+                  onclick="changeStatus(${realIndex}, '퇴장')"
+                  style="
+                    padding:8px 12px; border:none; border-radius:8px; cursor:pointer;
+                    background:${r.status === '퇴장' ? '#757575' : '#eeeeee'};
+                    color:${r.status === '퇴장' ? 'white' : '#555'};
+                    font-weight:${r.status === '퇴장' ? 'bold' : 'normal'};
+                  "
+                >퇴장</button>
+              </div>
+
+              <div style="flex:1;"></div>
+
+              <button onclick="editReservation(${realIndex})" style="background:#1f4e79;color:white;border:none;padding:10px 16px;border-radius:8px;cursor:pointer;font-size:15px;">수정</button>
+              <button class="delete-btn" onclick="deleteReservation(${realIndex})">삭제</button>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function updateViewButtons() {
+      const monthBtn = document.getElementById('btn-month-view');
+      const weekBtn = document.getElementById('btn-week-view');
+      const dayBtn = document.getElementById('btn-day-view');
+
+      if (!monthBtn || !weekBtn || !dayBtn) return;
+
+      [monthBtn, weekBtn, dayBtn].forEach(btn => {
+        btn.classList.remove('active');
+      });
+
+      if (currentView === 'month') {
+        monthBtn.classList.add('active');
+      } else if (currentView === 'week') {
+        weekBtn.classList.add('active');
+      } else {
+        dayBtn.classList.add('active');
+      }
+    }
+
+    function updateViewVisibility() {
+      // 현재는 보기별 공통 헤더 버튼 숨김 처리할 것이 없음
+    }
+
+    
+    
+    // HTML 특수문자 처리(보안)
+    function escapeHtml(text) {
+      const div = document.createElement('div');
+      div.textContent = text == null ? '' : String(text);
+      return div.innerHTML;
+    }
+    function getTodayString() {
+      const now = new Date();
+      const y = now.getFullYear();
+      const m = String(now.getMonth() + 1).padStart(2, '0');
+      const d = String(now.getDate()).padStart(2, '0');
+      return `${y}-${m}-${d}`;
+    }
+
+    function parseLocalDate(dateString) {
+      if (!dateString) return new Date();
+
+      const match = String(dateString).match(/^(\d{4})-(\d{2})-(\d{2})$/);
+      if (!match) return new Date(dateString);
+
+      const year = Number(match[1]);
+      const month = Number(match[2]) - 1;
+      const day = Number(match[3]);
+
+      return new Date(year, month, day);
+    }
+
+    function formatDateLabel(dateString) {
+      if (!dateString) return '';
+
+      const date = parseLocalDate(dateString);
+      const weekNames = ['일', '월', '화', '수', '목', '금', '토'];
+
+      const y = date.getFullYear();
+      const m = date.getMonth() + 1;
+      const d = date.getDate();
+      const day = weekNames[date.getDay()];
+
+      return `${y}-${String(m).padStart(2, '0')}-${String(d).padStart(2, '0')} (${day})`;
+    }
+
+    function addDays(dateString, days) {
+      const date = parseLocalDate(dateString);
+      date.setDate(date.getDate() + days);
+
+      const y = date.getFullYear();
+      const m = String(date.getMonth() + 1).padStart(2, '0');
+      const d = String(date.getDate()).padStart(2, '0');
+
+      return `${y}-${m}-${d}`;
+    }
+
+    function normalizeDateInput(value) {
+      const input = String(value || '').trim();
+
+      // 이미 yyyy-mm-dd 형식
+      if (/^\d{4}-\d{2}-\d{2}$/.test(input)) {
+        return input;
+      }
+
+      // 4/25 또는 4-25 형식
+      const shortMatch = input.match(/^(\d{1,2})[\/\-\.](\d{1,2})$/);
+      if (shortMatch) {
+        const year = new Date().getFullYear();
+        const month = String(Number(shortMatch[1])).padStart(2, '0');
+        const day = String(Number(shortMatch[2])).padStart(2, '0');
+        return `${year}-${month}-${day}`;
+      }
+
+      return input;
+    }
+
+    function ensureReservationDates() {
+      let changed = false;
+
+      reservations = reservations.map(r => {
+        if (r.date) return r;
+
+        changed = true;
+        return {
+          ...r,
+          date: selectedDate
+        };
+      });
+
+      if (changed) {
+        save();
+      }
+    }
+
+    function syncSelectedDateUI() {
+      const input = document.getElementById('selected-date');
+      const text = document.getElementById('selected-date-text');
+
+      if (input) input.value = selectedDate;
+      if (text) text.textContent = formatDateLabel(selectedDate);
+    }
+
+    
+    function changeSelectedDate(value) {
+      const normalized = normalizeDateInput(value);
+      if (!normalized) return;
+
+      selectedDate = normalized;
+      syncSelectedDateUI();
+      render();
+    }
+
+
+    function moveDate(days) {
+      selectedDate = addDays(selectedDate, days);
+      syncSelectedDateUI();
+      render();
+    }
+
+    function goToToday() {
+      selectedDate = getTodayString();
+      syncSelectedDateUI();
+      render();
+    }
+
+    function setView(view) {
+      closeAllModals();
+      currentView = view;
+      syncSelectedDateUI();
+      render();
+    }
+
+    function getMonthKey(dateString) {
+      const date = parseLocalDate(dateString);
+      const y = date.getFullYear();
+      const m = String(date.getMonth() + 1).padStart(2, '0');
+      return `${y}-${m}`;
+    }
+
+    function getMonthStart(dateString) {
+      const date = parseLocalDate(dateString);
+      return new Date(date.getFullYear(), date.getMonth(), 1);
+    }
+
+    function getMonthEnd(dateString) {
+      const date = parseLocalDate(dateString);
+      return new Date(date.getFullYear(), date.getMonth() + 1, 0);
+    }
+
+    function formatMonthTitle(dateString) {
+      const date = parseLocalDate(dateString);
+      return `${date.getFullYear()}년 ${date.getMonth() + 1}월`;
+    }
+
+    function formatDateString(date) {
+      const y = date.getFullYear();
+      const m = String(date.getMonth() + 1).padStart(2, '0');
+      const d = String(date.getDate()).padStart(2, '0');
+      return `${y}-${m}-${d}`;
+    }
+
+    function moveMonth(diff) {
+      const date = parseLocalDate(selectedDate);
+      date.setMonth(date.getMonth() + diff);
+
+      const moved = formatDateString(date);
+      selectedDate = moved;
+      syncSelectedDateUI();
+      render();
+    }
+
+    function openDayView(dateString) {
+      closeAllModals();
+      selectedDate = dateString;
+      currentView = 'day';
+      syncSelectedDateUI();
+      render();
+    }
+
+    function changeMonthFromPicker(value) {
+      if (!value) return;
+
+      selectedDate = `${value}-01`;
+      render();
+    }
+
+    function getReservationsByDate(dateString) {
+      return reservations.filter(r => (r.date || '') === dateString);
+    }
+
+    function getStartOfWeek(dateString) {
+      const date = parseLocalDate(dateString);
+      const day = date.getDay(); // 일=0
+      const diff = day === 0 ? -6 : 1 - day; // 월요일 시작
+      date.setDate(date.getDate() + diff);
+      return date;
+    }
+
+    function getWeekDates(dateString) {
+      const start = getStartOfWeek(dateString);
+      const dates = [];
+
+      for (let i = 0; i < 7; i++) {
+        const current = new Date(start);
+        current.setDate(start.getDate() + i);
+        dates.push(formatDateString(current));
+      }
+
+      return dates;
+    }
+
+    function formatWeekRange(dateString) {
+      const weekDates = getWeekDates(dateString);
+      const start = parseLocalDate(weekDates[0]);
+      const end = parseLocalDate(weekDates[6]);
+
+      const startText = `${start.getFullYear()}-${String(start.getMonth() + 1).padStart(2, '0')}-${String(start.getDate()).padStart(2, '0')}`;
+      const endText = `${end.getFullYear()}-${String(end.getMonth() + 1).padStart(2, '0')}-${String(end.getDate()).padStart(2, '0')}`;
+
+      return `${startText} ~ ${endText}`;
+    }
+
+    function moveWeek(diff) {
+      const date = parseLocalDate(selectedDate);
+      date.setDate(date.getDate() + (diff * 7));
+      selectedDate = formatDateString(date);
+      syncSelectedDateUI();
+      render();
+    }
+    
+    function goToCurrentWeek() {
+      selectedDate = getTodayString();
+      syncSelectedDateUI();
+      render();
+    }
+    
+    // 데이터를 브라우저에 저장
+    function save() {
+      localStorage.setItem('reservations', JSON.stringify(reservations));
+    }
+
+    // ====== 예약 추가 ======
+    function openModal() {
+      closeAllModals();
+      editingIndex = null;
+      document.getElementById('modal-title').textContent = '새 예약 추가';
+      document.getElementById('input-date').value = selectedDate;
+      document.getElementById('input-naver').checked = false;
+      document.getElementById('input-name').value = '';
+      clearPhoneInputs();
+      document.getElementById('input-hour').value = '12';
+      document.getElementById('input-minute').value = '00';
+      document.getElementById('input-seat').value = '홀';
+      toggleRoomSelect();
+      document.getElementById('input-table').value = '';
+      document.getElementById('input-menu').value = '';
+      document.getElementById('input-memo').value = '';
+      document.getElementById('modal').classList.add('show');
+      document.getElementById('input-adult').value = '2';
+      document.getElementById('input-child').value = '0';
+      updateTotalPeople();
+    }
+
+    function closeModal() {
+      editingIndex = null;
+      document.getElementById('modal').classList.remove('show');
+    }
+    function editReservation(index) {
+      const r = reservations[index];
+      editingIndex = index;
+
+      document.getElementById('modal-title').textContent = '예약 수정';
+      document.getElementById('input-date').value = r.date || selectedDate;
+      document.getElementById('input-naver').checked = r.isNaver || false;
+      document.getElementById('input-name').value = r.name || '';
+      setPhoneValue(r.phone || '');
+
+      const [hour, minute] = (r.time || '12:00').split(':');
+      document.getElementById('input-hour').value = hour;
+      document.getElementById('input-minute').value = minute;
+      document.getElementById('input-adult').value = r.adult || 0;
+      document.getElementById('input-child').value = r.child || 0;
+      document.getElementById('input-seat').value = r.seat || '홀';
+
+      toggleRoomSelect();
+
+      document.getElementById('input-table').value = r.table || '';
+      document.getElementById('input-menu').value = r.menu || '';
+      document.getElementById('input-memo').value = r.memo || '';
+
+      document.getElementById('modal').classList.add('show');
+      updateTotalPeople();
+
+      const selectedRooms = (r.room || '').split(',').map(s => s.trim());
+
+      document.querySelectorAll('#room-checkboxes input').forEach(cb => {
+        cb.checked = selectedRooms.includes(cb.value);
+      });
+    }
+    function addReservation() {
+      const date = document.getElementById('input-date').value.trim();
+      const isNaver = document.getElementById('input-naver').checked;
+      const name = document.getElementById('input-name').value.trim();
+      const phone = getPhoneValue();
+      const hour = document.getElementById('input-hour').value;
+      const minute = document.getElementById('input-minute').value;
+      const time = `${hour}:${minute}`;
+      const adult = Number(document.getElementById('input-adult').value);
+      const child = Number(document.getElementById('input-child').value);
+      const people = adult + child;
+      const seat = document.getElementById('input-seat').value;
+      const room = Array.from(
+        document.querySelectorAll('#room-checkboxes input:checked')
+      ).map(cb => cb.value).join(', ');
+      const menu = document.getElementById('input-menu').value.trim();
+      const memo = document.getElementById('input-memo').value.trim();
+      const table = document.getElementById('input-table').value.trim();
+
+      if (!date) { alert('날짜를 입력해주세요.'); return; }
+      if (!name) { alert('이름을 입력해주세요.'); return; }
+      if (adult < 0 || child < 0) { alert('인원은 0명 이상으로 입력해주세요.'); return; }
+      if (!people || people < 1) { alert('인원은 1명 이상이어야 합니다.'); return; }
+
+      for (let i = 0; i < reservations.length; i++) {
+        if (editingIndex === i) continue;
+
+        const r = reservations[i];
+        if ((r.date || '') !== date) continue;
+
+        const newTables = table.split(',').map(t => t.trim()).filter(Boolean);
+        const oldTables = (r.table || '').split(',').map(t => t.trim()).filter(Boolean);
+
+        const newRooms = room.split(',').map(v => v.trim()).filter(Boolean);
+        const oldRooms = (r.room || '').split(',').map(v => v.trim()).filter(Boolean);
+
+        const sameTable = newTables.some(t => oldTables.includes(t));
+        const sameRoom =
+          r.seat === '룸' &&
+          seat === '룸' &&
+          newRooms.some(v => oldRooms.includes(v));
+
+        if ((sameTable || sameRoom) && isTimeConflict(time, r.time, seat, r.seat)) {
+          alert('⚠️ 같은 날짜에 같은 테이블/룸의 시간 겹치는 예약이 있습니다');
+          return;
+        }
+      }
+
+      const reservationData = {
+        date,
+        name,
+        phone,
+        time,
+        people,
+        adult,
+        child,
+        seat,
+        room,
+        table,
+        menu,
+        isNaver,
+        memo,
+        status: editingIndex !== null ? reservations[editingIndex].status : '예약'
+      };
+
+      if (editingIndex !== null) {
+        reservations[editingIndex] = reservationData;
+      } else {
+        reservations.push(reservationData);
+      }
+
+      selectedDate = date;
+      save();
+      syncSelectedDateUI();
+      render();
+      closeModal();
+    }
+
+    // ====== 상태 변경 ======
+    function changeStatus(index, newStatus) {
+      reservations[index].status = newStatus;
+      save();
+      render();
+    }
+
+    // ====== 예약 삭제 ======
+    function deleteReservation(index) {
+      if (!confirm('이 예약을 삭제하시겠습니까?')) return;
+      reservations.splice(index, 1);
+      save();
+      render();
+    }
+    function clearAllReservations() {
+      const dailyReservations = reservations.filter(r => (r.date || '') === selectedDate);
+
+      if (dailyReservations.length === 0) {
+        alert('이 날짜에 삭제할 예약이 없습니다.');
+        return;
+      }
+
+      const ok = confirm(
+        `${formatDateLabel(selectedDate)} 예약 ${dailyReservations.length}건을 모두 삭제할까요?\n이 작업은 되돌릴 수 없습니다.`
+      );
+      if (!ok) return;
+
+      reservations = reservations.filter(r => (r.date || '') !== selectedDate);
+
+      save();
+      render();
+
+      alert(`${formatDateLabel(selectedDate)} 예약이 모두 삭제되었습니다.`);
+    }
+    function updateTotalPeople() {
+      const adult = Number(document.getElementById('input-adult').value) || 0;
+      const child = Number(document.getElementById('input-child').value) || 0;
+      document.getElementById('total-people').textContent = adult + child;
+    }
+
+    document.getElementById('modal').addEventListener('click', function (e) {
+      if (e.target === this) {
+        closeModal();
+      }
+    });
+
+    document.getElementById('import-modal').addEventListener('click', function (e) {
+      if (e.target === this) {
+        closeImportModal();
+      }
+    });
+
+    document.getElementById('import-preview-modal').addEventListener('click', function (e) {
+      if (e.target === this) {
+        closeImportPreviewModal();
+      }
+    });
+
+    document.getElementById('search-modal').addEventListener('click', function (e) {
+      if (e.target === this) {
+        closeSearchModal();
+      }
+    });
+    // 첫 화면 그리기
+    initTimeSelects();
+    ensureReservationDates();
+    syncSelectedDateUI();
+    render();
+    updateTotalPeople();
+
+    document.getElementById('modal').addEventListener('click', function (e) {
+      if (e.target === this) {
+        closeModal();
+      }
+    });
+
+    document.getElementById('import-modal').addEventListener('click', function (e) {
+      if (e.target === this) {
+        closeImportModal();
+      }
+    });
+
+    document.getElementById('import-preview-modal').addEventListener('click', function (e) {
+      if (e.target === this) {
+        closeImportPreviewModal();
+      }
+    });
+
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape') {
+        closeModal();
+        closeImportModal();
+        closeImportPreviewModal();
+        closeSearchModal();
+      }
+    });
+    
+  </script>
+
+</body>
+</html>
