@@ -124,10 +124,14 @@
     /* ====== 예약 카드 ====== */
     .reservation {
       background: white;
-      padding: 24px;
-      margin-bottom: 20px;
+      padding: 12px;
+      margin-bottom: 10px;
       border-radius: 12px;
       box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    }
+
+    .day-date-input:hover {
+      background: rgba(255,255,255,0.25);
     }
 
     /* 상태별 카드 왼쪽 색깔 (한눈에 구분) */
@@ -139,28 +143,29 @@
     .reservation-top {
       display: flex;
       justify-content: space-between;
-      align-items: flex-start;
+      align-items: center;
       flex-wrap: wrap;
-      gap: 12px;
-      margin-bottom: 16px;
+      gap: 6px;
+      margin-bottom: 8px;
     }
 
     .reservation .name {
-      font-size: 22px;
+      font-size: 18px;
       font-weight: bold;
-      margin: 0 0 6px 0;
+      margin: 0;
       word-break: keep-all;
     }
+
     .reservation .time {
-      font-size: 16px;
+      font-size: 14px;
       color: #555;
     }
 
     .status-badge {
       display: inline-block;
-      padding: 8px 16px;
+      padding: 6px 12px;
       border-radius: 20px;
-      font-size: 15px;
+      font-size: 13px;
       font-weight: bold;
       color: white;
     }
@@ -186,23 +191,26 @@
     /* 예약 상세 정보 그리드 */
     .info-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-      gap: 12px;
-      margin-bottom: 16px;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 6px;
+      margin-bottom: 8px;
     }
+
     .info-item {
       background: rgba(255,255,255,0.7);
-      padding: 12px 14px;
+      padding: 6px 8px;
       border-radius: 8px;
       border: 1px solid #e0e0e0;
     }
+
     .info-label {
-      font-size: 13px;
+      font-size: 11px;
       color: #777;
-      margin-bottom: 4px;
+      margin-bottom: 2px;
     }
+
     .info-value {
-      font-size: 16px;
+      font-size: 13px;
       font-weight: 600;
       color: #1f2d3d;
     }
@@ -210,11 +218,11 @@
     .memo {
       background: #fffbe6;
       border: 1px dashed #f0c14b;
-      padding: 12px 14px;
+      padding: 10px 12px;
       border-radius: 8px;
       font-size: 15px;
       color: #5c4400;
-      margin-bottom: 16px;
+      margin-bottom: 10px;
     }
     .memo .memo-label {
       font-weight: bold;
@@ -372,47 +380,82 @@
     .modal {
       background: white;
       width: 100%;
-      max-width: 420px;
-      padding: 20px;
+      max-width: 450px;
+      padding: 14px;
       border-radius: 12px;
-      max-height: none;
-      overflow-y: visible;
+      max-height: 88vh;
+      overflow-y: auto;
     }
-    .modal h2 { margin-top: 0; font-size: 22px; }
+    .modal h2 { margin-top: 0; font-size: 19px; }
+
     .modal label {
       display: block;
-      margin-top: 8px;
-      margin-bottom: 6px;
-      font-size: 15px;
+      margin-top: 6px;
+      margin-bottom: 4px;
+      font-size: 14px;
       color: #333;
       font-weight: 600;
     }
+
     .modal input,
     .modal select,
     .modal textarea {
       width: 100%;
-      padding: 12px;
-      font-size: 15px;
+      padding: 10px;
+      font-size: 14px;
       border: 1px solid #ccc;
       border-radius: 8px;
       font-family: inherit;
     }
+
+    .datetime-row {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .datetime-row input[type="date"] {
+      flex: 1;
+    }
+
+    .time-select-wrap {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .time-select-wrap select {
+      width: 60px;
+    }
+    
     .modal textarea {
       resize: vertical;
       min-height: 70px;
     }
     .modal-actions {
-      margin-top: 24px;
       display: flex;
-      gap: 10px;
       justify-content: flex-end;
+      gap: 8px;
+      margin-top: 16px;
     }
+
+    .save-btn {
+      background: #2563eb;
+      color: white;
+      padding: 10px 16px;
+    }
+
+    .cancel-btn {
+      background: #e5e7eb;
+      color: #333;
+      padding: 10px 16px;
+    }
+
     .modal-actions button {
-      padding: 12px 20px;
       border: none;
       border-radius: 8px;
       cursor: pointer;
-      font-size: 15px;
+      font-size: 14px;
     }
     .btn-cancel { background: #eee; color: #333; }
     .btn-save { background: #1f4e79; color: white; font-weight: bold; }
@@ -939,8 +982,8 @@
       }
 
       .week-card-item {
-        flex-direction: column;
-        align-items: flex-start;
+        flex-direction: row;
+        align-items: center;
         gap: 6px;
         padding: 10px;
       }
@@ -966,6 +1009,14 @@
         font-size: 13px;
       }
 
+      .datetime-row {
+        gap: 6px;
+      }
+
+      .time-select-wrap select {
+        width: 52px;
+      }
+
       /* 일간 헤더 */
       #day-view-header > div {
         grid-template-columns: 1fr !important;
@@ -986,24 +1037,24 @@
 
       /* 예약 카드 */
       .reservation {
-        padding: 16px;
-        margin-bottom: 14px;
+        padding: 10px;
+        margin-bottom: 10px;
         border-radius: 10px;
       }
 
       .reservation-top {
         flex-direction: column;
         align-items: flex-start;
-        gap: 8px;
-        margin-bottom: 12px;
+        gap: 6px;
+        margin-bottom: 8px;
       }
 
       .reservation .name {
-        font-size: 18px;
+        font-size: 16px;
       }
 
       .reservation .time {
-        font-size: 14px;
+        font-size: 13px;
       }
 
       .status-badge {
@@ -1074,11 +1125,11 @@
 
       .modal {
         width: 100%;
-        max-width: 100%;
+        max-width: 94%;
         margin-top: 0;
-        padding: 14px 14px;
-        border-radius: 14px;
-        max-height: calc(100vh - 18px);
+        padding: 12px;
+        border-radius: 12px;
+        max-height: calc(100vh - 40px);
         overflow-y: auto;
         -webkit-overflow-scrolling: touch;
       }
@@ -1109,14 +1160,17 @@
       }
 
       .modal-actions {
-        flex-direction: column;
+        display: flex;
+        justify-content: flex-end;
         gap: 8px;
-        margin-top: 18px;
+        margin-top: 16px;
       }
 
       .modal-actions button {
-        width: 100%;
-        height: 44px;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        font-size: 14px;
       }
 
       /* 연락처 3칸 입력 대응 */
@@ -1151,7 +1205,7 @@
 
     .phone-input {
       width: 100%;
-      max-width: 110px;
+      max-width: 80px;
       text-align: center;
       font-size: 15px;
       font-weight: 600;
@@ -1162,6 +1216,41 @@
       font-weight: bold;
       font-size: 16px;
       flex: none;
+    }
+
+    @media (max-width: 768px) {
+
+      .nav-row {
+        display: grid !important;
+        grid-template-columns: 1fr auto 1fr;
+        width: 100%;
+      }
+
+      .nav-row .nav-arrow-btn:first-child {
+        justify-self: start;
+      }
+
+      .nav-row .nav-arrow-btn:last-child {
+        justify-self: end;
+      }
+
+      .nav-row .nav-jump-btn {
+        justify-self: center;
+      }
+
+      /* 새 예약 모달만 크기 줄이기 */
+      .reservation-modal {
+        max-width: 320px;
+        padding: 12px;
+      }
+
+      .reservation-modal input,
+      .reservation-modal select,
+      .reservation-modal textarea {
+        padding: 8px;
+        font-size: 14px;
+      }
+
     }
         
   </style>
@@ -1210,7 +1299,7 @@
 
   <!-- 예약 추가 모달 -->
   <div class="modal-bg" id="modal">
-    <div class="modal">
+    <div class="modal reservation-modal">
       <div style="display:flex; justify-content:space-between; align-items:center;">
         <h2 id="modal-title" style="margin:0;">새 예약 추가</h2>
 
@@ -1220,8 +1309,16 @@
         </label>
       </div>
 
-      <label for="input-date">날짜</label>
-      <input type="date" id="input-date" />
+      <label>날짜 / 시간</label>
+      <div class="datetime-row">
+        <input type="date" id="input-date" />
+
+        <div class="time-select-wrap">
+          <select id="input-hour"></select>
+          <span>:</span>
+          <select id="input-minute"></select>
+        </div>
+      </div>
 
       <label for="input-name">이름</label>
       <input type="text" id="input-name" placeholder="홍길동" />
@@ -1262,12 +1359,7 @@
         />
       </div>
 
-      <label>시간</label>
-        <div style="display:flex; gap:10px; align-items:flex-start;">
-        <select id="input-hour"></select>
-        <select id="input-minute"></select>
-      </div>
-
+      
       <label for="input-people">인원</label>
       <div style="display:flex; gap:10px; align-items:flex-end; justify-content:center;">
 
@@ -1302,7 +1394,7 @@
           <option value="룸">룸</option>
         </select>
 
-          <div id="room-checkboxes" style="display:none; border:1px solid #ddd; border-radius:8px; padding:10px; background:#fafafa; flex:2;">
+            <div id="room-checkboxes" style="display:none; border:1px solid #ddd; border-radius:8px; padding:10px; background:#fafafa; flex:1;">
           <div style="display:grid; grid-template-columns: repeat(3, auto); gap:4px 8px; align-items:center;">
             <label style="margin:0; font-weight:normal; display:flex; align-items:center; gap:4px;"><input type="checkbox" value="1실" style="width:auto; margin:0;">1</label>
             <label style="margin:0; font-weight:normal; display:flex; align-items:center; gap:4px;"><input type="checkbox" value="2실" style="width:auto; margin:0;">2</label>
@@ -1312,7 +1404,7 @@
           </div>
         </div>
 
-        <input type="text" id="input-table" placeholder="테이블 번호" style="width:180px; flex:none;" />
+        <input type="text" id="input-table" placeholder="테이블 번호" style="width:180px; flex:none; margin-left:auto;" />
       </div>
 
       <label for="input-menu">메뉴</label>
@@ -1322,8 +1414,8 @@
       <textarea id="input-memo" placeholder="알러지, 기념일, 요청사항 등"></textarea>
 
       <div class="modal-actions">
-        <button class="btn-cancel" onclick="closeModal()">취소</button>
-        <button class="btn-save" onclick="addReservation()">저장</button>
+        <button class="save-btn" onclick="addReservation()">저장</button>
+        <button class="cancel-btn" onclick="closeModal()">취소</button>
       </div>
     </div>
   </div>
@@ -1339,9 +1431,28 @@
       <label for="import-text">복붙 내용</label>
       <textarea id="import-text" placeholder="바탕화면 캘린더 내용을 여기에 붙여넣기" style="min-height:220px;"></textarea>
 
-      <div class="modal-actions">
-        <button class="btn-cancel" onclick="closeImportModal()">취소</button>
-        <button class="btn-save" onclick="previewImport()">분석</button>
+      <div class="modal-actions" style="justify-content:space-between;">
+        <div>
+          <input
+            type="file"
+            id="import-file-input"
+            accept=".txt"
+            style="display:none;"
+          />
+          <button
+            type="button"
+            class="btn-cancel"
+            id="import-file-btn"
+            style="background:#fff3cd; color:#5c4400;"
+          >
+            업로드
+          </button>
+        </div>
+
+        <div style="display:flex; gap:10px;">
+          <button class="btn-save" onclick="previewImport()">분석</button>
+          <button class="btn-cancel" onclick="closeImportModal()">취소</button>
+        </div>
       </div>
     </div>
   </div>
@@ -1611,43 +1722,49 @@
         return `
           <div class="reservation status-${r.status} ${r.seat === '룸' ? 'room-highlight' : ''}" style="margin-bottom:0;">
             <div class="reservation-top">
-              <div>
-                <div class="name">
-                  ${escapeHtml(r.name)}
-                  <span style="font-size:14px; color:#666; margin-left:8px;">
-                    ${escapeHtml(r.phone || '')}
-                  </span>
-                </div>
-                <div class="time">📅 ${escapeHtml(r.date || '')} / ⏰ ${escapeHtml(r.time || '')}</div>
-              </div>
-              <div style="display:flex; align-items:center; gap:8px;">
-                ${r.isNaver ? `<span style="background:#03c75a; color:white; font-size:12px; font-weight:bold; padding:6px 10px; border-radius:999px;">네이버</span>` : ''}
-                <span class="status-badge badge-${r.status}">${r.status}</span>
-              </div>
-            </div>
+  <div>
+    <div class="name" style="display:flex; align-items:center; flex-wrap:wrap; gap:8px; margin:0;">
+      <span style="font-size:18px; color:#1f2d3d; font-weight:700;">${escapeHtml(r.time)}</span>
+      <span>${escapeHtml(r.name)}</span>
+      <span style="font-size:14px; color:#666; font-weight:400;">
+        ${escapeHtml(r.phone || '')}
+      </span>
+    </div>
+  </div>
+  <div style="display:flex; align-items:center; gap:8px;">
+    ${r.isNaver ? `<span style="background:#03c75a; color:white; font-size:12px; font-weight:bold; padding:6px 10px; border-radius:999px;">네이버</span>` : ''}
+   <span 
+  class="status-badge badge-${r.status}" 
+  onclick="toggleStatus(${realIndex})"
+  style="cursor:pointer;"
+>
+  ${r.status}
+</span>
+  </div>
+</div>
 
             <div class="info-grid">
               <div class="info-item">
                 <div class="info-label">인원</div>
-                <div class="info-value">👥 성인 ${r.adult || 0} / 아이 ${r.child || 0} (총 ${r.people || 0}명)</div>
+                <div class="info-value">성인 ${r.adult || 0} / 아이 ${r.child || 0} (총 ${r.people || 0}명)</div>
               </div>
               <div class="info-item">
                 <div class="info-label">좌석</div>
                 <div class="info-value">
-                  🪑 ${escapeHtml(r.seat || '-')}
+                  ${escapeHtml(r.seat || '-')}
                   ${r.seat === '룸' ? ' ' + escapeHtml(r.room || '') : ''}
                   ${r.table ? ' ' + escapeHtml(r.table) : ''}
                 </div>
               </div>
               <div class="info-item">
                 <div class="info-label">메뉴</div>
-                <div class="info-value">🍣 ${escapeHtml(r.menu || '-')}</div>
+                <div class="info-value"> ${escapeHtml(r.menu || '-')}</div>
               </div>
             </div>
 
             ${r.memo ? `
               <div class="memo">
-                <span class="memo-label">📝 메모:</span>${escapeHtml(r.memo)}
+                <span class="memo-label">메모:</span>${escapeHtml(r.memo)}
               </div>
             ` : ''}
 
@@ -1724,35 +1841,62 @@
         return;
       }
 
-      list.innerHTML = importPreviewList.map((r, index) => `
-        <div style="border:1px solid #ddd; border-radius:10px; padding:14px; background:#fafafa;">
-          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
-            <div style="font-size:18px; font-weight:bold;">
-              ${escapeHtml(r.name)}
-              ${r.isNaver ? `<span style="margin-left:8px; background:#03c75a; color:white; font-size:12px; font-weight:bold; padding:4px 8px; border-radius:999px;">네이버</span>` : ''}
+      const grouped = {};
+
+      importPreviewList.forEach((r, index) => {
+        const dateKey = r.date || '날짜없음';
+        if (!grouped[dateKey]) {
+          grouped[dateKey] = [];
+        }
+        grouped[dateKey].push({ ...r, __index: index });
+      });
+
+      const sortedDates = Object.keys(grouped).sort();
+
+      list.innerHTML = sortedDates.map(date => {
+        const items = grouped[date];
+
+        const cardsHtml = items.map((r) => `
+          <div style="border:1px solid #ddd; border-radius:10px; padding:10px 12px; background:#fafafa; display:flex; justify-content:space-between; align-items:center;">
+
+            <div style="display:flex; flex-direction:column; gap:4px;">
+
+              <div style="font-size:15px; font-weight:600;">
+                <span style="color:#333; font-weight:600;">${escapeHtml(r.time)}</span>
+<span style="margin-left:8px;">${escapeHtml(r.name)}</span>
+                ${r.seat ? `<span style="margin-left:6px; color:#888;">${escapeHtml(r.seat)}</span>` : ''}
+                ${r.people ? `<span style="margin-left:6px; color:#888;">${r.people}명</span>` : ''}
+                ${r.menu ? `<span style="margin-left:6px; color:#888;">${escapeHtml(r.menu)}</span>` : ''}
+                ${r.isNaver ? `<span style="margin-left:6px; background:#03c75a; color:white; font-size:11px; padding:2px 6px; border-radius:6px;">네이버</span>` : ''}
+              </div>
+
+              <div style="font-size:13px; color:#666;">
+                ${escapeHtml(r.phone || '-')}
+                ${(r.room || r.table) ? ' · ' : ''}
+                ${escapeHtml([r.room, r.table].filter(Boolean).join(' / '))}
+              </div>
+
             </div>
-            <div style="font-size:15px; color:#555;">${escapeHtml(r.time)}</div>
-          </div>
 
-          <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(140px,1fr)); gap:8px; font-size:14px;">
-            <div><strong>연락처</strong><br>${escapeHtml(r.phone || '-')}</div>
-            <div><strong>인원</strong><br>성인 ${r.adult || 0} / 아이 ${r.child || 0} / 총 ${r.people || 0}</div>
-            <div><strong>좌석</strong><br>${escapeHtml(r.seat || '-')}</div>
-            <div><strong>룸</strong><br>${escapeHtml(r.room || '-')}</div>
-            <div><strong>테이블</strong><br>${escapeHtml(r.table || '-')}</div>
-            <div><strong>메뉴</strong><br>${escapeHtml(r.menu || '-')}</div>
-          </div>
-
-          <div style="margin-top:10px; display:flex; justify-content:flex-end;">
             <button
-              onclick="removePreviewItem(${index})"
-              style="background:#e74c3c; color:white; border:none; padding:8px 12px; border-radius:8px; cursor:pointer;"
+              onclick="removePreviewItem(${r.__index})"
+              style="background:#e74c3c; color:white; border:none; padding:6px 10px; border-radius:6px; cursor:pointer; font-size:12px;"
             >
               제외
             </button>
+
           </div>
-        </div>
-      `).join('');
+        `).join('');
+
+        return `
+          <div style="display:flex; flex-direction:column; gap:10px; margin-bottom:18px;">
+            <div style="position:sticky; top:0; background:#eaf3ff; color:#1f4e79; font-size:16px; font-weight:700; padding:10px 12px; border-radius:10px; border:1px solid #bfdbfe;">
+              ${escapeHtml(date)}
+            </div>
+            ${cardsHtml}
+          </div>
+        `;
+      }).join('');
     }
 
     function removePreviewItem(index) {
@@ -1810,32 +1954,55 @@
     }
 
     function previewImport() {
-      const date = selectedDate;
       const text = document.getElementById('import-text').value.trim();
-
-      if (!date) {
-        alert('선택된 날짜가 없습니다.');
-        return;
-      }
 
       if (!text) {
         alert('불러올 데이터를 붙여넣어주세요.');
         return;
       }
 
-      const blocks = text
-        .split(/\*{3,}/)
-        .map(block => block.trim())
-        .filter(Boolean);
-
       const parsedReservations = [];
+      const sectionRegex = /\[(\d{4}-\d{2}-\d{2})\]([\s\S]*?)(?=\n\[\d{4}-\d{2}-\d{2}\]|\s*$)/g;
+      const sections = [...text.matchAll(sectionRegex)];
 
-      blocks.forEach(block => {
-        const parsed = parseReservationBlock(block, date);
-        if (parsed) {
-          parsedReservations.push(parsed);
+      if (sections.length > 0) {
+        sections.forEach(match => {
+          const date = match[1];
+          const body = match[2] || '';
+
+          const blocks = body
+            .split(/\*{3,}/)
+            .map(block => block.trim())
+            .filter(Boolean)
+            .filter(block => !/^[-\s]+$/.test(block));
+
+          blocks.forEach(block => {
+            const parsed = parseReservationBlock(block, date);
+            if (parsed) {
+              parsedReservations.push(parsed);
+            }
+          });
+        });
+      } else {
+        const date = selectedDate;
+
+        if (!date) {
+          alert('선택된 날짜가 없습니다.');
+          return;
         }
-      });
+
+        const blocks = text
+          .split(/\*{3,}/)
+          .map(block => block.trim())
+          .filter(Boolean);
+
+        blocks.forEach(block => {
+          const parsed = parseReservationBlock(block, date);
+          if (parsed) {
+            parsedReservations.push(parsed);
+          }
+        });
+      }
 
       if (parsedReservations.length === 0) {
         alert('파싱된 예약이 없습니다.');
@@ -1866,6 +2033,25 @@
       const menu = extractMenu(block, peopleInfo);
       const name = extractName(phoneLine);
 
+      const memoLines = lines.filter(line => {
+        if (!line) return false;
+
+        // 시간/인원/메뉴가 들어간 첫 줄은 제외
+        if (line === lines[0]) return false;
+
+        // 전화번호 있는 줄은 제외
+        if (/01[0-9][-\s]?\d{3,4}[-\s]?\d{4}/.test(line)) return false;
+
+        // 좌석/룸/테이블 줄은 제외
+        if (/예약\s*[1-5]/.test(line)) return false;
+        if (/테이블\s*[\d,\s]+/.test(line)) return false;
+
+        // 이름만 남은 줄이면 제외
+        if (name && line.replace(/\s+/g, ' ').trim() === name.replace(/\s+/g, ' ').trim()) return false;
+
+        return true;
+      });
+
       return {
         date,
         name: name || '이름없음',
@@ -1879,7 +2065,7 @@
         table,
         menu,
         isNaver,
-        memo: '',
+        memo: memoLines.join(' / '),
         status: '예약'
       };
     }
@@ -2109,12 +2295,6 @@
       const courseOnlyMatch = normalized.match(/([A-Z가-힣])코스/);
       if (courseOnlyMatch) {
         const courseName = `${courseOnlyMatch[1]}코스`;
-        const count = peopleInfo.people || 0;
-
-        if (count > 0) {
-          return `${courseName} ${count}`;
-        }
-
         return courseName;
       }
 
@@ -2131,25 +2311,73 @@
     // 예약 상태 종류
     const STATUS_LIST = ['예약', '도착', '착석', '퇴장'];
     
-      function initTimeSelects() {
+    function getAvailableTimes(dateString) {
+      const date = new Date(dateString + 'T00:00:00');
+      const day = date.getDay(); // 0=일, 6=토
+
+      const times = [];
+
+      function pushRange(startHour, startMinute, endHour, endMinute) {
+        let current = startHour * 60 + startMinute;
+        const end = endHour * 60 + endMinute;
+
+        while (current <= end) {
+          const hh = String(Math.floor(current / 60)).padStart(2, '0');
+          const mm = String(current % 60).padStart(2, '0');
+          times.push(`${hh}:${mm}`);
+          current += 5;
+        }
+      }
+
+      // 주말: 토(6), 일(0)
+      if (day === 0 || day === 6) {
+        pushRange(10, 30, 21, 0);
+      } else {
+        // 평일
+        pushRange(10, 30, 14, 0);
+        pushRange(16, 30, 21, 0);
+      }
+
+      return times;
+    }
+
+    function initTimeSelects(dateString = selectedDate, selectedTime = '') {
       const hourSelect = document.getElementById('input-hour');
       const minuteSelect = document.getElementById('input-minute');
+      const times = getAvailableTimes(dateString);
 
       hourSelect.innerHTML = '';
       minuteSelect.innerHTML = '';
 
-      for (let h = 0; h < 24; h++) {
-        const hh = String(h).padStart(2, '0');
+      if (!times.length) return;
+
+      const selectedOrDefault = times.includes(selectedTime) ? selectedTime : times[0];
+      const [selectedHour, selectedMinute] = selectedOrDefault.split(':');
+
+      const uniqueHours = [...new Set(times.map(t => t.split(':')[0]))];
+      uniqueHours.forEach(hh => {
         hourSelect.innerHTML += `<option value="${hh}">${hh}</option>`;
+      });
+
+      function renderMinuteOptions(hourValue) {
+        const minuteList = times
+          .filter(t => t.startsWith(`${hourValue}:`))
+          .map(t => t.split(':')[1]);
+
+        minuteSelect.innerHTML = '';
+        minuteList.forEach(mm => {
+          minuteSelect.innerHTML += `<option value="${mm}">${mm}</option>`;
+        });
       }
 
-      for (let m = 0; m < 60; m += 5) {
-        const mm = String(m).padStart(2, '0');
-        minuteSelect.innerHTML += `<option value="${mm}">${mm}</option>`;
-      }
+      renderMinuteOptions(selectedHour);
+      hourSelect.value = selectedHour;
+      minuteSelect.value = selectedMinute;
 
-      hourSelect.value = '12';
-      minuteSelect.value = '00';
+      hourSelect.onchange = function () {
+        renderMinuteOptions(this.value);
+        minuteSelect.value = minuteSelect.options[0]?.value || '00';
+      };
     }
 
     function isTimeConflict(newTime, existingTime, seat, newSeat) {
@@ -2200,22 +2428,37 @@
       const weekdayNames = ['일', '월', '화', '수', '목', '금', '토'];
 
       let html = `
-        <div style="display:flex; align-items:center; gap:10px; flex-wrap:wrap;">
-  <button onclick="moveMonth(-1)" class="nav-arrow-btn">←</button>
+        <div style="
+  display:grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items:center;
+  margin-bottom:10px;
+">
 
-  <div class="picker-wrap month-title-custom">
-  <span>${formatMonthTitle(selectedDate)}</span>
-  <span class="calendar-icon">📅</span>
+  <!-- 왼쪽 -->
+  <div style="justify-self:start;">
+    <button onclick="moveMonth(-1)" class="nav-arrow-btn">←</button>
+  </div>
 
-  <input
-    type="month"
-    class="picker-native"
-    value="${getMonthKey(selectedDate)}"
-    onchange="changeMonthFromPicker(this.value)"
-  />
-</div>
+  <!-- 가운데 -->
+  <div style="justify-self:center;">
+    <div class="picker-wrap month-title-custom">
+      <span>${formatMonthTitle(selectedDate)}</span>
 
-  <button onclick="moveMonth(1)" class="nav-arrow-btn">→</button>
+      <input
+        type="month"
+        class="picker-native"
+        value="${getMonthKey(selectedDate)}"
+        onchange="changeMonthFromPicker(this.value)"
+      />
+    </div>
+  </div>
+
+  <!-- 오른쪽 -->
+  <div style="justify-self:end;">
+    <button onclick="moveMonth(1)" class="nav-arrow-btn">→</button>
+  </div>
+
 </div>
 
         <div class="month-grid">
@@ -2297,7 +2540,7 @@
         const totalPeople = dayReservations.reduce((sum, r) => sum + (Number(r.people) || 0), 0);
         const roomCount = dayReservations.filter(r => r.seat === '룸').length;
 
-        const previewReservations = dayReservations.slice(0, 3);
+        const previewReservations = dayReservations;
         const remainingCount = dayReservations.length - previewReservations.length;
 
         const previewHtml = previewReservations.map(r => {
@@ -2309,17 +2552,12 @@
 
           const peopleLabel = Number(r.people) || 0;
           const menuLabel = r.menu ? ` / ${escapeHtml(r.menu)}` : '';
-
-          let seatType = '';
-          let seatValue = '-';
-
-          if (r.seat === '룸') {
-            seatType = '[룸]';
-            seatValue = r.room || '-';
-          } else if (r.seat === '홀') {
-            seatType = '[홀]';
-            seatValue = r.table ? `${escapeHtml(r.table)}번` : '-';
-          }
+          const seatLabel =
+            r.seat === '룸'
+              ? (r.room ? ` / 룸 ${escapeHtml(r.room)}` : ' / 룸')
+              : r.seat === '홀'
+                ? (r.table ? ` / 홀 ${escapeHtml(r.table)}번` : ' / 홀')
+                : '';
 
           return `
             <div class="${classes}">
@@ -2327,11 +2565,8 @@
                 ${escapeHtml(r.time || '')}
                 ${escapeHtml(r.name || '이름없음')}
                 (${peopleLabel})
+                ${seatLabel}
                 ${menuLabel}
-              </div>
-              <div class="week-card-seat">
-                <div class="week-card-seat-type">${seatType}</div>
-                <div class="week-card-seat-value">${seatValue}</div>
               </div>
             </div>
           `;
@@ -2352,7 +2587,7 @@
               <div class="week-card-reservations">
                 ${previewHtml}
               </div>
-              ${remainingCount > 0 ? `<div class="week-more">+${remainingCount}건 더</div>` : ''}
+              
             ` : `
               <div class="week-card-empty">예약 없음</div>
             `}
@@ -2399,7 +2634,7 @@
       header.innerHTML = `
         <div style="
           display:grid;
-          grid-template-columns:auto 1fr auto;
+          grid-template-columns:1fr auto 1fr;
           align-items:center;
           gap:8px;
           margin-bottom:20px;
@@ -2415,31 +2650,30 @@
             justify-content:center;
             align-items:center;
           ">
-           <div
-  class="picker-wrap day-date-custom"
-  style="
-    font-size:20px;
-    color:#1f2d3d;
-    font-weight:700;
-    white-space:nowrap;
-  "
->
-  <span id="selected-date-text"></span>
-  <span class="calendar-icon day-calendar-icon" style="font-size:20px;">📅</span>
-  <input
-    type="date"
-    id="selected-date"
-    class="picker-native"
-    onchange="changeSelectedDate(this.value)"
-  />
-</div>
+            <div
+              class="picker-wrap day-date-custom"
+              style="
+                font-size:20px;
+                color:#1f2d3d;
+                font-weight:700;
+                white-space:nowrap;
+              "
+            >
+              <span id="selected-date-text"></span>
+              <input
+                type="date"
+                id="selected-date"
+                class="picker-native"
+                onchange="changeSelectedDate(this.value)"
+              />
+            </div>
           </div>
 
           <div style="
-  display:flex;
-  justify-content:flex-end;
-  align-items:center;
-"></div>
+            display:flex;
+            justify-content:flex-end;
+            align-items:center;
+          "></div>
         </div>
       `;
 
@@ -2478,84 +2712,86 @@
 
         return `
           <div class="reservation status-${r.status} ${r.seat === '룸' ? 'room-highlight' : ''}">
-            <div class="reservation-top">
-              <div>
-                <div class="name">
-                  ${escapeHtml(r.name)}
-                  <span style="font-size:14px; color:#666; margin-left:8px;">
-                    ${escapeHtml(r.phone || '')}
-                  </span>
-                </div>
-                <div class="time">📅 ${escapeHtml(r.date || '')} / ⏰ ${escapeHtml(r.time)}</div>
-              </div>
-              <div style="display:flex; align-items:center; gap:8px;">
-                ${r.isNaver ? `<span style="background:#03c75a; color:white; font-size:12px; font-weight:bold; padding:6px 10px; border-radius:999px;">네이버</span>` : ''}
-                <span class="status-badge badge-${r.status}">${r.status}</span>
-              </div>
-            </div>
+           <div class="reservation-top">
+  <div style="display:flex; align-items:center; justify-content:space-between; width:100%; gap:8px;">
 
-            <div class="info-grid">
-              <div class="info-item">
-                <div class="info-label">인원</div>
-                <div class="info-value">👥 성인 ${r.adult || 0} / 아이 ${r.child || 0} (총 ${r.people}명)</div>
-              </div>
-              <div class="info-item">
-                <div class="info-label">좌석</div>
-                <div class="info-value">
-                  🪑 ${escapeHtml(r.seat || '-')}
-                  ${r.seat === '룸' ? escapeHtml(r.room || '') : ''}
-                  ${escapeHtml(r.table || '')}
-                </div>
-              </div>
-              <div class="info-item">
-                <div class="info-label">메뉴</div>
-                <div class="info-value">🍣 ${escapeHtml(r.menu || '-')}</div>
-              </div>
-            </div>
+    <div style="display:flex; align-items:center; flex-wrap:wrap; gap:8px; min-width:0;">
+      <span 
+        class="status-badge badge-${r.status}" 
+        onclick="toggleStatus(${realIndex})"
+        style="cursor:pointer; font-size:11px; padding:3px 7px;"
+      >
+        ${r.status}
+      </span>
+
+      <span style="font-size:16px; font-weight:700; color:#1f2d3d;">
+        ${escapeHtml(r.time || '')}
+      </span>
+
+      <span style="font-size:18px; font-weight:700; color:#1f2d3d;">
+        ${escapeHtml(r.name || '')}
+      </span>
+
+      <span style="font-size:13px; color:#666;">
+        ${escapeHtml(r.phone || '')}
+      </span>
+
+      ${r.isNaver ? `
+        <span style="background:#03c75a; color:white; font-size:11px; font-weight:bold; padding:4px 8px; border-radius:999px;">
+          네이버
+        </span>
+      ` : ''}
+    </div>
+
+    <div style="display:flex; align-items:center; gap:4px; flex:none;">
+      <button
+        onclick="editReservation(${realIndex})"
+        style="border:none; background:transparent; cursor:pointer; font-size:16px; padding:2px 4px;"
+        title="수정"
+      >
+        ✏️
+      </button>
+
+      <button
+        onclick="deleteReservation(${realIndex})"
+        style="border:none; background:transparent; cursor:pointer; font-size:16px; padding:2px 4px;"
+        title="삭제"
+      >
+        ✕
+      </button>
+    </div>
+
+  </div>
+</div>
+
+            <div class="info-grid" style="display:flex; gap:14px; align-items:center; flex-wrap:wrap;">
+  <div class="info-item" style="display:flex; align-items:center; gap:6px; padding:4px 8px;">
+    <div class="info-label" style="margin-bottom:0;">인원</div>
+    <div class="info-value">성인 ${r.adult || 0} / 아이 ${r.child || 0}</div>
+  </div>
+
+  <div class="info-item" style="display:flex; align-items:center; gap:6px; padding:4px 8px;">
+    <div class="info-label" style="margin-bottom:0;">좌석</div>
+    <div class="info-value">
+      ${escapeHtml(r.seat || '-')}
+      ${r.seat === '룸' ? ' ' + escapeHtml(r.room || '') : ''}
+      ${r.table ? ' ' + escapeHtml(r.table) : ''}
+    </div>
+  </div>
+
+  <div class="info-item" style="display:flex; align-items:center; gap:6px; padding:4px 8px;">
+    <div class="info-label" style="margin-bottom:0;">메뉴</div>
+    <div class="info-value">${escapeHtml(r.menu || '-')}</div>
+  </div>
+</div>
 
             ${r.memo ? `
               <div class="memo">
-                <span class="memo-label">📝 메모:</span>${escapeHtml(r.memo)}
+                <span class="memo-label">메모:</span>${escapeHtml(r.memo)}
               </div>
             ` : ''}
 
-            <div class="actions">
-              <div style="display:flex; gap:6px;">
-                <button
-                  onclick="changeStatus(${realIndex}, '예약')"
-                  style="
-                    padding:8px 12px; border:none; border-radius:8px; cursor:pointer;
-                    background:${r.status === '예약' ? '#1976d2' : '#dbeafe'};
-                    color:${r.status === '예약' ? 'white' : '#1976d2'};
-                    font-weight:${r.status === '예약' ? 'bold' : 'normal'};
-                  "
-                >예약</button>
-
-                <button
-                  onclick="changeStatus(${realIndex}, '착석')"
-                  style="
-                    padding:8px 12px; border:none; border-radius:8px; cursor:pointer;
-                    background:${r.status === '착석' ? '#2e7d32' : '#dcfce7'};
-                    color:${r.status === '착석' ? 'white' : '#2e7d32'};
-                    font-weight:${r.status === '착석' ? 'bold' : 'normal'};
-                  "
-                >착석</button>
-
-                <button
-                  onclick="changeStatus(${realIndex}, '퇴장')"
-                  style="
-                    padding:8px 12px; border:none; border-radius:8px; cursor:pointer;
-                    background:${r.status === '퇴장' ? '#757575' : '#eeeeee'};
-                    color:${r.status === '퇴장' ? 'white' : '#555'};
-                    font-weight:${r.status === '퇴장' ? 'bold' : 'normal'};
-                  "
-                >퇴장</button>
-              </div>
-
-              <div style="flex:1;"></div>
-
-              <button onclick="editReservation(${realIndex})" style="background:#1f4e79;color:white;border:none;padding:10px 16px;border-radius:8px;cursor:pointer;font-size:15px;">수정</button>
-              <button class="delete-btn" onclick="deleteReservation(${realIndex})">삭제</button>
+                         
             </div>
           </div>
         `;
@@ -2814,8 +3050,7 @@
       document.getElementById('input-naver').checked = false;
       document.getElementById('input-name').value = '';
       clearPhoneInputs();
-      document.getElementById('input-hour').value = '12';
-      document.getElementById('input-minute').value = '00';
+      initTimeSelects(selectedDate);
       document.getElementById('input-seat').value = '홀';
       toggleRoomSelect();
       document.getElementById('input-table').value = '';
@@ -2841,9 +3076,7 @@
       document.getElementById('input-name').value = r.name || '';
       setPhoneValue(r.phone || '');
 
-      const [hour, minute] = (r.time || '12:00').split(':');
-      document.getElementById('input-hour').value = hour;
-      document.getElementById('input-minute').value = minute;
+      initTimeSelects(r.date || selectedDate, r.time || '');
       document.getElementById('input-adult').value = r.adult || 0;
       document.getElementById('input-child').value = r.child || 0;
       document.getElementById('input-seat').value = r.seat || '홀';
@@ -2863,7 +3096,7 @@
         cb.checked = selectedRooms.includes(cb.value);
       });
     }
-    async function addReservation() {
+async function addReservation() {
   const date = document.getElementById('input-date').value.trim();
   const isNaver = document.getElementById('input-naver').checked;
   const name = document.getElementById('input-name').value.trim();
@@ -2871,6 +3104,12 @@
   const hour = document.getElementById('input-hour').value;
   const minute = document.getElementById('input-minute').value;
   const time = `${hour}:${minute}`;
+      
+  const availableTimes = getAvailableTimes(date);
+    if (!availableTimes.includes(time)) {
+      alert('선택한 날짜에는 예약이 불가능한 시간입니다.');
+      return;
+    }
 
   const adult = Number(document.getElementById('input-adult').value || 0);
   const child = Number(document.getElementById('input-child').value || 0);
@@ -2963,6 +3202,18 @@
     alert("상태 변경 중 오류가 발생했습니다.");
   }
 }
+
+    async function toggleStatus(index) {
+      const r = reservations[index];
+      if (!r || !r.id) return;
+
+      const newStatus = r.status === '퇴장' ? '예약' : '퇴장';
+
+      await setDoc(doc(db, "reservations", r.id), {
+        ...r,
+        status: newStatus
+      });
+    }
 
     // ====== 예약 삭제 ======
     async function deleteReservation(index) {
@@ -3071,6 +3322,7 @@
     window.editReservation = editReservation;
     window.deleteReservation = deleteReservation;
     window.changeStatus = changeStatus;
+    window.toggleStatus = toggleStatus;
     window.clearAllReservations = clearAllReservations;
     window.toggleRoomSelect = toggleRoomSelect;
     window.moveMonth = moveMonth;
@@ -3085,6 +3337,9 @@
     window.updateTotalPeople = updateTotalPeople;
     // 첫 화면 그리기
     initTimeSelects();
+    document.getElementById('input-date').addEventListener('change', function () {
+      initTimeSelects(this.value);
+    });
     ensureReservationDates();
     syncSelectedDateUI();
     render();
@@ -3116,6 +3371,37 @@
         closeImportPreviewModal();
         closeSearchModal();
       }
+    });
+    
+    document.getElementById('import-file-btn').addEventListener('click', function() {
+      document.getElementById('import-file-input').click();
+    });
+
+    document.getElementById('import-file-input').addEventListener('change', function(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+
+      reader.onload = function(e) {
+        const text = String(e.target.result || '').trim();
+
+        if (!text) {
+          alert('파일 내용이 비어 있습니다.');
+          return;
+        }
+
+        document.getElementById('import-text').value = text;
+        previewImport();
+
+        event.target.value = '';
+      };
+
+      reader.onerror = function() {
+        alert('파일을 읽는 중 오류가 발생했습니다.');
+      };
+
+      reader.readAsText(file, 'utf-8');
     });
     
   </script>
