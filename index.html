@@ -2674,13 +2674,6 @@
       render();
     }
 
-    function setView(view) {
-      closeAllModals();
-      currentView = view;
-      syncSelectedDateUI();
-      render();
-    }
-
     function getMonthKey(dateString) {
       const date = parseLocalDate(dateString);
       const y = date.getFullYear();
