@@ -1659,18 +1659,24 @@
     }
 
     function subscribeReservations() {
-      const q = query(reservationsCollection, orderBy("date"), orderBy("time"));
-
-      onSnapshot(q, (snapshot) => {
-        reservations = snapshot.docs.map(docSnap => ({
-          id: docSnap.id,
-          ...docSnap.data()
-        }));
+      // 인덱스 없이도 동작하도록 정렬 없이 가져오고, 클라이언트에서 정렬합니다.
+      onSnapshot(reservationsCollection, (snapshot) => {
+        reservations = snapshot.docs
+          .map(docSnap => ({
+            id: docSnap.id,
+            ...docSnap.data()
+          }))
+          .sort((a, b) => {
+            const da = (a.date || '');
+            const db_ = (b.date || '');
+            if (da !== db_) return da.localeCompare(db_);
+            return (a.time || '').localeCompare(b.time || '');
+          });
 
         render();
       }, (error) => {
         console.error("Firestore 불러오기 오류:", error);
-        alert("예약 데이터를 불러오지 못했습니다.");
+        alert("예약 데이터를 불러오지 못했습니다. (" + (error.code || error.message) + ")");
       });
     }
 
@@ -1750,7 +1756,7 @@
       let addedCount = 0;
       let skippedCount = 0;
 
-      importPreviewList.forEach(newReservation => {
+      for (const newReservation of importPreviewList) {
         const hasConflict = reservations.some(existing => {
           const newTables = splitValues(newReservation.table);
           const oldTables = splitValues(existing.table);
@@ -1770,12 +1776,12 @@
 
         if (hasConflict) {
           skippedCount++;
-          return;
+          continue;
         }
 
         await addDoc(reservationsCollection, newReservation);
-addedCount++;
-      });
+        addedCount++;
+      }
 
       
       importPreviewList = [];
@@ -2916,41 +2922,6 @@ addedCount++;
     alert("예약 저장 중 오류가 발생했습니다.");
   }
 }
-      const reservationData = {
-        date,
-        name,
-        phone,
-        time,
-        people,
-        adult,
-        child,
-        seat,
-        room,
-        table,
-        menu,
-        isNaver,
-        memo,
-        status: editingIndex !== null ? reservations[editingIndex].status : '예약'
-      };
-
-      try {
-  if (editingIndex !== null && reservations[editingIndex]?.id) {
-    await setDoc(
-      doc(db, "reservations", reservations[editingIndex].id),
-      reservationData
-    );
-  } else {
-    await addDoc(reservationsCollection, reservationData);
-  }
-
-  selectedDate = date;
-  syncSelectedDateUI();
-  closeModal();
-} catch (error) {
-  console.error("예약 저장 오류:", error);
-  alert("예약 저장 중 오류가 발생했습니다.");
-}
-    }
 
     // ====== 상태 변경 ======
     async function changeStatus(index, newStatus) {
