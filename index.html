@@ -2834,54 +2834,90 @@
         cb.checked = selectedRooms.includes(cb.value);
       });
     }
-    function addReservation() {
-      const date = document.getElementById('input-date').value.trim();
-      const isNaver = document.getElementById('input-naver').checked;
-      const name = document.getElementById('input-name').value.trim();
-      const phone = getPhoneValue();
-      const hour = document.getElementById('input-hour').value;
-      const minute = document.getElementById('input-minute').value;
-      const time = `${hour}:${minute}`;
-      const adult = Number(document.getElementById('input-adult').value);
-      const child = Number(document.getElementById('input-child').value);
-      const people = adult + child;
-      const seat = document.getElementById('input-seat').value;
-      const room = Array.from(
-        document.querySelectorAll('#room-checkboxes input:checked')
-      ).map(cb => cb.value).join(', ');
-      const menu = document.getElementById('input-menu').value.trim();
-      const memo = document.getElementById('input-memo').value.trim();
-      const table = document.getElementById('input-table').value.trim();
+    async function addReservation() {
+  const date = document.getElementById('input-date').value.trim();
+  const isNaver = document.getElementById('input-naver').checked;
+  const name = document.getElementById('input-name').value.trim();
+  const phone = getPhoneValue();
+  const hour = document.getElementById('input-hour').value;
+  const minute = document.getElementById('input-minute').value;
+  const time = `${hour}:${minute}`;
 
-      if (!date) { alert('날짜를 입력해주세요.'); return; }
-      if (!name) { alert('이름을 입력해주세요.'); return; }
-      if (adult < 0 || child < 0) { alert('인원은 0명 이상으로 입력해주세요.'); return; }
-      if (!people || people < 1) { alert('인원은 1명 이상이어야 합니다.'); return; }
+  const adult = Number(document.getElementById('input-adult').value || 0);
+  const child = Number(document.getElementById('input-child').value || 0);
+  const people = adult + child;
 
-      for (let i = 0; i < reservations.length; i++) {
-        if (editingIndex === i) continue;
+  const seat = document.getElementById('input-seat').value;
+  const room = seat === '룸'
+    ? Array.from(document.querySelectorAll('#room-checkboxes input[type="checkbox"]:checked'))
+        .map(cb => cb.value)
+        .join(', ')
+    : '';
+  const table = document.getElementById('input-table').value.trim();
+  const menu = document.getElementById('input-menu').value.trim();
+  const memo = document.getElementById('input-memo').value.trim();
 
-        const r = reservations[i];
-        if ((r.date || '') !== date) continue;
+  if (!date || !name) {
+    alert('날짜와 이름은 꼭 입력해주세요.');
+    return;
+  }
 
-        const newTables = table.split(',').map(t => t.trim()).filter(Boolean);
-        const oldTables = (r.table || '').split(',').map(t => t.trim()).filter(Boolean);
+  for (let i = 0; i < reservations.length; i++) {
+    if (editingIndex === i) continue;
 
-        const newRooms = room.split(',').map(v => v.trim()).filter(Boolean);
-        const oldRooms = (r.room || '').split(',').map(v => v.trim()).filter(Boolean);
+    const r = reservations[i];
+    if ((r.date || '') !== date) continue;
 
-        const sameTable = newTables.some(t => oldTables.includes(t));
-        const sameRoom =
-          r.seat === '룸' &&
-          seat === '룸' &&
-          newRooms.some(v => oldRooms.includes(v));
+    const newTables = table.split(',').map(t => t.trim()).filter(Boolean);
+    const oldTables = (r.table || '').split(',').map(t => t.trim()).filter(Boolean);
 
-        if ((sameTable || sameRoom) && isTimeConflict(time, r.time, seat, r.seat)) {
-          alert('⚠️ 같은 날짜에 같은 테이블/룸의 시간 겹치는 예약이 있습니다');
-          return;
-        }
-      }
+    const newRooms = room.split(',').map(v => v.trim()).filter(Boolean);
+    const oldRooms = (r.room || '').split(',').map(v => v.trim()).filter(Boolean);
 
+    const sameTable = newTables.some(t => oldTables.includes(t));
+    const sameRoom =
+      r.seat === '룸' &&
+      seat === '룸' &&
+      newRooms.some(v => oldRooms.includes(v));
+
+    if ((sameTable || sameRoom) && isTimeConflict(time, r.time, seat, r.seat)) {
+      alert('⚠️ 같은 날짜에 같은 테이블/룸의 시간 겹치는 예약이 있습니다');
+      return;
+    }
+  }
+
+  const reservationData = {
+    date,
+    name,
+    phone,
+    time,
+    people,
+    adult,
+    child,
+    seat,
+    room,
+    table,
+    menu,
+    isNaver,
+    memo,
+    status: editingIndex !== null ? reservations[editingIndex].status : '예약'
+  };
+
+  try {
+    if (editingIndex !== null && reservations[editingIndex]?.id) {
+      await setDoc(doc(db, "reservations", reservations[editingIndex].id), reservationData);
+    } else {
+      await addDoc(reservationsCollection, reservationData);
+    }
+
+    selectedDate = date;
+    syncSelectedDateUI();
+    closeModal();
+  } catch (error) {
+    console.error("예약 저장 오류:", error);
+    alert("예약 저장 중 오류가 발생했습니다.");
+  }
+}
       const reservationData = {
         date,
         name,
