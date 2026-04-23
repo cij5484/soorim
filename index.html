@@ -1771,6 +1771,10 @@
 
       for (const newReservation of importPreviewList) {
         const hasConflict = reservations.some(existing => {
+          if ((existing.date || '') !== (newReservation.date || '')) {
+            return false;
+          }
+
           const newTables = splitValues(newReservation.table);
           const oldTables = splitValues(existing.table);
 
@@ -1788,6 +1792,7 @@
         });
 
         if (hasConflict) {
+          console.log('최종 건너뜀:', newReservation);
           skippedCount++;
           continue;
         }
@@ -1819,7 +1824,7 @@
       }
 
       const blocks = text
-        .split('***')
+        .split(/\*{3,}/)
         .map(block => block.trim())
         .filter(Boolean);
 
@@ -1894,8 +1899,8 @@
     }
 
     function extractSeat(text) {
-      if (/\(네이버-룸\)|\(룸\)/.test(text)) return '룸';
-      if (/\(네이버-홀\)|\(홀\)/.test(text)) return '홀';
+      if (/\(네이버-룸\)|\(룸\)|예약\s*[1-5](?:[.,\s]*[1-5])*실/.test(text)) return '룸';
+      if (/\(네이버-홀\)|\(홀\)|테이블\s*[\d,\s]+/.test(text)) return '홀';
       return '';
     }
 
@@ -2051,6 +2056,7 @@
       let child = 0;
       let people = 0;
 
+      const rangeMatch = text.match(/(\d+)\s*~\s*(\d+)\s*명/);
       const adultMatch = text.match(/(?:성인|어른)\s*(\d+)/);
       const childMatch = text.match(/(?:아이|유아|초등)\s*(\d+)/);
       const totalMatch = text.match(/(\d+)\s*(?:명|인)/);
@@ -2058,14 +2064,22 @@
       if (adultMatch) adult = Number(adultMatch[1]);
       if (childMatch) child = Number(childMatch[1]);
 
-      people = adult + child;
-
-      if (people === 0 && totalMatch) {
-        people = Number(totalMatch[1]);
-        adult = people;
+      if (adult || child) {
+        people = adult + child;
+        return { adult, child, people };
       }
 
-      return { adult, child, people };
+      if (rangeMatch) {
+        people = Number(rangeMatch[1]); // 필요하면 min값 저장
+        return { adult: people, child: 0, people };
+      }
+
+      if (totalMatch) {
+        people = Number(totalMatch[1]);
+        return { adult: people, child: 0, people };
+      }
+
+      return { adult: 0, child: 0, people: 0 };
     }
 
     function extractMenu(text, peopleInfo = {}) {
@@ -2087,6 +2101,9 @@
         const count = Number(courseWithCountMatch[2]);
         return `${courseName} ${count}`;
       }
+
+      const setMenuMatch = normalized.match(/(회정식)/);
+      if (setMenuMatch) return setMenuMatch[1];
 
       // 3. B코스 / A코스 / C코스 형태
       const courseOnlyMatch = normalized.match(/([A-Z가-힣])코스/);
