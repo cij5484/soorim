@@ -1402,6 +1402,17 @@
     const db = getFirestore(app);
     const reservationsCollection = collection(db, "reservations");
 
+    function saveViewState() {
+      try {
+        if (typeof currentView !== 'undefined' && currentView) {
+          localStorage.setItem('currentView', currentView);
+        }
+        if (typeof selectedDate !== 'undefined' && selectedDate) {
+          localStorage.setItem('selectedDate', selectedDate);
+        }
+      } catch (e) {}
+    }
+
     function onlyNumber(value) {
       return String(value || '').replace(/\D/g, '');
     }
@@ -2336,6 +2347,14 @@
       weekView.innerHTML = html;
     }
 
+
+    function moveMonth(diff) {
+      const date = parseLocalDate(selectedDate);
+      date.setMonth(date.getMonth() + diff);
+      selectedDate = formatDateString(date);
+      save();
+      render();
+    }
     
     // ====== 화면 그리기 ======
     function render() {
@@ -2400,17 +2419,10 @@
           </div>
 
           <div style="
-            display:flex;
-            justify-content:flex-end;
-            align-items:center;
-          ">
-            <button
-              onclick="clearAllReservations()"
-              class="day-delete-btn"
-            >
-              당일삭제
-            </button>
-          </div>
+  display:flex;
+  justify-content:flex-end;
+  align-items:center;
+"></div>
         </div>
       `;
 
@@ -2661,7 +2673,7 @@
     function changeSelectedDate(value) {
       if (!value) return;
       selectedDate = value;
-      saveViewState();
+      save();
       syncSelectedDateUI();
       render();
     }
@@ -2669,6 +2681,7 @@
 
     function moveDate(days) {
       selectedDate = addDays(selectedDate, days);
+      save();
       syncSelectedDateUI();
       render();
     }
@@ -2709,15 +2722,6 @@
       return `${y}-${m}-${d}`;
     }
 
-    function moveMonth(diff) {
-      const date = parseLocalDate(selectedDate);
-      date.setMonth(date.getMonth() + diff);
-      selectedDate = formatDateString(date);
-      saveViewState();
-      render();
-    }
-
-    
     function changeMonthFromPicker(value) {
       if (!value) return;
 
@@ -2766,21 +2770,22 @@
       const date = parseLocalDate(selectedDate);
       date.setDate(date.getDate() + (diff * 7));
       selectedDate = formatDateString(date);
-      saveViewState();
+      save();
       syncSelectedDateUI();
       render();
     }
     
     function goToCurrentWeek() {
       selectedDate = getTodayString();
-      saveViewState();
+      save();
       syncSelectedDateUI();
       render();
     }
     
     // 데이터를 브라우저에 저장
     function save() {
-      // Firestore 사용 중이므로 localStorage 저장 안 함
+      localStorage.setItem('currentView', currentView);
+      localStorage.setItem('selectedDate', selectedDate);
     }
 
     // ====== 예약 추가 ======
