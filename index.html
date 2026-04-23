@@ -1472,8 +1472,8 @@
     let reservations = [];
     let editingIndex = null;
     let importPreviewList = [];
-    let currentView = 'month';
-    let selectedDate = getTodayString();
+    let currentView = localStorage.getItem('currentView') || 'month';
+    let selectedDate = localStorage.getItem('selectedDate') || getTodayString();
     let searchKeyword = '';
     let searchResults = [];
 
@@ -1565,12 +1565,14 @@
 
     function setView(view) {
       currentView = view;
+      localStorage.setItem('currentView', currentView);
       render();
     }
 
     function openDayView(dateString) {
       selectedDate = dateString;
       currentView = 'day';
+      saveViewState();
       syncSelectedDateUI();
       render();
     }
@@ -2657,10 +2659,9 @@
 
     
     function changeSelectedDate(value) {
-      const normalized = normalizeDateInput(value);
-      if (!normalized) return;
-
-      selectedDate = normalized;
+      if (!value) return;
+      selectedDate = value;
+      saveViewState();
       syncSelectedDateUI();
       render();
     }
@@ -2674,6 +2675,7 @@
 
     function goToToday() {
       selectedDate = getTodayString();
+      saveViewState();
       syncSelectedDateUI();
       render();
     }
@@ -2710,10 +2712,8 @@
     function moveMonth(diff) {
       const date = parseLocalDate(selectedDate);
       date.setMonth(date.getMonth() + diff);
-
-      const moved = formatDateString(date);
-      selectedDate = moved;
-      syncSelectedDateUI();
+      selectedDate = formatDateString(date);
+      saveViewState();
       render();
     }
 
@@ -2722,6 +2722,7 @@
       if (!value) return;
 
       selectedDate = `${value}-01`;
+      saveViewState();
       render();
     }
 
@@ -2765,12 +2766,14 @@
       const date = parseLocalDate(selectedDate);
       date.setDate(date.getDate() + (diff * 7));
       selectedDate = formatDateString(date);
+      saveViewState();
       syncSelectedDateUI();
       render();
     }
     
     function goToCurrentWeek() {
       selectedDate = getTodayString();
+      saveViewState();
       syncSelectedDateUI();
       render();
     }
