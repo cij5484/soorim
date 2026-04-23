@@ -1567,6 +1567,13 @@
       currentView = view;
       render();
     }
+
+    function openDayView(dateString) {
+      selectedDate = dateString;
+      currentView = 'day';
+      syncSelectedDateUI();
+      render();
+    }
     
     function renderSearchResults() {
       const summary = document.getElementById('search-result-summary');
