@@ -1741,7 +1741,7 @@
       renderImportPreview();
     }
 
-    function confirmImport() {
+    async function confirmImport() {
       if (!importPreviewList.length) {
         alert('추가할 예약이 없습니다.');
         return;
@@ -1773,13 +1773,11 @@
           return;
         }
 
-        reservations.push(newReservation);
-        addedCount++;
+        await addDoc(reservationsCollection, newReservation);
+addedCount++;
       });
 
-      save();
-      render();
-
+      
       importPreviewList = [];
       closeImportPreviewModal();
       closeImportModal();
@@ -2935,33 +2933,57 @@
         status: editingIndex !== null ? reservations[editingIndex].status : '예약'
       };
 
-      if (editingIndex !== null) {
-        reservations[editingIndex] = reservationData;
-      } else {
-        reservations.push(reservationData);
-      }
+      try {
+  if (editingIndex !== null && reservations[editingIndex]?.id) {
+    await setDoc(
+      doc(db, "reservations", reservations[editingIndex].id),
+      reservationData
+    );
+  } else {
+    await addDoc(reservationsCollection, reservationData);
+  }
 
-      selectedDate = date;
-      save();
-      syncSelectedDateUI();
-      render();
-      closeModal();
+  selectedDate = date;
+  syncSelectedDateUI();
+  closeModal();
+} catch (error) {
+  console.error("예약 저장 오류:", error);
+  alert("예약 저장 중 오류가 발생했습니다.");
+}
     }
 
     // ====== 상태 변경 ======
-    function changeStatus(index, newStatus) {
-      reservations[index].status = newStatus;
-      save();
-      render();
-    }
+    async function changeStatus(index, newStatus) {
+  const r = reservations[index];
+  if (!r || !r.id) return;
+
+  try {
+    await setDoc(doc(db, "reservations", r.id), {
+      ...r,
+      status: newStatus
+    });
+  } catch (error) {
+    console.error("상태 변경 오류:", error);
+    alert("상태 변경 중 오류가 발생했습니다.");
+  }
+}
 
     // ====== 예약 삭제 ======
-    function deleteReservation(index) {
-      if (!confirm('이 예약을 삭제하시겠습니까?')) return;
-      reservations.splice(index, 1);
-      save();
-      render();
+    async function deleteReservation(index) {
+  const r = reservations[index];
+  if (!r) return;
+
+  if (!confirm('이 예약을 삭제하시겠습니까?')) return;
+
+  try {
+    if (r.id) {
+      await deleteDoc(doc(db, "reservations", r.id));
     }
+  } catch (error) {
+    console.error("예약 삭제 오류:", error);
+    alert("예약 삭제 중 오류가 발생했습니다.");
+  }
+}
     function clearAllReservations() {
       const dailyReservations = reservations.filter(r => (r.date || '') === selectedDate);
 
@@ -2975,10 +2997,32 @@
       );
       if (!ok) return;
 
-      reservations = reservations.filter(r => (r.date || '') !== selectedDate);
+      async function clearAllReservations() {
+  const dailyReservations = reservations.filter(r => (r.date || '') === selectedDate);
 
-      save();
-      render();
+  if (dailyReservations.length === 0) {
+    alert('이 날짜에 삭제할 예약이 없습니다.');
+    return;
+  }
+
+  const ok = confirm(
+    `${formatDateLabel(selectedDate)} 예약 ${dailyReservations.length}건을 모두 삭제할까요?\n이 작업은 되돌릴 수 없습니다.`
+  );
+  if (!ok) return;
+
+  try {
+    for (const r of dailyReservations) {
+      if (r.id) {
+        await deleteDoc(doc(db, "reservations", r.id));
+      }
+    }
+
+    alert(`${formatDateLabel(selectedDate)} 예약이 모두 삭제되었습니다.`);
+  } catch (error) {
+    console.error("당일삭제 오류:", error);
+    alert("당일삭제 중 오류가 발생했습니다.");
+  }
+}
 
       alert(`${formatDateLabel(selectedDate)} 예약이 모두 삭제되었습니다.`);
     }
