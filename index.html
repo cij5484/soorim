@@ -2713,14 +2713,7 @@
       render();
     }
 
-    function openDayView(dateString) {
-      closeAllModals();
-      selectedDate = dateString;
-      currentView = 'day';
-      syncSelectedDateUI();
-      render();
-    }
-
+    
     function changeMonthFromPicker(value) {
       if (!value) return;
 
@@ -2982,6 +2975,38 @@
         closeSearchModal();
       }
     });
+
+    window.setView = setView;
+    window.openDayView = openDayView;
+    window.openImportModal = openImportModal;
+    window.closeImportModal = closeImportModal;
+    window.openImportPreviewModal = openImportPreviewModal;
+    window.closeImportPreviewModal = closeImportPreviewModal;
+    window.openSearchModal = openSearchModal;
+    window.closeSearchModal = closeSearchModal;
+    window.openModal = openModal;
+    window.closeModal = closeModal;
+    window.addReservation = addReservation;
+    window.previewImport = previewImport;
+    window.confirmImport = confirmImport;
+    window.removePreviewItem = removePreviewItem;
+    window.goToReservationFromSearch = goToReservationFromSearch;
+    window.editReservationFromSearch = editReservationFromSearch;
+    window.editReservation = editReservation;
+    window.deleteReservation = deleteReservation;
+    window.changeStatus = changeStatus;
+    window.clearAllReservations = clearAllReservations;
+    window.toggleRoomSelect = toggleRoomSelect;
+    window.moveMonth = moveMonth;
+    window.changeMonthFromPicker = changeMonthFromPicker;
+    window.moveWeek = moveWeek;
+    window.goToCurrentWeek = goToCurrentWeek;
+    window.moveDate = moveDate;
+    window.goToToday = goToToday;
+    window.changeSelectedDate = changeSelectedDate;
+    window.movePhoneNext = movePhoneNext;
+    window.movePhonePrev = movePhonePrev;
+    window.updateTotalPeople = updateTotalPeople;
     // 첫 화면 그리기
     initTimeSelects();
     ensureReservationDates();
