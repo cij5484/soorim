@@ -1,1 +1,11 @@
-
+{
+  "name": "수림 예약",
+  "short_name": "수림예약",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#eef2f5",
+  "theme_color": "#1f4e79",
+  "orientation": "portrait",
+  "icons": []
+}
