@@ -5127,11 +5127,7 @@ async function addReservation() {
 
         render();
 
-        if ('serviceWorker' in navigator) {
-          navigator.serviceWorker.register('./service-worker.js')
-            .then(() => console.log('서비스워커 등록 성공'))
-            .catch(err => console.log('서비스워커 실패', err));
-        }
+        
       });
     
     updateTotalPeople();
@@ -5193,6 +5189,12 @@ async function addReservation() {
 
       reader.readAsText(file, 'utf-8');
     });
+
+      if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('./service-worker.js')
+          .then(() => console.log('서비스워커 등록 성공'))
+          .catch(err => console.log('서비스워커 실패', err));
+      }
     
   </script>
 
