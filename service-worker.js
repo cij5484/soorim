@@ -1,9 +1,11 @@
-const CACHE_NAME = 'soorim-reservation-v3';
+const CACHE_NAME = 'soorim-reservation-v5';
 
 const FILES_TO_CACHE = [
-  './',
-  './index.html',
-  './manifest.json'
+  '/soorim/',
+  '/soorim/index.html',
+  '/soorim/manifest.json',
+  '/soorim/icon-192.png',
+  '/soorim/icon-512.png'
 ];
 
 self.addEventListener('install', event => {
