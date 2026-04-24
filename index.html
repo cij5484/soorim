@@ -7,9 +7,17 @@
   
   <style>
 
+    .import-icon {
+      display: none;
+    }
+
+    .table-grid {
+      grid-template-columns: repeat(4, 1fr);
+    }
+    
     .nav-row {
       display: grid;
-      grid-template-columns: 44px 1fr 44px;
+      grid-template-columns: 44px 88px 44px auto;
       gap: 8px;
       align-items: center;
     }
@@ -159,6 +167,10 @@
     .reservation .time {
       font-size: 14px;
       color: #555;
+    }
+
+    .mobile-text {
+      display: none;
     }
 
     .status-badge {
@@ -808,6 +820,17 @@
       box-sizing: border-box;
     }
 
+    #import-modal .modal-actions button,
+    #import-preview-modal .modal-actions button,
+    #import-file-btn {
+      height: 44px !important;
+      min-height: 44px !important;
+      padding: 0 18px !important;
+      font-size: 15px !important;
+      font-weight: 700 !important;
+      border-radius: 8px !important;
+    }
+
     .nav-arrow-btn:hover {
       background: #bfdbfe;
     }
@@ -830,6 +853,55 @@
       justify-content: center;
       white-space: nowrap;
       box-sizing: border-box;
+    }
+
+    .map-btn {
+      background: #dcfce7;   /* 연한 초록 */
+      color: #166534;        /* 진한 초록 글자 */
+      border: 1px solid #86efac;
+      height: 32px;
+      padding: 0 10px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 13px;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    .map-btn:hover {
+      background: #bbf7d0;
+    }
+
+    .hall-map {
+      display: grid;
+      grid-template-columns: repeat(7, 110px);
+      gap: 16px;
+      align-items: center;
+    }
+
+    .table-box {
+      height: 96px;
+      border-radius: 14px;
+      background: #f3f4f6;
+      border: 1px solid #d1d5db;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 26px;
+      font-weight: 800;
+      color: #1f2d3d;
+    }
+
+    .table-box {
+      height: 48px;
+      border-radius: 10px;
+      background: #f3f4f6;
+      border: 1px solid #d1d5db;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      color: #1f2d3d;
     }
 
     .nav-jump-btn:hover {
@@ -872,11 +944,24 @@
         font-size: 14px;
       }
 
+      .week-nav-right .header-action-btn,
+      .week-nav-right .week-delete-mobile {
+        width: 44px !important;
+        height: 44px !important;
+        min-width: 44px !important;
+        padding: 0 !important;
+      }
+      
+
       /* 검색창 */
       #search-input {
         width: 100% !important;
         max-width: 100% !important;
         font-size: 16px;
+      }
+
+      .table-grid {
+        grid-template-columns: repeat(2, 1fr);
       }
 
       /* 헤더 오른쪽 버튼들 */
@@ -954,8 +1039,30 @@
 
       /* 주간 보기 */
       .week-nav-header {
-        grid-template-columns: 1fr;
-        gap: 10px;
+        grid-template-columns: 1fr auto !important;
+        gap: 8px !important;
+        align-items: center !important;
+      }
+
+      .week-nav-center {
+        grid-column: 1 / -1 !important;
+        grid-row: 2 !important;
+
+        display: flex !important;
+        justify-content: center !important;
+        align-items: center;
+        text-align: center;
+      }
+
+      .week-nav-left {
+        justify-content: flex-start !important;
+        gap: 4px !important;
+      }
+
+      .week-nav-right {
+        justify-content: flex-end !important;
+        display: flex;
+        gap: 6px;
       }
 
       .week-nav-left,
@@ -1029,20 +1136,36 @@
 
       /* 일간 헤더 */
       #day-view-header > div {
-        grid-template-columns: 1fr !important;
-        gap: 10px !important;
+        grid-template-columns: 1fr auto !important;
+        gap: 8px !important;
+        align-items: center !important;
       }
 
-      #day-view-header > div > div:nth-child(1),
-      #day-view-header > div > div:nth-child(2),
-      #day-view-header > div > div:nth-child(3) {
-        justify-self: stretch !important;
+      #day-view-header > div > div:nth-child(2) {
+        grid-column: 1 / -1 !important;
+        grid-row: 2 !important;
+        justify-self: center !important;
         justify-content: center !important;
+        display: flex !important;
+        align-items: center;
+        text-align: center;
+      }
+
+     
+      #day-view-header > div > div:nth-child(1) {
+        display: flex !important;
+        align-items: center;
+        gap: 4px !important;
       }
 
       
+      #day-view-header > div > div:nth-child(3) {
+        justify-self: end !important;
+        justify-content: flex-end !important;
+      }
+
       #day-view-header > div > div:nth-child(3) .day-delete-btn {
-        width: 100%;
+        width: auto !important;
       }
 
       /* 예약 카드 */
@@ -1234,7 +1357,87 @@
       flex: none;
     }
 
+    .month-header .header-action-btn {
+      width: 44px;
+      height: 44px;
+      min-width: 44px;
+      padding: 0;
+    }
+
     @media (max-width: 768px) {
+
+      .pc-text {
+        display: none;
+      }
+
+      #day-view-header .header-action-btn.add-btn,
+      .week-nav-right .header-action-btn.add-btn {
+        width: 44px !important;
+        min-width: 44px !important;
+        height: 44px !important;
+        padding: 0 !important;
+        font-size: 24px !important;
+        font-weight: 800 !important;
+        line-height: 1 !important;
+        display: inline-flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+      }
+      
+
+      .mobile-text {
+        display: inline;
+        line-height: 1.1;
+      }
+
+      #day-view-header .header-action-btn,
+      #day-view-header .day-delete-mobile {
+        width: 44px !important;
+        height: 44px !important;
+        min-width: 44px !important;
+        padding: 0 !important;
+      }
+
+      /* 오른쪽 액션 버튼 통일 */
+      #day-view-header .header-action-btn,
+      #day-view-header .day-delete-btn {
+        width: 44px !important;
+        height: 44px !important;
+        min-width: 44px !important;
+        padding: 0 !important;
+        font-size: 14px !important;
+
+        display: flex !important;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+      }
+
+      .import-text {
+        display: none;
+      }
+
+      .import-icon {
+        display: inline;
+        font-size: 18px;
+      }
+      
+      #room-table-preview {
+        align-self: stretch;
+        min-height: 96px;
+      }
+
+      #room-table-preview .table-grid {
+        height: calc(100% - 24px);
+        align-content: space-between;
+      }
+
+      .mobile-icon-import {
+        width: 44px !important;
+        min-width: 44px !important;
+        padding: 0 !important;
+        font-size: 18px !important;
+      }
 
       .nav-row {
         display: grid !important;
@@ -1267,49 +1470,53 @@
         font-size: 14px;
       }
 
+      
+      #input-table {
+        width: 100%;
+      }
+
+      
     }
         
   </style>
 </head>
 <body>
 
-  <header>
-    <div>
-      <h1 style="margin:0 0 10px 0;">수림횟집 예약관리</h1>
+  <header style="
+    display:grid;
+    grid-template-columns: auto 1fr auto;
+    align-items:center;
+    gap:12px;
+  ">
 
-      <div style="display:flex; gap:8px; flex-wrap:wrap; margin-bottom:10px;">
-        <button id="btn-month-view" onclick="setView('month')" class="view-tab-btn">월</button>
-        <button id="btn-week-view" onclick="setView('week')" class="view-tab-btn">주</button>
-        <button id="btn-day-view" onclick="setView('day')" class="view-tab-btn">일</button>
-      </div>
-    </div>
+    <!-- 왼쪽: 제목 -->
+    <h1 style="margin:0;">수림 예약</h1>
 
-    <div style="margin-top:10px;">
+    <!-- 가운데: 검색 -->
+    <div style="display:flex; justify-content:center;">
       <input
         type="text"
         id="search-input"
         placeholder="이름, 전화번호, 메뉴, 좌석 검색"
         onkeydown="handleSearchKeydown(event)"
-        style="width:280px; max-width:100%; padding:10px 12px; border:none; border-radius:8px; font-size:14px;"
+        style="width:320px; max-width:100%; padding:10px 12px; border:none; border-radius:8px; font-size:14px;"
       />
     </div>
 
-    <div class="header-actions">
-     
-      <button onclick="openImportModal()" class="header-action-btn import-btn">
-        불러오기
-      </button>
-
-      <button id="btn-add" onclick="openModal()" class="header-action-btn add-btn">
-        +
-      </button>
+    <!-- 오른쪽: 월 주 일 -->
+    <div style="display:flex; gap:8px; justify-content:flex-end;">
+      <button id="btn-month-view" onclick="setView('month')" class="view-tab-btn">월</button>
+      <button id="btn-week-view" onclick="setView('week')" class="view-tab-btn">주</button>
+      <button id="btn-day-view" onclick="setView('day')" class="view-tab-btn">일</button>
     </div>
+
   </header>
 
   <main>
     <div id="month-view" style="display:none;"></div>
     <div id="week-view" style="display:none;"></div>
     <div id="day-view-header" style="display:none;"></div>
+    <div id="seat-map-view" style="display:none;"></div>
     <div id="reservation-list"></div>
   </main>
 
@@ -1404,23 +1611,49 @@
 
       
       <label>좌석</label>
-      <div style="display:flex; gap:10px; align-items:flex-start;">
+      <div style="display:flex; gap:10px; align-items:flex-start; width:100%;">
         <select id="input-seat" style="width:50px; flex:none;" onchange="toggleRoomSelect()">
           <option value="홀">홀</option>
           <option value="룸">룸</option>
         </select>
 
-            <div id="room-checkboxes" style="display:none; border:1px solid #ddd; border-radius:8px; padding:10px; background:#fafafa; flex:1;">
-          <div style="display:grid; grid-template-columns: repeat(3, auto); gap:4px 8px; align-items:center;">
-            <label style="margin:0; font-weight:normal; display:flex; align-items:center; gap:4px;"><input type="checkbox" value="1실" style="width:auto; margin:0;">1</label>
-            <label style="margin:0; font-weight:normal; display:flex; align-items:center; gap:4px;"><input type="checkbox" value="2실" style="width:auto; margin:0;">2</label>
-            <label style="margin:0; font-weight:normal; display:flex; align-items:center; gap:4px;"><input type="checkbox" value="3실" style="width:auto; margin:0;">3</label>
-            <label style="margin:0; font-weight:normal; display:flex; align-items:center; gap:4px;"><input type="checkbox" value="4실" style="width:auto; margin:0;">4</label>
-            <label style="margin:0; font-weight:normal; display:flex; align-items:center; gap:4px;"><input type="checkbox" value="5실" style="width:auto; margin:0;">5</label>
-          </div>
+                <div id="room-checkboxes" style="display:none; border:1px solid #ddd; border-radius:8px; padding:10px; background:#fafafa; width:150px; flex:none;">
+                <div style="display:grid; grid-template-columns: repeat(3, 1fr); gap:4px 8px; align-items:center;">
+                <label style="margin:0; font-weight:normal; display:flex; align-items:center; gap:4px; white-space:nowrap;">
+                  <input type="checkbox" value="전체" style="width:auto; margin:0;" onchange="toggleAllRooms(this); updateRoomTablePreview()">
+                  전체
+                </label>
+
+                <label style="margin:0; font-weight:normal; display:flex; align-items:center; gap:4px; white-space:nowrap;">
+                  <input type="checkbox" value="1실" style="width:auto; margin:0;" class="room-check" onchange="syncAllCheckbox(); updateRoomTablePreview()">
+                  1
+                </label>
+
+                <label style="margin:0; font-weight:normal; display:flex; align-items:center; gap:4px; white-space:nowrap;">
+                  <input type="checkbox" value="2실" style="width:auto; margin:0;" class="room-check" onchange="syncAllCheckbox(); updateRoomTablePreview()">
+                  2
+                </label>
+
+                <label style="margin:0; font-weight:normal; display:flex; align-items:center; gap:4px; white-space:nowrap;">
+                  <input type="checkbox" value="3실" style="width:auto; margin:0;" class="room-check" onchange="syncAllCheckbox(); updateRoomTablePreview()">
+                  3
+                </label>
+
+                <label style="margin:0; font-weight:normal; display:flex; align-items:center; gap:4px; white-space:nowrap;">
+                  <input type="checkbox" value="4실" style="width:auto; margin:0;" class="room-check" onchange="syncAllCheckbox(); updateRoomTablePreview()">
+                  4
+                </label>
+
+                <label style="margin:0; font-weight:normal; display:flex; align-items:center; gap:4px; white-space:nowrap;">
+                  <input type="checkbox" value="5실" style="width:auto; margin:0;" class="room-check" onchange="syncAllCheckbox(); updateRoomTablePreview()">
+                  5
+                </label>
+              </div>
         </div>
 
-        <input type="text" id="input-table" placeholder="테이블 번호" style="width:180px; flex:none; margin-left:auto;" />
+        <div id="room-table-preview" style="display:none; font-size:12px; color:#555; background:#f8fafc; border:1px solid #e5e7eb; border-radius:8px; padding:8px; flex:1; min-width:0; line-height:1.4; white-space:normal;"></div>
+
+        <input type="text" id="input-table" placeholder="테이블 번호" />
       </div>
 
       <label for="input-menu">메뉴</label>
@@ -1661,6 +1894,8 @@
       searchKeyword = keyword;
       runSearch();
     }
+
+    window.handleSearchKeydown = handleSearchKeydown;
 
     function getReservationSearchText(r) {
       return [
@@ -2147,7 +2382,7 @@
       }
 
       // (예약 5실 62)
-      const roomTableMatch = text.match(/예약\s*[1-5]실\s+(\d{1,3})\b/);
+      const roomTableMatch = text.match(/예약\s*[1-5]실\s+(\d{2,3})(?!:)\b/);
       if (roomTableMatch) {
         tables.add(roomTableMatch[1]);
       }
@@ -2326,6 +2561,41 @@
 
     // 예약 상태 종류
     const STATUS_LIST = ['예약', '도착', '착석', '퇴장'];
+
+    const ROOM_TABLE_MAP = {
+      '1실': [21, 22, 23, 24],
+      '2실': [31, 32, 33, 34],
+      '3실': [41, 42, 43, 44],
+      '4실': [51, 52, 53, 54],
+      '5실': [61, 62, 63, 64]
+    };
+
+    function getTablesFromReservation(r) {
+      if (r.seat === '룸') {
+        const rooms = (r.room || '').split(',').map(s => s.trim());
+
+        let tables = [];
+        rooms.forEach(room => {
+          if (ROOM_TABLE_MAP[room]) {
+            tables = tables.concat(ROOM_TABLE_MAP[room]);
+          }
+        });
+
+        return tables;
+      }
+
+      // 홀
+      if (r.seat === '홀') {
+        return r.table ? [Number(r.table)] : [];
+      }
+
+      return [];
+    }
+
+    const HALL_TABLE_RANGE = {
+      start: 3,
+      end: 19
+    };
     
     function getAvailableTimes(dateString) {
       const date = new Date(dateString + 'T00:00:00');
@@ -2413,16 +2683,91 @@
     function toggleRoomSelect() {
       const seat = document.getElementById('input-seat').value;
       const roomBox = document.getElementById('room-checkboxes');
+      const tableInput = document.getElementById('input-table');
 
       if (seat === '룸') {
         roomBox.style.display = 'block';
+
+        if (tableInput) {
+          tableInput.style.display = 'none';
+          tableInput.value = '';
+        }
       } else {
         roomBox.style.display = 'none';
 
-        // 체크 초기화
         roomBox.querySelectorAll('input[type=checkbox]').forEach(cb => cb.checked = false);
+
+        if (tableInput) {
+          tableInput.style.display = 'block';
+        }
       }
+
+      updateRoomTablePreview();
     }
+
+    function toggleAllRooms(allCheckbox) {
+      const roomChecks = document.querySelectorAll('.room-check');
+
+      roomChecks.forEach(check => {
+        check.checked = allCheckbox.checked;
+      });
+    }
+
+    function syncAllCheckbox() {
+      const allCheckbox = document.querySelector('input[value="전체"]');
+      const roomChecks = document.querySelectorAll('.room-check');
+
+      const allChecked = Array.from(roomChecks).every(cb => cb.checked);
+
+      allCheckbox.checked = allChecked;
+    }
+
+    window.syncAllCheckbox = syncAllCheckbox;
+
+    window.toggleAllRooms = toggleAllRooms;
+
+    function updateRoomTablePreview() {
+      const preview = document.getElementById('room-table-preview');
+      const seat = document.getElementById('input-seat').value;
+
+      if (!preview) return;
+
+      const checkedRooms = Array.from(
+        document.querySelectorAll('#room-checkboxes input.room-check:checked')
+      ).map(cb => cb.value);
+
+      // 룸이 아니거나, 룸 선택이 0개면 숨김
+      if (seat !== '룸' || checkedRooms.length === 0) {
+        preview.style.display = 'none';
+        preview.innerHTML = '';
+        return;
+      }
+
+      // 룸 2개 이상이면 어차피 전체 사용이므로 숨김
+      if (checkedRooms.length >= 2) {
+        preview.style.display = 'none';
+        preview.innerHTML = '';
+        return;
+      }
+
+      // 룸 1개일 때만 사용 테이블 표시
+      const room = checkedRooms[0];
+      const tables = ROOM_TABLE_MAP[room] || [];
+
+      preview.style.display = 'block';
+      preview.innerHTML = `
+        <div class="table-grid" style="display:grid; gap:4px 8px; align-items:center; justify-content:flex-start;">
+          ${tables.map(t => `
+            <label style="margin:0; font-weight:normal; display:flex; align-items:center; gap:4px; white-space:nowrap; font-size:13px;">
+              <input type="checkbox" class="table-check" value="${t}" style="width:auto; margin:0;">
+              ${t}
+            </label>
+          `).join('')}
+        </div>
+      `;
+    }
+
+    window.updateRoomTablePreview = updateRoomTablePreview;
 
         function renderMonthView() {
         const monthView = document.getElementById('month-view');
@@ -2445,40 +2790,46 @@
 
       let html = `
         <div style="
-  display:grid;
-  grid-template-columns: 1fr auto 1fr;
-  align-items:center;
-  margin-bottom:10px;
-">
+    display:grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items:center;
+    gap:12px;
+    margin-bottom:10px;
+  ">
 
-  <!-- 왼쪽 -->
-  <div style="justify-self:start;">
-    <button onclick="moveMonth(-1)" class="nav-arrow-btn">←</button>
-  </div>
+    <div style="display:flex; align-items:center; gap:8px; justify-self:start;">
+      <button onclick="moveMonth(-1)" class="nav-arrow-btn">←</button>
 
-  <!-- 가운데 -->
-  <div style="justify-self:center;">
-    <div class="picker-wrap month-title-custom">
-      <span>${formatMonthTitle(selectedDate)}</span>
+      <div class="picker-wrap month-title-custom">
+        <span>${formatMonthTitle(selectedDate)}</span>
 
-      <input
-        type="month"
-        class="picker-native"
-        value="${getMonthKey(selectedDate)}"
-        onchange="changeMonthFromPicker(this.value)"
-      />
+        <input
+          type="month"
+          class="picker-native"
+          value="${getMonthKey(selectedDate)}"
+          onchange="changeMonthFromPicker(this.value)"
+        />
+      </div>
+
+      <button onclick="moveMonth(1)" class="nav-arrow-btn">→</button>
     </div>
+
+    <div></div>
+
+    <div style="display:flex; align-items:center; gap:8px; justify-self:end;">
+      <button onclick="openModal()" class="header-action-btn add-btn">
+  +
+</button>
+
+<button onclick="openImportModal()" class="header-action-btn import-btn" title="불러오기">
+  📥
+</button>
+    </div>
+
   </div>
 
-  <!-- 오른쪽 -->
-  <div style="justify-self:end;">
-    <button onclick="moveMonth(1)" class="nav-arrow-btn">→</button>
-  </div>
-
-</div>
-
-        <div class="month-grid">
-      `;
+  <div class="month-grid">
+    `;
 
       weekdayNames.forEach(name => {
         html += `<div class="weekday-cell">${name}</div>`;
@@ -2544,7 +2895,23 @@
               <div class="week-range-text">${formatWeekRange(selectedDate)}</div>
             </div>
 
-            <div class="week-nav-right"></div>
+            <div class="week-nav-right" style="display:flex; justify-content:flex-end; gap:8px;">
+
+  <button onclick="openModal()" class="header-action-btn add-btn">
+    +
+  </button>
+
+  <button onclick="openImportModal()" class="header-action-btn import-btn" title="불러오기">
+  <span class="import-text">불러오기</span>
+  <span class="import-icon">📥</span>
+</button>
+
+  <button onclick="deleteAllReservations()" class="day-delete-btn week-delete-mobile">
+  <span class="pc-text">전체삭제</span>
+  <span class="mobile-text">전체<br>삭제</span>
+</button>
+
+</div>
           </div>
 
           <div class="week-list">
@@ -2655,11 +3022,12 @@
           gap:8px;
           margin-bottom:20px;
         ">
-          <div class="nav-row" style="justify-self:start;">
-            <button onclick="moveDate(-1)" class="nav-arrow-btn">←</button>
-            <button onclick="goToToday()" class="nav-jump-btn">오늘</button>
-            <button onclick="moveDate(1)" class="nav-arrow-btn">→</button>
-          </div>
+          <div class="nav-row" style="justify-self:start; grid-template-columns: 44px 88px 44px auto;">
+  <button onclick="moveDate(-1)" class="nav-arrow-btn">←</button>
+  <button onclick="goToToday()" class="nav-jump-btn">오늘</button>
+  <button onclick="moveDate(1)" class="nav-arrow-btn">→</button>
+  <button onclick="toggleSeatMap()" class="map-btn">맵</button>
+</div>
 
           <div style="
             display:flex;
@@ -2686,15 +3054,98 @@
           </div>
 
           <div style="
-            display:flex;
-            justify-content:flex-end;
-            align-items:center;
-          "></div>
+  display:flex;
+  justify-content:flex-end;
+  align-items:center;
+  gap:8px;
+">
+  <button onclick="openModal()" class="header-action-btn add-btn">
+  +
+</button>
+
+  <button onclick="openImportModal()" class="header-action-btn import-btn" title="불러오기">
+  <span class="import-text">불러오기</span>
+  <span class="import-icon">📥</span>
+</button>
+
+  <button onclick="deleteSelectedDateReservations()" class="day-delete-btn day-delete-mobile">
+  <span class="pc-text">당일삭제</span>
+  <span class="mobile-text">당일<br>삭제</span>
+</button>
+</div>
         </div>
       `;
 
       syncSelectedDateUI();
     }
+
+    let isSeatMapVisible = false;
+
+    function toggleSeatMap() {
+      isSeatMapVisible = !isSeatMapVisible;
+
+      const mapView = document.getElementById('seat-map-view');
+      const list = document.getElementById('reservation-list');
+
+      if (!mapView || !list) return;
+
+      if (isSeatMapVisible) {
+        mapView.style.display = 'block';
+        list.style.display = 'none';
+        mapView.innerHTML = `
+          <div class="hall-map">
+  <div class="hall-map">
+  <div class="table-box">19</div>
+  <div></div>
+  <div class="table-box">18</div>
+  <div class="table-box">17</div>
+  <div></div>
+  <div class="table-box">16</div>
+  <div class="table-box">15</div>
+
+  <div class="table-box">10</div>
+  <div></div>
+  <div></div>
+  <div></div>
+  <div></div>
+  <div></div>
+  <div></div>
+
+  <div class="table-box">9</div>
+  <div></div>
+  <div class="table-box">11</div>
+  <div class="table-box">12</div>
+  <div></div>
+  <div class="table-box">13</div>
+  <div class="table-box">14</div>
+
+  <div class="table-box">8</div>
+  <div></div>
+  <div class="table-box">7</div>
+  <div class="table-box">6</div>
+  <div></div>
+  <div class="table-box">5</div>
+  <div class="table-box">4</div>
+
+  <div></div>
+  <div></div>
+  <div></div>
+  <div></div>
+  <div></div>
+  <div></div>
+  <div class="table-box">3</div>
+</div>
+          </div>
+        `;
+      } else {
+        mapView.style.display = 'none';
+        list.style.display = 'block';
+      }
+    }
+
+    window.toggleSeatMap = toggleSeatMap;
+
+    window.toggleSeatMap = toggleSeatMap;
 
         function renderDayView() {
         const monthView = document.getElementById('month-view');
@@ -2727,14 +3178,18 @@
         const realIndex = reservations.indexOf(r);
 
         return `
-          <div class="reservation status-${r.status} ${r.seat === '룸' ? 'room-highlight' : ''}">
+          <div 
+  class="reservation status-${r.status} ${r.seat === '룸' ? 'room-highlight' : ''}"
+  onclick="event.stopPropagation(); editReservation(${realIndex})"
+  style="cursor:pointer;"
+>
            <div class="reservation-top">
   <div style="display:flex; align-items:center; justify-content:space-between; width:100%; gap:8px;">
 
     <div style="display:flex; align-items:center; flex-wrap:wrap; gap:8px; min-width:0;">
       <span 
         class="status-badge badge-${r.status}" 
-        onclick="toggleStatus(${realIndex})"
+        onclick="event.stopPropagation(); toggleStatus(${realIndex})"
         style="cursor:pointer; font-size:11px; padding:3px 7px;"
       >
         ${r.status}
@@ -2761,7 +3216,7 @@
 
     <div style="display:flex; align-items:center; gap:4px; flex:none;">
       <button
-        onclick="editReservation(${realIndex})"
+        onclick="event.stopPropagation(); editReservation(${realIndex})"
         style="border:none; background:transparent; cursor:pointer; font-size:16px; padding:2px 4px;"
         title="수정"
       >
@@ -2769,7 +3224,7 @@
       </button>
 
       <button
-        onclick="deleteReservation(${realIndex})"
+        onclick="event.stopPropagation(); deleteReservation(${realIndex})"
         style="border:none; background:transparent; cursor:pointer; font-size:16px; padding:2px 4px;"
         title="삭제"
       >
@@ -3057,6 +3512,48 @@
       localStorage.setItem('selectedDate', selectedDate);
     }
 
+    async function deleteSelectedDateReservations() {
+      const targetDate = selectedDate;
+
+      const targets = reservations.filter(r => r.date === targetDate && r.id);
+
+      if (!targets.length) {
+        alert('선택된 날짜에 삭제할 예약이 없습니다.');
+        return;
+      }
+
+      const ok = confirm(`${targetDate} 예약 ${targets.length}건을 모두 삭제할까요?`);
+      if (!ok) return;
+
+      for (const r of targets) {
+        await deleteDoc(doc(db, "reservations", r.id));
+      }
+
+      alert('당일 예약을 삭제했습니다.');
+    }
+
+    async function deleteAllReservations() {
+      if (!reservations.length) {
+        alert('삭제할 예약이 없습니다.');
+        return;
+      }
+
+      const ok = confirm(`전체 예약 ${reservations.length}건을 모두 삭제할까요?`);
+      if (!ok) return;
+
+      for (const r of reservations) {
+        if (r.id) {
+          await deleteDoc(doc(db, "reservations", r.id));
+        }
+      }
+
+      alert('전체 예약을 삭제했습니다.');
+    }
+
+    window.deleteAllReservations = deleteAllReservations;
+
+    window.deleteSelectedDateReservations = deleteSelectedDateReservations;
+
     // ====== 예약 추가 ======
     function openModal() {
       closeAllModals();
@@ -3111,7 +3608,51 @@
       document.querySelectorAll('#room-checkboxes input').forEach(cb => {
         cb.checked = selectedRooms.includes(cb.value);
       });
+
+      updateRoomTablePreview();
     }
+
+    function isSameRoom(r1, r2) {
+      const rooms1 = (r1.room || '').split(',').map(v => v.trim()).filter(Boolean);
+      const rooms2 = (r2.room || '').split(',').map(v => v.trim()).filter(Boolean);
+
+      return rooms1.some(r => rooms2.includes(r));
+    }
+
+    function isSameTable(r1, r2) {
+      const tables1 = (r1.table || '').split(',').map(v => v.trim()).filter(Boolean);
+      const tables2 = (r2.table || '').split(',').map(v => v.trim()).filter(Boolean);
+
+      return tables1.some(t => tables2.includes(t));
+    }
+
+    function isRoomFullUsage(r) {
+      // 룸인데 테이블 지정 안했으면 전체 사용
+      return r.seat === '룸' && !r.table;
+    }
+
+    function isConflict(r1, r2) {
+      // 날짜 다르면 무조건 OK
+      if (r1.date !== r2.date) return false;
+
+      // 시간 겹침 (간단히 동일 시간 기준, 나중에 확장 가능)
+      if (!isTimeConflict(r1.time, r2.time, r1.seat, r2.seat)) return false;
+
+      // 룸 아닌 경우는 기존 테이블만 체크
+      if (r1.seat !== '룸' || r2.seat !== '룸') {
+        return isSameTable(r1, r2);
+      }
+
+      // 룸 기준
+      if (!isSameRoom(r1, r2)) return false;
+
+      // 둘 중 하나라도 전체 사용이면 충돌
+      if (isRoomFullUsage(r1) || isRoomFullUsage(r2)) return true;
+
+      // 둘 다 부분 사용이면 테이블 겹치는지
+      return isSameTable(r1, r2);
+    }
+    
 async function addReservation() {
   const date = document.getElementById('input-date').value.trim();
   const isNaver = document.getElementById('input-naver').checked;
@@ -3132,12 +3673,22 @@ async function addReservation() {
   const people = adult + child;
 
   const seat = document.getElementById('input-seat').value;
+  const selectedRooms = Array.from(
+    document.querySelectorAll('#room-checkboxes input.room-check:checked')
+  ).map(cb => cb.value);
+
   const room = seat === '룸'
-    ? Array.from(document.querySelectorAll('#room-checkboxes input[type="checkbox"]:checked'))
-        .map(cb => cb.value)
-        .join(', ')
+    ? (selectedRooms.length === 5 ? '전체' : selectedRooms.join(', '))
     : '';
-  const table = document.getElementById('input-table').value.trim();
+  let table = document.getElementById('input-table').value.trim();
+
+  const checkedTableValues = Array.from(
+    document.querySelectorAll('.table-check:checked')
+  ).map(cb => cb.value);
+
+  if (seat === '룸' && checkedTableValues.length > 0) {
+    table = checkedTableValues.join(', ');
+  }
   const menu = document.getElementById('input-menu').value.trim();
   const memo = document.getElementById('input-memo').value.trim();
 
@@ -3152,20 +3703,27 @@ async function addReservation() {
     const r = reservations[i];
     if ((r.date || '') !== date) continue;
 
-    const newTables = table.split(',').map(t => t.trim()).filter(Boolean);
-    const oldTables = (r.table || '').split(',').map(t => t.trim()).filter(Boolean);
+    
+    const newReservation = {
+      seat,
+      table,
+      room
+    };
 
-    const newRooms = room.split(',').map(v => v.trim()).filter(Boolean);
-    const oldRooms = (r.room || '').split(',').map(v => v.trim()).filter(Boolean);
+    const newTables = getTablesFromReservation(newReservation);
+    const oldTables = getTablesFromReservation(r);
 
-    const sameTable = newTables.some(t => oldTables.includes(t));
-    const sameRoom =
-      r.seat === '룸' &&
-      seat === '룸' &&
-      newRooms.some(v => oldRooms.includes(v));
+    const isSameTable = newTables.some(t => oldTables.includes(t));
 
-    if ((sameTable || sameRoom) && isTimeConflict(time, r.time, seat, r.seat)) {
-      alert('⚠️ 같은 날짜에 같은 테이블/룸의 시간 겹치는 예약이 있습니다');
+    if (isSameTable && isTimeConflict(time, r.time, seat, r.seat)) {
+
+      const overlappedTables = newTables.filter(t => oldTables.includes(t)).join(', ');
+
+      alert(
+        `⚠️ ${r.time || '-'} ${r.name || '이름없음'} 예약과 겹칩니다.\n\n` +
+        `겹친 테이블: ${overlappedTables}`
+      );
+
       return;
     }
   }
@@ -3186,6 +3744,63 @@ async function addReservation() {
     memo,
     status: editingIndex !== null ? reservations[editingIndex].status : '예약'
   };
+
+  const hasConflict = reservations.some((existing, index) => {
+    if (editingIndex !== null && index === editingIndex) {
+      return false;
+    }
+
+    return isConflict(reservationData, existing);
+  });
+
+  if (hasConflict) {
+    const conflict = reservations.find(existing => {
+      if (existing.date !== date) return false;
+
+      const newTables = splitValues(table);
+      const oldTables = splitValues(existing.table);
+
+      const newRooms = splitValues(room);
+      const oldRooms = splitValues(existing.room);
+
+      const sameTable = newTables.some(t => oldTables.includes(t));
+      const sameRoom =
+        seat === '룸' &&
+        existing.seat === '룸' &&
+        newRooms.some(r => oldRooms.includes(r));
+
+      return (sameTable || sameRoom) &&
+        isTimeConflict(time, existing.time, seat, existing.seat);
+    });
+
+    if (conflict) {
+      let message = '';
+
+      if (conflict.time) {
+        message += `${conflict.time} `;
+      }
+
+      if (conflict.name) {
+        message += `${conflict.name} `;
+      }
+
+      if (conflict.room && !conflict.table) {
+        message += `(${conflict.room} 전체) `;
+      }
+
+      if (conflict.table) {
+        message += `(${conflict.table}번 테이블) `;
+      }
+
+      message += '이미 사용 중입니다.';
+
+      alert(message);
+    } else {
+      alert('겹치는 예약이 있습니다.');
+    }
+
+    return;
+  }
 
   try {
     if (editingIndex !== null && reservations[editingIndex]?.id) {
@@ -3356,6 +3971,11 @@ async function addReservation() {
     document.getElementById('input-date').addEventListener('change', function () {
       initTimeSelects(this.value);
     });
+
+    document.querySelectorAll('#room-checkboxes input[type="checkbox"]').forEach(cb => {
+      cb.addEventListener('change', updateRoomTablePreview);
+    });
+    
     ensureReservationDates();
     syncSelectedDateUI();
     render();
