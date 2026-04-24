@@ -7,6 +7,37 @@
   
   <style>
 
+    .setting-checks {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      min-width: 86px;
+      font-size: 13px;
+      font-weight: 700;
+      color: #374151;
+    }
+
+    .setting-checks label {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      margin: 0;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+
+    .setting-checks input {
+      width: auto;
+      margin: 0;
+    }
+
+    .table-box.move-selected,
+    .room-table-box.move-selected {
+      outline: 4px solid #f59e0b;
+      outline-offset: 3px;
+      box-shadow: 0 0 0 4px rgba(245, 158, 11, 0.2);
+    }
+
     .import-icon {
       display: none;
     }
@@ -872,16 +903,23 @@
       background: #bbf7d0;
     }
 
+    body:has(#seat-map-view[style*="block"]) main {
+      max-width: none;
+      width: 100%;
+    }
+
     .hall-map {
       display: grid;
-      grid-template-columns: repeat(7, 110px);
-      gap: 16px;
-      align-items: center;
+      grid-template-columns: repeat(26, 1fr);
+      grid-template-rows: repeat(16, 34px);
+      gap: 8px;
+      width: 100%;
+      overflow-x: auto;
+      padding-bottom: 8px;
     }
 
     .table-box {
-      height: 96px;
-      border-radius: 14px;
+      border-radius: 12px;
       background: #f3f4f6;
       border: 1px solid #d1d5db;
       display: flex;
@@ -890,22 +928,305 @@
       font-size: 26px;
       font-weight: 800;
       color: #1f2d3d;
+      position: relative;
     }
 
-    .table-box {
-      height: 48px;
+    .table-mini-number {
+      position: absolute;
+      top: 6px;
+      left: 8px;
+      right: auto;
+
+      font-size: 12px;
+      font-weight: 900 !important; /* 🔥 중요 */
+      color: #111827;
+    }
+
+    .seat-map-tabs {
+      grid-column: 1 / 2;
+      grid-row: 1 / 13;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      align-items: stretch;
+      height: 100%;
+    }
+
+    .seat-map-tab-btn {
+      height: 42px;
+      border: none;
       border-radius: 10px;
-      background: #f3f4f6;
+      background: #e5e7eb;
+      color: #1f2d3d;
+      font-size: 14px;
+      font-weight: 800;
+      cursor: pointer;
+    }
+
+    .seat-map-tab-btn.active {
+      background: #1f4e79;
+      color: white;
+    }
+
+    .seat-map-move-btn {
+      margin-top: auto;
+      height: 42px;
+      border: none;
+      border-radius: 10px;
+      background: #fef3c7;
+      color: #92400e;
+      font-size: 14px;
+      font-weight: 900;
+      cursor: pointer;
+    }
+
+    .seat-map-move-btn.active {
+      background: #f59e0b;
+      color: white;
+    }
+
+    .room-map {
+      grid-column: 2 / 24;
+      grid-row: 1 / 18;
+      height: calc(100vh - 180px);
+      min-height: 560px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .room-box {
+      position: relative;
+      background: #f8fafc;
       border: 1px solid #d1d5db;
+      border-radius: 14px;
+      flex: 1;
+      min-height: 110px;
+      overflow: hidden;
+    }
+
+    .room-mini-number {
+      position: absolute;
+      top: 8px;
+      left: 10px;
+      right: auto;
+      font-size: 13px;
+      font-weight: 900 !important;
+      color: #111827;
+      z-index: 2;
+    }
+
+    .room-reservation-slots {
+      width: 100%;
+      height: 100%;
+      display: grid;
+      grid-template-rows: 1fr 1fr;
+    }
+
+    .room-slot {
       display: flex;
       align-items: center;
       justify-content: center;
+      padding: 8px 22px 8px 8px;
+      font-size: 13px;
       font-weight: 800;
-      color: #1f2d3d;
+      color: #374151;
+      text-align: center;
     }
+
+    .room-slot:first-child {
+      border-bottom: 1px solid rgba(0,0,0,0.08);
+    }
+
+    .room-inner-map {
+      width: 100%;
+      height: 100%;
+      padding: 34px 14px 12px;
+      display: grid;
+      grid-template-columns: 1fr 1fr 60px 1fr 1fr;
+      gap: 10px;
+    }
+
+    .room-table-box {
+      position: relative;
+      background: #f3f4f6;
+      border: 1px solid #d1d5db;
+      border-radius: 10px;
+      height: 100%;
+    }
+
+    .room-table-mini-number {
+      position: absolute;
+      top: 6px;
+      left: 8px;
+      right: auto;
+
+      font-size: 11px;
+      font-weight: 900 !important; /* 🔥 중요 */
+      color: #111827;
+    }
+  
+
+    .room-table-slots {
+      width: 100%;
+      height: 100%;
+      display: grid;
+      grid-template-rows: 1fr 1fr;
+    }
+
+    .room-table-slot {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 4px 18px 4px 6px;
+      font-size: 12px;
+      font-weight: 700;
+      color: #374151;
+      overflow: hidden;
+      text-align: center;
+    }
+
+    .room-table-slot:first-child {
+      border-bottom: 1px solid rgba(0,0,0,0.08);
+    }
+
+    .room-table-box.has-reservation {
+      background: #fee2e2;
+      border-color: #ef4444;
+    }
+
+    .room-table-box.has-reservation .room-table-slot {
+      color: #991b1b;
+    }
+
+    .table-select-popup {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.25);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+    }
+
+    .table-select-popup.hidden {
+      display: none;
+    }
+
+    .table-select-card {
+      background: white;
+      border-radius: 14px;
+      padding: 16px;
+      width: 260px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+    }
+
+    .table-select-title {
+      font-size: 16px;
+      font-weight: 900;
+      margin-bottom: 10px;
+    }
+
+    .table-select-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .table-select-item {
+      padding: 10px;
+      border-radius: 10px;
+      background: #f1f5f9;
+      cursor: pointer;
+      font-weight: 800;
+    }
+
+    .table-select-item:hover {
+      background: #e2e8f0;
+    }
+
+    .room-gap {
+      pointer-events: none;
+    }
+
+    .table-reservation-slots {
+      width: 100%;
+      height: 100%;
+      display: grid;
+      grid-template-rows: 1fr 1fr;
+    }
+
+    .table-slot {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 4px 18px 4px 6px;
+      font-size: 12px;
+      font-weight: 700;
+      color: #374151;
+      overflow: hidden;
+      text-align: center;
+    }
+
+    .table-slot:first-child {
+      border-bottom: 1px solid rgba(0,0,0,0.08);
+    }
+
+    .table-box.has-reservation {
+      background: #fee2e2;
+      border-color: #ef4444;
+    }
+
+    .table-box.has-reservation .table-slot {
+      color: #991b1b;
+    }
+
+    /* 상단 */
+    .t19 { grid-column: 2 / 6;  grid-row: 1 / 3; }
+
+    .t18 { grid-column: 7 / 11; grid-row: 1 / 3; }
+    .t17 { grid-column: 11 / 15; grid-row: 1 / 3; }
+
+    .t16 { grid-column: 16 / 20; grid-row: 1 / 3; }
+    .t15 { grid-column: 20 / 24; grid-row: 1 / 3; }
+
+    /* 왼쪽 */
+    .t10 { grid-column: 2 / 6; grid-row: 4 / 6; }
+    .t9  { grid-column: 2 / 6; grid-row: 6 / 8; }
+    .t8  { grid-column: 2 / 6; grid-row: 9 / 11; }
+
+    /* 가운데 */
+    .t11 { grid-column: 7 / 11; grid-row: 5 / 7; }
+    .t12 { grid-column: 11 / 15; grid-row: 5 / 7; }
+
+    .t7  { grid-column: 7 / 11; grid-row: 9 / 11; }
+    .t6  { grid-column: 11 / 15; grid-row: 9 / 11; }
+
+    /* 오른쪽 */
+    .t13 { grid-column: 16 / 20; grid-row: 5 / 7; }
+    .t14 { grid-column: 20 / 24; grid-row: 5 / 7; }
+
+    .t5  { grid-column: 16 / 20; grid-row: 9 / 11; }
+    .t4  { grid-column: 20 / 24; grid-row: 9 / 11; }
+
+    .t3  { grid-column: 16 / 20; grid-row: 11 / 13; }
 
     .nav-jump-btn:hover {
       background: #d1d5db;
+    }
+
+    .seat-map-time,
+    .seat-map-name,
+    .seat-map-people {
+      display: inline-block;
+      margin-right: 4px;
+    }
+
+    .seat-map-people {
+      margin-right: 0;
     }
 
     @media (max-width: 768px) {
@@ -1166,6 +1487,18 @@
 
       #day-view-header > div > div:nth-child(3) .day-delete-btn {
         width: auto !important;
+      }
+
+      @media (max-width: 768px) {
+        .seat-map-name {
+          display: none;
+        }
+
+        .table-slot,
+        .room-table-slot {
+          font-size: 11px;
+          gap: 2px;
+        }
       }
 
       /* 예약 카드 */
@@ -1733,6 +2066,20 @@
     </div>
   </div>
 
+  <div id="table-select-popup" class="table-select-popup hidden">
+    <div class="table-select-card">
+      <div class="table-select-title"></div>
+      <div class="table-select-list"></div>
+    </div>
+  </div>
+
+  <div id="table-select-popup" class="table-select-popup hidden">
+    <div class="table-select-card">
+      <div class="table-select-title"></div>
+      <div class="table-select-list"></div>
+    </div>
+  </div>
+
   <script type="module">
 
    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-app.js";
@@ -1847,7 +2194,12 @@
     let selectedDate = localStorage.getItem('selectedDate') || getTodayString();
     let searchKeyword = '';
     let searchResults = [];
+    let seatMapMode = 'hall';
+    let moveMode = false;
+    let movingReservation = null;
+    let movingFromTable = null;
 
+    
     function openImportModal() {
       closeAllModals();
       document.getElementById('import-text').value = '';
@@ -1896,6 +2248,23 @@
     }
 
     window.handleSearchKeydown = handleSearchKeydown;
+    window.setSeatMapMode = setSeatMapMode;
+    window.toggleMoveMode = toggleMoveMode;
+    window.openTableReservation = openTableReservation;
+
+    window.openTableReservation = openTableReservation;
+
+    
+    
+   
+    document.addEventListener('click', function (e) {
+      const popup = document.getElementById('table-select-popup');
+      if (!popup || popup.classList.contains('hidden')) return;
+
+      if (e.target.id === 'table-select-popup') {
+        closeTableSelectPopup();
+      }
+    });
 
     function getReservationSearchText(r) {
       return [
@@ -2155,6 +2524,15 @@
       renderImportPreview();
     }
 
+    function isSameImportedReservation(a, b) {
+      return (
+        String(a.date || '') === String(b.date || '') &&
+        String(a.time || '') === String(b.time || '') &&
+        String(a.name || '').trim() === String(b.name || '').trim() &&
+        String(a.people || '') === String(b.people || '')
+      );
+    }
+
     async function confirmImport() {
       if (!importPreviewList.length) {
         alert('추가할 예약이 없습니다.');
@@ -2165,6 +2543,15 @@
       let skippedCount = 0;
 
       for (const newReservation of importPreviewList) {
+        const isDuplicate = reservations.some(existing =>
+          isSameImportedReservation(newReservation, existing)
+        );
+
+        if (isDuplicate) {
+          console.log('중복 건너뜀:', newReservation);
+          skippedCount++;
+          continue;
+        }
         const hasConflict = reservations.some(existing => {
           if ((existing.date || '') !== (newReservation.date || '')) {
             return false;
@@ -3081,6 +3468,324 @@
 
     let isSeatMapVisible = false;
 
+    function getReservationsByTable(tableNumber) {
+      const tableText = String(tableNumber);
+
+      return reservations
+        .filter(r => (r.date || '') === selectedDate)
+        .filter(r => {
+          const tables = String(r.table || '')
+            .split(',')
+            .map(v => v.trim())
+            .filter(Boolean);
+
+          // 1) 테이블 번호가 직접 입력된 예약
+          if (tables.includes(tableText)) return true;
+
+          // 2) 룸 전체 예약 처리
+          if ((r.seat || '') !== '룸') return false;
+          if (tables.length > 0) return false;
+
+          const rooms = String(r.room || '')
+            .split(',')
+            .map(v => v.trim())
+            .filter(Boolean);
+
+          const roomTableMap = {
+            '1실': ['21', '22', '23', '24'],
+            '2실': ['31', '32', '33', '34'],
+            '3실': ['41', '42', '43', '44'],
+            '4실': ['51', '52', '53', '54'],
+            '5실': ['61', '62', '63', '64']
+          };
+
+          return rooms.some(room => {
+            const roomTables = roomTableMap[room] || [];
+            return roomTables.includes(tableText);
+          });
+        })
+        .sort((a, b) => String(a.time || '').localeCompare(String(b.time || '')))
+        .slice(0, 2);
+    }
+
+    function getTableSlotText(r) {
+      if (!r) return '';
+
+      const time = r.time || '';
+      const name = r.name || '';
+      const people = r.people ? `${r.people}명` : '';
+
+      return `
+        <span class="seat-map-time">${escapeHtml(time)}</span>
+        <span class="seat-map-name">${escapeHtml(name)}</span>
+        <span class="seat-map-people">${escapeHtml(people)}</span>
+      `;
+    }
+
+    function renderHallTableBox(tableNumber) {
+      const tableReservations = getReservationsByTable(tableNumber);
+      const hasReservation = tableReservations.length > 0;
+
+      return `
+        <div class="table-box ${hasReservation ? 'has-reservation' : ''} ${movingFromTable === tableNumber ? 'move-selected' : ''} t${tableNumber}" onclick="openTableReservation(${tableNumber})" style="cursor:pointer;">
+          <div class="table-reservation-slots">
+            <div class="table-slot">${getTableSlotText(tableReservations[0])}</div>
+<div class="table-slot">${getTableSlotText(tableReservations[1])}</div>
+          </div>
+          <div class="table-mini-number">${tableNumber}</div>
+        </div>
+      `;
+    }
+
+    function renderRoomTableBox(tableNumber) {
+      const tableReservations = getReservationsByTable(tableNumber);
+      const hasReservation = tableReservations.length > 0;
+
+      return `
+        <div class="room-table-box ${hasReservation ? 'has-reservation' : ''} ${movingFromTable === tableNumber ? 'move-selected' : ''}" onclick="openTableReservation(${tableNumber})" style="cursor:pointer;">
+          <div class="room-table-slots">
+           <div class="room-table-slot">${getTableSlotText(tableReservations[0])}</div>
+<div class="room-table-slot">${getTableSlotText(tableReservations[1])}</div>
+          </div>
+          <div class="room-table-mini-number">${tableNumber}</div>
+        </div>
+      `;
+    }
+
+    function openTableReservation(tableNumber) {
+      const tableReservations = getReservationsByTable(tableNumber);
+
+      if (moveMode) {
+        if (!movingReservation) {
+          if (tableReservations.length === 0) {
+            alert('이동할 예약이 없는 테이블입니다.');
+            return;
+          }
+
+          if (tableReservations.length === 1) {
+            selectReservationForMove(tableNumber, tableReservations[0]);
+            return;
+          }
+
+          showMoveSelectPopup(tableNumber, tableReservations);
+          return;
+        }
+
+        moveReservationToTable(tableNumber);
+        return;
+      }
+
+      if (tableReservations.length === 0) {
+        openAddReservationWithTable(tableNumber);
+        return;
+      }
+
+      if (tableReservations.length === 1) {
+        const index = reservations.indexOf(tableReservations[0]);
+        if (index !== -1) editReservation(index);
+        return;
+      }
+
+      showTableSelectPopup(tableNumber, tableReservations);
+    }
+
+    function openAddReservationWithTable(tableNumber) {
+      editingIndex = null;
+
+      // 모달 열기
+      document.getElementById('modal-title').textContent = '새 예약 추가';
+      document.getElementById('modal').classList.add('show');
+
+      // 날짜 자동 입력
+      document.getElementById('input-date').value = selectedDate;
+
+      // 좌석 자동 설정
+      const isRoom = tableNumber >= 20; // 21번부터 룸
+      document.getElementById('input-seat').value = isRoom ? '룸' : '홀';
+      toggleRoomSelect();
+
+      // 룸 선택 자동 체크
+      if (isRoom) {
+        const roomMap = {
+          21: '1실', 22: '1실', 23: '1실', 24: '1실',
+          31: '2실', 32: '2실', 33: '2실', 34: '2실',
+          41: '3실', 42: '3실', 43: '3실', 44: '3실',
+          51: '4실', 52: '4실', 53: '4실', 54: '4실',
+          61: '5실', 62: '5실', 63: '5실', 64: '5실'
+        };
+
+        const room = roomMap[tableNumber];
+
+        document.querySelectorAll('#room-checkboxes input').forEach(cb => {
+          cb.checked = cb.value === room;
+        });
+
+        updateRoomTablePreview();
+      }
+
+      // 테이블 번호 자동 입력
+      document.getElementById('input-table').value = tableNumber;
+
+      // 나머지 초기화
+      document.getElementById('input-name').value = '';
+      clearPhoneInputs();
+      document.getElementById('input-adult').value = 2;
+      document.getElementById('input-child').value = 0;
+      updateTotalPeople();
+      document.getElementById('input-menu').value = '';
+      document.getElementById('input-memo').value = '';
+      document.getElementById('input-naver').checked = false;
+    }
+
+    
+    function closeTableSelectPopup() {
+      document.getElementById('table-select-popup').classList.add('hidden');
+    }
+
+    // ===== 일반 수정용 =====
+    function showTableSelectPopup(tableNumber, tableReservations) {
+      const popup = document.getElementById('table-select-popup');
+      const title = popup.querySelector('.table-select-title');
+      const list = popup.querySelector('.table-select-list');
+
+      title.textContent = tableNumber + '번 예약 선택';
+      list.innerHTML = '';
+
+      tableReservations.forEach(r => {
+        const item = document.createElement('div');
+        item.className = 'table-select-item';
+        item.textContent = getTableSlotText(r);
+
+        item.onclick = () => {
+          popup.classList.add('hidden');
+
+          const index = reservations.indexOf(r);
+          if (index !== -1) editReservation(index);
+        };
+
+        list.appendChild(item);
+      });
+
+      popup.classList.remove('hidden');
+    }
+
+
+    // ===== 이동용 =====
+    function showMoveSelectPopup(tableNumber, tableReservations) {
+      const popup = document.getElementById('table-select-popup');
+      const title = popup.querySelector('.table-select-title');
+      const list = popup.querySelector('.table-select-list');
+
+      title.textContent = tableNumber + '번 이동할 예약 선택';
+      list.innerHTML = '';
+
+      tableReservations.forEach(r => {
+        const item = document.createElement('div');
+        item.className = 'table-select-item';
+        item.textContent = getTableSlotText(r);
+
+        item.onclick = () => {
+          popup.classList.add('hidden');
+          selectReservationForMove(tableNumber, r);
+        };
+
+        list.appendChild(item);
+      });
+
+      popup.classList.remove('hidden');
+    }
+
+    
+      
+    function setSeatMapMode(mode) {
+      seatMapMode = mode;
+      renderSeatMapContent();
+    }
+
+    function toggleMoveMode() {
+      moveMode = !moveMode;
+
+      if (!moveMode) {
+        movingReservation = null;
+        movingFromTable = null;
+      }
+
+      renderSeatMapContent();
+    }
+
+    function getSeatInfoByTableNumber(tableNumber) {
+      const n = Number(tableNumber);
+
+      if (n >= 21 && n <= 24) return { seat: '룸', room: '1실' };
+      if (n >= 31 && n <= 34) return { seat: '룸', room: '2실' };
+      if (n >= 41 && n <= 44) return { seat: '룸', room: '3실' };
+      if (n >= 51 && n <= 54) return { seat: '룸', room: '4실' };
+      if (n >= 61 && n <= 64) return { seat: '룸', room: '5실' };
+
+      return { seat: '홀', room: '' };
+    }
+
+    async function moveReservationToTable(targetTableNumber) {
+      if (!movingReservation) return;
+
+      const targetReservations = getReservationsByTable(targetTableNumber);
+
+      if (targetReservations.length >= 2) {
+        alert(targetTableNumber + '번 테이블은 이미 예약이 2개라 이동할 수 없습니다.');
+        return;
+      }
+
+      const seatInfo = getSeatInfoByTableNumber(targetTableNumber);
+
+      const isMovingRoomFull =
+        movingReservation.seat === '룸' &&
+        !String(movingReservation.table || '').trim();
+
+      const nextTableValue =
+        isMovingRoomFull && seatInfo.seat === '룸'
+          ? ''
+          : String(targetTableNumber);
+
+      const testReservation = {
+        ...movingReservation,
+        seat: seatInfo.seat,
+        room: seatInfo.room,
+        table: nextTableValue
+      };
+
+      const hasConflict = reservations.some(r => {
+        if (!r || r.id === movingReservation.id) return false;
+        return isConflict(testReservation, r);
+      });
+
+      if (hasConflict) {
+        const ok = confirm('이동할 테이블에 시간 충돌 가능성이 있습니다.\n그래도 이동할까요?');
+        if (!ok) return;
+      }
+
+      const updatedReservation = {
+        ...movingReservation,
+        seat: seatInfo.seat,
+        room: seatInfo.room,
+        table: nextTableValue
+      };
+
+      await setDoc(doc(db, "reservations", movingReservation.id), updatedReservation);
+
+     
+      movingReservation = null;
+      movingFromTable = null;
+      moveMode = false;
+
+      renderSeatMapContent();
+    }
+
+    function selectReservationForMove(tableNumber, reservation) {
+      movingReservation = reservation;
+      movingFromTable = tableNumber;
+      renderSeatMapContent();
+    }
+    
     function toggleSeatMap() {
       isSeatMapVisible = !isSeatMapVisible;
 
@@ -3092,55 +3797,160 @@
       if (isSeatMapVisible) {
         mapView.style.display = 'block';
         list.style.display = 'none';
-        mapView.innerHTML = `
-          <div class="hall-map">
-  <div class="hall-map">
-  <div class="table-box">19</div>
-  <div></div>
-  <div class="table-box">18</div>
-  <div class="table-box">17</div>
-  <div></div>
-  <div class="table-box">16</div>
-  <div class="table-box">15</div>
-
-  <div class="table-box">10</div>
-  <div></div>
-  <div></div>
-  <div></div>
-  <div></div>
-  <div></div>
-  <div></div>
-
-  <div class="table-box">9</div>
-  <div></div>
-  <div class="table-box">11</div>
-  <div class="table-box">12</div>
-  <div></div>
-  <div class="table-box">13</div>
-  <div class="table-box">14</div>
-
-  <div class="table-box">8</div>
-  <div></div>
-  <div class="table-box">7</div>
-  <div class="table-box">6</div>
-  <div></div>
-  <div class="table-box">5</div>
-  <div class="table-box">4</div>
-
-  <div></div>
-  <div></div>
-  <div></div>
-  <div></div>
-  <div></div>
-  <div></div>
-  <div class="table-box">3</div>
-</div>
-          </div>
-        `;
+        renderSeatMapContent();
       } else {
         mapView.style.display = 'none';
         list.style.display = 'block';
       }
+    }
+
+    function renderSeatMapContent() {
+      const mapView = document.getElementById('seat-map-view');
+      if (!mapView) return;
+
+      if (seatMapMode === 'room') {
+        mapView.innerHTML = `
+          <div class="hall-map">
+            <div class="seat-map-tabs">
+  <button 
+    class="seat-map-tab-btn ${seatMapMode === 'hall' ? 'active' : ''}" 
+    onclick="setSeatMapMode('hall')"
+  >
+    홀
+  </button>
+
+  <button 
+    class="seat-map-tab-btn ${seatMapMode === 'room' ? 'active' : ''}" 
+    onclick="setSeatMapMode('room')"
+  >
+    룸
+  </button>
+
+  <button 
+  class="seat-map-move-btn ${moveMode ? 'active' : ''}" 
+  onclick="toggleMoveMode()"
+>
+  이동
+</button>
+</div>
+
+            <div class="room-map">
+
+  <div class="room-box">
+    <div class="room-mini-number">1실</div>
+    <div class="room-inner-map">
+      ${renderRoomTableBox(21)}
+      ${renderRoomTableBox(22)}
+      <div class="room-gap"></div>
+      ${renderRoomTableBox(23)}
+      ${renderRoomTableBox(24)}
+    </div>
+  </div>
+
+  <div class="room-box">
+    <div class="room-mini-number">2실</div>
+    <div class="room-inner-map">
+      ${renderRoomTableBox(31)}
+      ${renderRoomTableBox(32)}
+      <div class="room-gap"></div>
+      ${renderRoomTableBox(33)}
+      ${renderRoomTableBox(34)}
+    </div>
+  </div>
+
+  <div class="room-box">
+    <div class="room-mini-number">3실</div>
+    <div class="room-inner-map">
+      ${renderRoomTableBox(41)}
+      ${renderRoomTableBox(42)}
+      <div class="room-gap"></div>
+      ${renderRoomTableBox(43)}
+      ${renderRoomTableBox(44)}
+    </div>
+  </div>
+
+  <div class="room-box">
+    <div class="room-mini-number">4실</div>
+    <div class="room-inner-map">
+      ${renderRoomTableBox(51)}
+      ${renderRoomTableBox(52)}
+      <div class="room-gap"></div>
+      ${renderRoomTableBox(53)}
+      ${renderRoomTableBox(54)}
+    </div>
+  </div>
+
+  <div class="room-box">
+    <div class="room-mini-number">5실</div>
+    <div class="room-inner-map">
+      ${renderRoomTableBox(61)}
+      ${renderRoomTableBox(62)}
+      <div class="room-gap"></div>
+      ${renderRoomTableBox(63)}
+      ${renderRoomTableBox(64)}
+    </div>
+  </div>
+
+</div>
+
+</div>
+        `;
+        return;
+      }
+
+      mapView.innerHTML = `
+        <div class="hall-map">
+          <div class="seat-map-tabs">
+  <button 
+    class="seat-map-tab-btn ${seatMapMode === 'hall' ? 'active' : ''}" 
+    onclick="setSeatMapMode('hall')"
+  >
+    홀
+  </button>
+
+  <button 
+    class="seat-map-tab-btn ${seatMapMode === 'room' ? 'active' : ''}" 
+    onclick="setSeatMapMode('room')"
+  >
+    룸
+  </button>
+
+  <button 
+  class="seat-map-move-btn ${moveMode ? 'active' : ''}" 
+  onclick="toggleMoveMode()"
+>
+  이동
+</button>
+</div>
+
+          ${renderHallTableBox(19)}
+
+          ${renderHallTableBox(18)}
+          ${renderHallTableBox(17)}
+
+          ${renderHallTableBox(16)}
+          ${renderHallTableBox(15)}
+
+          ${renderHallTableBox(10)}
+          ${renderHallTableBox(9)}
+
+          ${renderHallTableBox(11)}
+          ${renderHallTableBox(12)}
+
+          ${renderHallTableBox(13)}
+          ${renderHallTableBox(14)}
+
+          ${renderHallTableBox(8)}
+
+          ${renderHallTableBox(7)}
+          ${renderHallTableBox(6)}
+
+          ${renderHallTableBox(5)}
+          ${renderHallTableBox(4)}
+
+          ${renderHallTableBox(3)}
+        </div>
+      `;
     }
 
     window.toggleSeatMap = toggleSeatMap;
@@ -3214,23 +4024,54 @@
       ` : ''}
     </div>
 
-    <div style="display:flex; align-items:center; gap:4px; flex:none;">
-      <button
-        onclick="event.stopPropagation(); editReservation(${realIndex})"
-        style="border:none; background:transparent; cursor:pointer; font-size:16px; padding:2px 4px;"
-        title="수정"
-      >
-        ✏️
-      </button>
+    <div style="display:flex; align-items:center; gap:18px; flex:none;">
 
-      <button
-        onclick="event.stopPropagation(); deleteReservation(${realIndex})"
-        style="border:none; background:transparent; cursor:pointer; font-size:16px; padding:2px 4px;"
-        title="삭제"
-      >
-        ✕
-      </button>
-    </div>
+  <div class="setting-checks" onclick="event.stopPropagation();">
+    <label>
+      <input
+        type="checkbox"
+        ${r.basicSetting ? 'checked' : ''}
+        onchange="toggleSettingStatus(${realIndex}, 'basicSetting', this.checked)"
+      />
+      기본세팅
+    </label>
+
+    <label>
+      <input
+        type="checkbox"
+        ${r.fullSetting ? 'checked' : ''}
+        onchange="toggleSettingStatus(${realIndex}, 'fullSetting', this.checked)"
+      />
+      전체세팅
+    </label>
+  </div>
+
+  <div style="display:flex; align-items:center; gap:4px;">
+  <button
+    onclick="event.stopPropagation(); callReservationCustomer(${realIndex})"
+    style="border:none; background:transparent; cursor:pointer; font-size:16px; padding:2px 4px;"
+    title="전화"
+  >
+    📞
+  </button>
+    <button
+      onclick="event.stopPropagation(); editReservation(${realIndex})"
+      style="border:none; background:transparent; cursor:pointer; font-size:16px; padding:2px 4px;"
+      title="수정"
+    >
+      ✏️
+    </button>
+
+    <button
+      onclick="event.stopPropagation(); deleteReservation(${realIndex})"
+      style="border:none; background:transparent; cursor:pointer; font-size:16px; padding:2px 4px;"
+      title="삭제"
+    >
+      ✕
+    </button>
+  </div>
+
+</div>
 
   </div>
 </div>
@@ -3399,7 +4240,12 @@
       selectedDate = value;
       save();
       syncSelectedDateUI();
-      render();
+
+      if (document.getElementById('seat-map-view').style.display === 'block') {
+        renderSeatMapContent();
+      } else {
+        render();
+      }
     }
 
 
@@ -3407,14 +4253,24 @@
       selectedDate = addDays(selectedDate, days);
       save();
       syncSelectedDateUI();
-      render();
+
+      if (document.getElementById('seat-map-view').style.display === 'block') {
+        renderSeatMapContent();
+      } else {
+        render();
+      }
     }
 
     function goToToday() {
       selectedDate = getTodayString();
       saveViewState();
       syncSelectedDateUI();
-      render();
+
+      if (document.getElementById('seat-map-view').style.display === 'block') {
+        renderSeatMapContent();
+      } else {
+        render();
+      }
     }
 
     function getMonthKey(dateString) {
@@ -3697,37 +4553,7 @@ async function addReservation() {
     return;
   }
 
-  for (let i = 0; i < reservations.length; i++) {
-    if (editingIndex === i) continue;
-
-    const r = reservations[i];
-    if ((r.date || '') !== date) continue;
-
-    
-    const newReservation = {
-      seat,
-      table,
-      room
-    };
-
-    const newTables = getTablesFromReservation(newReservation);
-    const oldTables = getTablesFromReservation(r);
-
-    const isSameTable = newTables.some(t => oldTables.includes(t));
-
-    if (isSameTable && isTimeConflict(time, r.time, seat, r.seat)) {
-
-      const overlappedTables = newTables.filter(t => oldTables.includes(t)).join(', ');
-
-      alert(
-        `⚠️ ${r.time || '-'} ${r.name || '이름없음'} 예약과 겹칩니다.\n\n` +
-        `겹친 테이블: ${overlappedTables}`
-      );
-
-      return;
-    }
-  }
-
+  
   const reservationData = {
     date,
     name,
@@ -3846,6 +4672,32 @@ async function addReservation() {
       });
     }
 
+    async function toggleSettingStatus(index, field, checked) {
+      const r = reservations[index];
+      if (!r || !r.id) return;
+
+      await setDoc(doc(db, "reservations", r.id), {
+        ...r,
+        [field]: checked
+      });
+    }
+
+    function callReservationCustomer(index) {
+      const r = reservations[index];
+      if (!r || !r.phone) {
+        alert('전화번호가 없습니다.');
+        return;
+      }
+
+      const phone = String(r.phone || '').trim();
+      const name = r.name || '고객';
+
+      const ok = confirm(name + ' (' + phone + ') 고객에게 전화하시겠습니까?');
+      if (!ok) return;
+
+      window.location.href = 'tel:' + phone.replace(/[^0-9+]/g, '');
+    }
+
     // ====== 예약 삭제 ======
     async function deleteReservation(index) {
   const r = reservations[index];
@@ -3954,6 +4806,8 @@ async function addReservation() {
     window.deleteReservation = deleteReservation;
     window.changeStatus = changeStatus;
     window.toggleStatus = toggleStatus;
+    window.toggleSettingStatus = toggleSettingStatus;
+    window.callReservationCustomer = callReservationCustomer;
     window.clearAllReservations = clearAllReservations;
     window.toggleRoomSelect = toggleRoomSelect;
     window.moveMonth = moveMonth;
