@@ -507,9 +507,12 @@
 
     .modal-actions button {
       border: none;
-      border-radius: 8px;
+      border-radius: 10px;
       cursor: pointer;
-      font-size: 14px;
+      font-size: 16px;
+      height: 48px;
+      padding: 0 18px;
+      font-weight: 700;
     }
     .btn-cancel { background: #eee; color: #333; }
     .btn-save { background: #1f4e79; color: white; font-weight: bold; }
@@ -1640,9 +1643,12 @@
 
       .modal-actions button {
         border: none;
-        border-radius: 8px;
+        border-radius: 10px;
         cursor: pointer;
-        font-size: 14px;
+        font-size: 15px;
+        height: 46px;
+        padding: 0 16px;
+        font-weight: 700;
       }
 
       /* 연락처 3칸 입력 대응 */
@@ -1816,13 +1822,29 @@
 </head>
 <body>
 
+  <div class="modal-bg" id="login-modal">
+    <div class="modal" style="max-width:360px;">
+      <h2 style="margin:0 0 12px 0;">로그인</h2>
+
+      <input id="login-email" type="email" placeholder="이메일" style="margin-bottom:8px;">
+      <input id="login-password" type="password" placeholder="비밀번호">
+
+      <div class="modal-actions">
+        <button class="btn-save" onclick="login()">로그인</button>
+        <button class="btn-cancel" onclick="closeLoginModal()">닫기</button>
+      </div>
+    </div>
+  </div>
+
+  <header style="
+
   <header style="
     display:grid;
     grid-template-columns: auto 1fr auto;
     align-items:center;
     gap:12px;
   ">
-
+    
     <!-- 왼쪽: 제목 -->
     <h1 style="margin:0;">수림 예약</h1>
 
@@ -1842,6 +1864,12 @@
       <button id="btn-month-view" onclick="setView('month')" class="view-tab-btn">월</button>
       <button id="btn-week-view" onclick="setView('week')" class="view-tab-btn">주</button>
       <button id="btn-day-view" onclick="setView('day')" class="view-tab-btn">일</button>
+      <button id="login-btn" onclick="showLogin()" style="background:#2563eb; color:white;">
+        로그인
+      </button>
+      <button id="logout-btn" onclick="logout()" style="background:#ef4444; color:white;">
+        로그아웃
+      </button>
     </div>
 
   </header>
@@ -2077,6 +2105,9 @@
   
   <script type="module">
 
+    
+
+    
    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-app.js";
 
    import {
@@ -2090,6 +2121,14 @@
     query,
     orderBy
     } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-firestore.js";
+
+    import {
+      getAuth,
+      signInWithEmailAndPassword,
+      onAuthStateChanged,
+      signOut
+    } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-auth.js";
+    
     const firebaseConfig = {
     apiKey: "AIzaSyDq4M4_n_JUtqW1hLXB5DHP-gtJIvtC4tU",
     authDomain: "soorim-f809b.firebaseapp.com",
@@ -2102,8 +2141,45 @@
 
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
+    const auth = getAuth(app);
     const reservationsCollection = collection(db, "reservations");
 
+    function login() {
+      const email = document.getElementById('login-email').value.trim();
+      const password = document.getElementById('login-password').value.trim();
+
+      signInWithEmailAndPassword(auth, email, password)
+      .then(() => {
+        closeLoginModal();
+      })
+      .catch((error) => {
+        alert('로그인 실패: 이메일 또는 비밀번호를 확인해주세요.');
+        console.error(error);
+      });
+    }
+
+    function showLogin() {
+      const modal = document.getElementById('login-modal');
+      if (modal) modal.classList.add('show');
+    }
+
+    function closeLoginModal() {
+      const modal = document.getElementById('login-modal');
+      if (modal) modal.classList.remove('show');
+    }
+
+    window.showLogin = showLogin;
+    window.closeLoginModal = closeLoginModal;
+
+    window.showLogin = showLogin;
+    
+    function logout() {
+      signOut(auth);
+    }
+
+    window.login = login;
+    window.logout = logout;
+    
     function saveViewState() {
       try {
         if (typeof currentView !== 'undefined' && currentView) {
@@ -2193,9 +2269,19 @@
     let moveMode = false;
     let movingReservation = null;
     let movingFromTable = null;
+    let isLoggedIn = false;
+
+    function requireLogin() {
+      if (!isLoggedIn) {
+        alert('로그인 후 수정할 수 있습니다.');
+        return false;
+      }
+      return true;
+    }
 
     
     function openImportModal() {
+      if (!requireLogin()) return;
       closeAllModals();
       document.getElementById('import-text').value = '';
       document.getElementById('import-modal').classList.add('show');
@@ -2529,6 +2615,7 @@
     }
 
     async function confirmImport() {
+      if (!requireLogin()) return;
       if (!importPreviewList.length) {
         alert('추가할 예약이 없습니다.');
         return;
@@ -3698,6 +3785,7 @@
     }
 
     function toggleMoveMode() {
+      if (!requireLogin()) return;
       moveMode = !moveMode;
 
       if (!moveMode) {
@@ -3721,6 +3809,7 @@
     }
 
     async function moveReservationToTable(targetTableNumber) {
+      if (!requireLogin()) return;
       if (!movingReservation) return;
 
       const targetReservations = getReservationsByTable(targetTableNumber);
@@ -4420,6 +4509,7 @@
 
     // ====== 예약 추가 ======
     function openModal() {
+      if (!requireLogin()) return;
       closeAllModals();
       editingIndex = null;
       document.getElementById('modal-title').textContent = '새 예약 추가';
@@ -4444,6 +4534,7 @@
       document.getElementById('modal').classList.remove('show');
     }
     function editReservation(index) {
+      if (!requireLogin()) return;
       const r = reservations[index];
       editingIndex = index;
 
@@ -4518,6 +4609,7 @@
     }
     
 async function addReservation() {
+  if (!requireLogin()) return;
   const date = document.getElementById('input-date').value.trim();
   const isNaver = document.getElementById('input-naver').checked;
   const name = document.getElementById('input-name').value.trim();
@@ -4691,6 +4783,7 @@ async function addReservation() {
     }
 
     function openSmsTemplatePopup(index) {
+      if (!requireLogin()) return;
       const popup = document.getElementById('table-select-popup');
       if (!popup) {
         alert('선택창을 찾을 수 없습니다.');
@@ -4796,6 +4889,7 @@ async function addReservation() {
 
     // ====== 예약 삭제 ======
     async function deleteReservation(index) {
+      if (!requireLogin()) return;
   const r = reservations[index];
   if (!r) return;
 
@@ -4931,7 +5025,26 @@ async function addReservation() {
     ensureReservationDates();
     syncSelectedDateUI();
     render();
-    subscribeReservations();
+      onAuthStateChanged(auth, (user) => {
+        isLoggedIn = !!user;
+
+        const loginBtn = document.getElementById('login-btn');
+        const logoutBtn = document.getElementById('logout-btn');
+
+        if (user) {
+          if (loginBtn) loginBtn.style.display = 'none';
+          if (logoutBtn) logoutBtn.style.display = 'inline-block';
+        } else {
+          if (loginBtn) loginBtn.style.display = 'inline-block';
+          if (logoutBtn) logoutBtn.style.display = 'none';
+        }
+
+        // 🔥 이게 핵심 (데이터 다시 불러오기)
+        subscribeReservations();
+
+        render();
+      });
+    
     updateTotalPeople();
 
     document.getElementById('modal').addEventListener('click', function (e) {
