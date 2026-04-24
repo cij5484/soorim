@@ -1280,29 +1280,72 @@
     }
 
     .tv-photo-panel {
-      padding: 26px 24px;
+      padding: 12px;
       display: grid;
-      grid-template-rows: 1fr 170px;
+      grid-template-rows: 58% 28%;
       gap: 8px;
+      align-content: end;
+      position: relative;
+    }
+
+    .tv-main-photo-wrap {
+      position: relative;
+      width: 100%;
+      height: 100%;
+    }
+
+    #tv-clock {
+      position: absolute;
+      top: 26px;
+      left: 28px;
+      z-index: 20;
+
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+
+      color: #111;
+    }
+
+    #tv-time {
+      font-size: 72px;
+      font-weight: 900;
+      line-height: 1;
+      letter-spacing: -2px;
+      margin-top: -8px;
+
+      display: flex;
+      align-items: center;
+      gap: 10px; /* 핵심 */
+    }
+
+    #tv-date {
+      margin-bottom: 3px;
+      font-size: 34px;
+      font-weight: 900;
+      color: #111;
+      margin-left: 50px;
     }
 
     .tv-main-photo {
       width: 100%;
       height: 100%;
-      object-fit: cover;
-      border-top: 2px solid #111;
+      object-fit: contain;
+      background: white;
     }
 
     .tv-sub-photos {
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 8px;
+      height: 100%;
     }
 
     .tv-sub-photos img {
       width: 100%;
       height: 100%;
       object-fit: cover;
+      background: white;
     }
 
     .tv-reservation-panel {
@@ -1321,6 +1364,7 @@
       line-height: 1.05;
     }
 
+    /*
     .tv-title:before,
     .tv-title:after {
       content: "";
@@ -1330,6 +1374,7 @@
       height: 3px;
       background: #111;
     }
+    */
 
     .tv-title:before {
       left: 0;
@@ -1349,7 +1394,7 @@
     .tv-table th {
       background: #b7d0e8;
       color: #111;
-      font-size: 22px;
+      font-size: 26px;
       font-weight: 900;
       padding: 8px 6px;
       border-right: 2px solid white;
@@ -1362,7 +1407,7 @@
     }
 
     .tv-table td {
-      font-size: 22px;
+      font-size: 24px;
       font-weight: 900;
       padding: 8px 6px;
       border-bottom: 2px solid #333;
@@ -1385,10 +1430,7 @@
     .tv-menu {
       color: #5b9bd5;
       font-weight: 900;
-      text-decoration: underline;
-      text-decoration-color: red;
-      text-decoration-style: wavy;
-      text-underline-offset: 4px;
+      text-decoration: none;
     }
 
     .tv-menu-empty {
@@ -2060,7 +2102,7 @@
         
   </style>
 </head>
-<body>
+  <body spellcheck="false">
 
   <div class="modal-bg" id="login-modal">
     <div class="modal" style="max-width:360px;">
@@ -3812,7 +3854,16 @@
       list.innerHTML = `
         <div class="tv-wrap">
           <div class="tv-photo-panel">
-            <img class="tv-main-photo" src="tv-main.jpg" alt="수림횟집 음식 사진">
+ <div id="tv-clock">
+  <div id="tv-date">4/25 (금)</div>
+  <div id="tv-time">
+  <span id="tv-hour">05</span>
+  <span id="tv-colon">:</span>
+  <span id="tv-minute">39</span>
+</div>
+</div>
+
+  <img class="tv-main-photo" src="tv-main.jpg" alt="수림횟집 음식 사진">
             <div class="tv-sub-photos">
               <img src="tv-sub1.jpg" alt="수림횟집 음식 사진">
               <img src="tv-sub2.jpg" alt="수림횟집 음식 사진">
@@ -4633,6 +4684,36 @@
       div.textContent = text == null ? '' : String(text);
       return div.innerHTML;
     }
+
+    function updateTVClock() {
+      const now = new Date();
+
+      const hour = String(now.getHours()).padStart(2, '0');
+      const minute = String(now.getMinutes()).padStart(2, '0');
+
+      const month = now.getMonth() + 1;
+      const date = now.getDate();
+      const weekdays = ['일', '월', '화', '수', '목', '금', '토'];
+      const day = weekdays[now.getDay()];
+
+      const hourEl = document.getElementById('tv-hour');
+      const minuteEl = document.getElementById('tv-minute');
+      const dateEl = document.getElementById('tv-date');
+
+      if (hourEl) hourEl.textContent = hour;
+      if (minuteEl) minuteEl.textContent = minute;
+      if (dateEl) dateEl.textContent = `${month}/${date} (${day})`;
+    }
+
+    setInterval(updateTVClock, 1000);
+    setInterval(() => {
+      const colon = document.getElementById('tv-colon');
+      if (!colon) return;
+
+      colon.style.opacity = colon.style.opacity === '0' ? '1' : '0';
+    }, 500);
+    updateTVClock();
+    
     function getTodayString() {
       const now = new Date();
       const y = now.getFullYear();
