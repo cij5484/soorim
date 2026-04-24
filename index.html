@@ -499,6 +499,35 @@
       margin-top: 16px;
     }
 
+    .reservation-modal-actions {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .modal-right-actions {
+      margin-left: auto !important;
+      display: flex;
+      gap: 8px;
+    }
+
+    .modal-delete-btn {
+      background: #ef4444;
+      color: white;
+      border: none;
+      border-radius: 10px;
+      height: 48px;
+      padding: 0 18px;
+      font-size: 16px;
+      font-weight: 700;
+      cursor: pointer;
+
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      line-height: 1;
+    }
+
     .save-btn {
       background: #2563eb;
       color: white;
@@ -2201,6 +2230,7 @@
           inputmode="numeric"
           maxlength="3"
           placeholder="010"
+          onfocus="clearPhoneInput(this)"
           oninput="movePhoneNext(this, 'input-phone-2', 3)"
           onkeydown="movePhonePrev(event, this, 'input-phone-1')"
         />
@@ -2212,6 +2242,7 @@
           inputmode="numeric"
           maxlength="4"
           placeholder="1234"
+          onfocus="clearPhoneInput(this)"
           oninput="movePhoneNext(this, 'input-phone-3', 4)"
           onkeydown="movePhonePrev(event, this, 'input-phone-1')"
         />
@@ -2223,14 +2254,14 @@
           inputmode="numeric"
           maxlength="4"
           placeholder="5678"
+          onfocus="clearPhoneInput(this)"
           oninput="movePhoneNext(this, null, 4)"
           onkeydown="movePhonePrev(event, this, 'input-phone-2')"
         />
       </div>
 
-      
       <label for="input-people">인원</label>
-      <div style="display:flex; gap:10px; align-items:flex-end; justify-content:center;">
+      <div style="display:flex; gap:10px; align-items:flex-end; justify-content:center; width:100%;">
 
         <div style="text-align:center;">
           <div style="font-size:12px; color:#666; margin-bottom:4px;">성인</div>
@@ -2253,9 +2284,18 @@
           </div>
         </div>
 
-      </div>
+        <div style="text-align:center;">
+          <div style="font-size:12px; color:#666; margin-bottom:4px;">표시</div>
+          <input
+            type="text"
+            id="input-people-text"
+            placeholder="35~40명"
+            style="width:100px; text-align:center;"
+          />
+        </div>
 
-      
+      </div>
+                          
       <label>좌석</label>
       <div style="display:flex; gap:10px; align-items:flex-start; width:100%;">
         <select id="input-seat" style="width:50px; flex:none;" onchange="toggleRoomSelect()">
@@ -2308,9 +2348,20 @@
       <label for="input-memo">메모</label>
       <textarea id="input-memo" placeholder="알러지, 기념일, 요청사항 등"></textarea>
 
-      <div class="modal-actions">
-        <button class="save-btn" onclick="addReservation()">저장</button>
-        <button class="cancel-btn" onclick="closeModal()">취소</button>
+      <div class="modal-actions reservation-modal-actions">
+        <button
+          id="delete-btn"
+          class="modal-delete-btn"
+          onclick="deleteReservationFromModal()"
+          type="button"
+        >
+          삭제
+        </button>
+
+        <div class="modal-right-actions">
+          <button class="save-btn" onclick="addReservation()" type="button">저장</button>
+          <button class="cancel-btn" onclick="closeModal()" type="button">취소</button>
+        </div>
       </div>
     </div>
   </div>
@@ -2464,6 +2515,33 @@
 
     window.login = login;
     window.logout = logout;
+
+    async function deleteReservationFromModal() {
+      if (editingIndex === null) return;
+
+      if (!confirm('정말 삭제하시겠습니까?')) return;
+
+      const id = reservations[editingIndex]?.id;
+
+      if (id) {
+        await deleteDoc(doc(db, "reservations", id));
+      }
+
+      reservations.splice(editingIndex, 1);
+      editingIndex = null;
+
+      closeModal();
+
+      if (document.getElementById('seat-map-view').style.display === 'block') {
+        renderSeatMapContent();
+      } else {
+        render();
+      }
+    }
+
+    window.deleteReservationFromModal = deleteReservationFromModal;
+
+    window.deleteReservationFromModal = deleteReservationFromModal;
     
     function saveViewState() {
       try {
@@ -2488,6 +2566,11 @@
         if (nextEl) nextEl.focus();
       }
     }
+
+    function clearPhoneInput(el) {
+      el.value = '';
+    }
+    window.clearPhoneInput = clearPhoneInput;
 
     function movePhonePrev(event, currentEl, prevId) {
       if (event.key === 'Backspace' && currentEl.value.length === 0 && prevId) {
@@ -2790,7 +2873,11 @@
             return (a.time || '').localeCompare(b.time || '');
           });
 
-        render();
+        if (document.getElementById('seat-map-view').style.display === 'block') {
+          renderSeatMapContent();
+        } else {
+          render();
+        }
       }, (error) => {
         console.error("Firestore 불러오기 오류:", error);
         alert("예약 데이터를 불러오지 못했습니다. (" + (error.code || error.message) + ")");
@@ -2852,7 +2939,7 @@
                 <span style="color:#333; font-weight:600;">${escapeHtml(r.time)}</span>
 <span style="margin-left:8px;">${escapeHtml(r.name)}</span>
                 ${r.seat ? `<span style="margin-left:6px; color:#888;">${escapeHtml(r.seat)}</span>` : ''}
-                ${r.people ? `<span style="margin-left:6px; color:#888;">${r.people}명</span>` : ''}
+                ${r.people ? `<span style="margin-left:6px; color:#888;">${escapeHtml(getTVPeopleText(r))}</span>` : ''}
                 ${r.menu ? `<span style="margin-left:6px; color:#888;">${escapeHtml(r.menu)}</span>` : ''}
                 ${r.isNaver ? `<span style="margin-left:6px; background:#03c75a; color:white; font-size:11px; padding:2px 6px; border-radius:6px;">네이버</span>` : ''}
               </div>
@@ -2909,6 +2996,7 @@
 
       let addedCount = 0;
       let skippedCount = 0;
+      let skippedList = [];
 
       for (const newReservation of importPreviewList) {
         const isDuplicate = reservations.some(existing =>
@@ -2918,6 +3006,7 @@
         if (isDuplicate) {
           console.log('중복 건너뜀:', newReservation);
           skippedCount++;
+          skippedList.push(`중복 - ${newReservation.time || '-'} ${newReservation.name || '이름없음'} (${getTVPeopleText(newReservation)})`);
           continue;
         }
         const hasConflict = reservations.some(existing => {
@@ -2937,13 +3026,33 @@
             existing.seat === '룸' &&
             newRooms.some(r => oldRooms.includes(r));
 
-          return (sameTable || sameRoom) &&
-            isTimeConflict(newReservation.time, existing.time, newReservation.seat, existing.seat);
+          const newRoomFull = newReservation.seat === '룸' && newTables.length === 0;
+          const oldRoomFull = existing.seat === '룸' && oldTables.length === 0;
+
+          // 홀은 같은 테이블이면 충돌
+          if (newReservation.seat !== '룸' || existing.seat !== '룸') {
+            return sameTable &&
+              isTimeConflict(newReservation.time, existing.time, newReservation.seat, existing.seat);
+          }
+
+          // 룸끼리는:
+          // 1) 같은 룸이 아니면 충돌 아님
+          if (!sameRoom) return false;
+
+          // 2) 같은 룸이어도 둘 다 테이블 지정이면 같은 테이블일 때만 충돌
+          if (!newRoomFull && !oldRoomFull) {
+            return sameTable &&
+              isTimeConflict(newReservation.time, existing.time, newReservation.seat, existing.seat);
+          }
+
+          // 3) 둘 중 하나가 룸 전체 사용이면 같은 룸에서 충돌
+          return isTimeConflict(newReservation.time, existing.time, newReservation.seat, existing.seat);
         });
 
         if (hasConflict) {
           console.log('최종 건너뜀:', newReservation);
           skippedCount++;
+          skippedList.push(`충돌 - ${newReservation.time || '-'} ${newReservation.name || '이름없음'} (${getTVPeopleText(newReservation)})`);
           continue;
         }
 
@@ -2956,7 +3065,11 @@
       closeImportPreviewModal();
       closeImportModal();
 
-      alert(`완료\n추가: ${addedCount}건\n건너뜀(충돌): ${skippedCount}건`);
+      const skippedText = skippedList.length
+        ? `\n\n건너뛴 항목:\n${skippedList.join('\n')}`
+        : '';
+
+      alert(`완료\n추가: ${addedCount}건\n건너뜀: ${skippedCount}건${skippedText}`);
     }
 
     function previewImport() {
@@ -3037,6 +3150,11 @@
       const phoneLine = extractPhoneLine(lines);
       const peopleInfo = extractPeople(block);
       const menu = extractMenu(block, peopleInfo);
+      console.log('파싱확인:', {
+        block,
+        firstLine: lines[0],
+        menu
+      });
       const name = extractName(phoneLine);
 
       const memoLines = lines.filter(line => {
@@ -3066,6 +3184,7 @@
         people: peopleInfo.people,
         adult: peopleInfo.adult,
         child: peopleInfo.child,
+        peopleText: peopleInfo.peopleText || '',
         seat,
         room,
         table,
@@ -3247,61 +3366,59 @@
       let adult = 0;
       let child = 0;
       let people = 0;
+      let peopleText = '';
 
-      const rangeMatch = text.match(/(\d+)\s*~\s*(\d+)\s*명/);
-      const adultMatch = text.match(/(?:성인|어른)\s*(\d+)/);
-      const childMatch = text.match(/(?:아이|유아|초등)\s*(\d+)/);
-      const totalMatch = text.match(/(\d+)\s*(?:명|인)/);
+      const normalized = String(text || '').replace(/\s+/g, ' ');
+
+      // 35~40명 같은 범위 인원
+      const rangeMatch = normalized.match(/(\d+)\s*~\s*(\d+)\s*명/);
+      if (rangeMatch) {
+        people = Number(rangeMatch[1]);
+        peopleText = `${rangeMatch[1]}~${rangeMatch[2]}명`;
+        return { adult, child, people, peopleText };
+      }
+
+      // 어른2 아이1 / 성인2 유아1 / 어른 2 아이 1
+      const adultMatch = normalized.match(/(?:성인|어른)\s*(\d+)/);
+      const childMatch = normalized.match(/(?:아이|유아|초등)\s*(\d+)/);
 
       if (adultMatch) adult = Number(adultMatch[1]);
       if (childMatch) child = Number(childMatch[1]);
 
       if (adult || child) {
         people = adult + child;
-        return { adult, child, people };
+        return { adult, child, people, peopleText };
       }
 
-      if (rangeMatch) {
-        people = Number(rangeMatch[1]); // 필요하면 min값 저장
-        return { adult: people, child: 0, people };
-      }
-
+      // 일반 5명 / 5인
+      const totalMatch = normalized.match(/(\d+)\s*(?:명|인)/);
       if (totalMatch) {
         people = Number(totalMatch[1]);
-        return { adult: people, child: 0, people };
+        return { adult, child, people, peopleText };
       }
 
-      return { adult: 0, child: 0, people: 0 };
+      return { adult, child, people, peopleText };
     }
 
     function extractMenu(text, peopleInfo = {}) {
-      const normalized = String(text || '')
-        .replace(/\s+/g, ' ')
-        .trim();
+      const firstLine = String(text || '')
+        .split('\n')
+        .map(line => line.trim())
+        .filter(Boolean)[0] || '';
 
-      if (!normalized) return '';
+      if (!firstLine) return '';
 
-      // 1. 메뉴전화
-      if (normalized.includes('메뉴전화')) {
-        return '메뉴전화';
-      }
+      if (firstLine.includes('메뉴전화')) return '메뉴전화';
+      if (firstLine.includes('회정식')) return '회정식';
 
-      // 2. B코스3 / A코스2 / C코스10 형태
-      const courseWithCountMatch = normalized.match(/([A-Z가-힣])코스\s*(\d+)/);
+      const courseWithCountMatch = firstLine.match(/([A-Z가-힣])코스\s*(\d+)/);
       if (courseWithCountMatch) {
-        const courseName = `${courseWithCountMatch[1]}코스`;
-        const count = Number(courseWithCountMatch[2]);
-        return `${courseName} ${count}`;
+        return `${courseWithCountMatch[1]}코스 ${courseWithCountMatch[2]}`;
       }
 
-      const setMenuMatch = normalized.match(/(회정식)/);
-      if (setMenuMatch) return setMenuMatch[1];
-
-      // 3. B코스 / A코스 / C코스 형태
-      const courseOnlyMatch = normalized.match(/([A-Z가-힣])코스/);
+      const courseOnlyMatch = firstLine.match(/([A-Z가-힣])코스/);
       if (courseOnlyMatch) {
-        const courseName = `${courseOnlyMatch[1]}코스`;
-        return courseName;
+        return `${courseOnlyMatch[1]}코스`;
       }
 
       return '';
@@ -3785,14 +3902,20 @@
     }
 
     function getTVPeopleText(r) {
-      const people = Number(r.people) || 0;
-      if (people) return `${people}명`;
+      // ✅ 직접 입력 우선
+      if (r.peopleText && r.peopleText.trim() !== '') {
+        return r.peopleText;
+      }
 
       const adult = Number(r.adult) || 0;
       const child = Number(r.child) || 0;
-      const total = adult + child;
+      const people = Number(r.people) || 0;
 
-      return total ? `${total}명` : '-';
+      if (adult && child) return `어른${adult} 아이${child}`;
+      if (adult) return `${adult}명`;
+      if (people) return `${people}명`;
+
+      return '-';
     }
 
     function renderTVView() {
@@ -4181,7 +4304,7 @@
       tableReservations.forEach(r => {
         const item = document.createElement('div');
         item.className = 'table-select-item';
-        item.textContent = getTableSlotText(r);
+        item.innerHTML = getTableSlotText(r);
 
         item.onclick = () => {
           popup.classList.add('hidden');
@@ -4209,7 +4332,7 @@
       tableReservations.forEach(r => {
         const item = document.createElement('div');
         item.className = 'table-select-item';
-        item.textContent = getTableSlotText(r);
+        item.innerHTML = getTableSlotText(r);
 
         item.onclick = () => {
           popup.classList.add('hidden');
@@ -4621,7 +4744,7 @@
             <div class="info-grid" style="display:flex; gap:14px; align-items:center; flex-wrap:wrap;">
   <div class="info-item" style="display:flex; align-items:center; gap:6px; padding:4px 8px;">
     <div class="info-label" style="margin-bottom:0;">인원</div>
-    <div class="info-value">성인 ${r.adult || 0} / 아이 ${r.child || 0}</div>
+    <div class="info-value">${escapeHtml(getTVPeopleText(r))}</div>
   </div>
 
   <div class="info-item" style="display:flex; align-items:center; gap:6px; padding:4px 8px;">
@@ -4987,6 +5110,8 @@
       if (!requireLogin()) return;
       closeAllModals();
       editingIndex = null;
+      const deleteBtn = document.getElementById('delete-btn');
+      deleteBtn.style.display = 'none';
       document.getElementById('modal-title').textContent = '새 예약 추가';
       document.getElementById('input-date').value = selectedDate;
       document.getElementById('input-naver').checked = false;
@@ -4998,6 +5123,7 @@
       document.getElementById('input-table').value = '';
       document.getElementById('input-menu').value = '';
       document.getElementById('input-memo').value = '';
+      document.getElementById('input-people-text').value = '';
       document.getElementById('modal').classList.add('show');
       document.getElementById('input-adult').value = '2';
       document.getElementById('input-child').value = '0';
@@ -5012,6 +5138,8 @@
       if (!requireLogin()) return;
       const r = reservations[index];
       editingIndex = index;
+      const deleteBtn = document.getElementById('delete-btn');
+      deleteBtn.style.display = 'inline-flex';
 
       document.getElementById('modal-title').textContent = '예약 수정';
       document.getElementById('input-date').value = r.date || selectedDate;
@@ -5029,6 +5157,7 @@
       document.getElementById('input-table').value = r.table || '';
       document.getElementById('input-menu').value = r.menu || '';
       document.getElementById('input-memo').value = r.memo || '';
+      document.getElementById('input-people-text').value = r.peopleText || '';
 
       document.getElementById('modal').classList.add('show');
       updateTotalPeople();
@@ -5143,7 +5272,8 @@ async function addReservation() {
     menu,
     isNaver,
     memo,
-    status: editingIndex !== null ? reservations[editingIndex].status : '예약'
+    status: editingIndex !== null ? reservations[editingIndex].status : '예약',
+    peopleText: document.getElementById('input-people-text')?.value.trim() || '',
   };
 
   const hasConflict = reservations.some((existing, index) => {
@@ -5203,22 +5333,35 @@ async function addReservation() {
     return;
   }
 
-  try {
+    try {
     if (editingIndex !== null && reservations[editingIndex]?.id) {
-      await setDoc(doc(db, "reservations", reservations[editingIndex].id), reservationData);
-    } else {
-      await addDoc(reservationsCollection, reservationData);
-    }
+      const editId = reservations[editingIndex].id;
+
+      await setDoc(doc(db, "reservations", editId), reservationData);
+
+      // 테이블맵 즉시 반영용
+      reservations[editingIndex] = {
+        ...reservationData,
+        id: editId
+      };
+
+      } else {
+        await addDoc(reservationsCollection, reservationData);
+      }
 
     selectedDate = date;
     syncSelectedDateUI();
     closeModal();
+
+      // 화면 갱신은 Firebase onSnapshot에서 자동으로 처리
+      
   } catch (error) {
     console.error("예약 저장 오류:", error);
     alert("예약 저장 중 오류가 발생했습니다.");
   }
 }
 
+    
     // ====== 상태 변경 ======
     async function changeStatus(index, newStatus) {
   const r = reservations[index];
