@@ -167,6 +167,7 @@
       margin-bottom: 10px;
       border-radius: 12px;
       box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+      position: relative;
     }
 
     .day-date-input:hover {
@@ -2073,13 +2074,7 @@
     </div>
   </div>
 
-  <div id="table-select-popup" class="table-select-popup hidden">
-    <div class="table-select-card">
-      <div class="table-select-title"></div>
-      <div class="table-select-list"></div>
-    </div>
-  </div>
-
+  
   <script type="module">
 
    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-app.js";
@@ -3957,7 +3952,7 @@
 
     window.toggleSeatMap = toggleSeatMap;
 
-        function renderDayView() {
+    function renderDayView() {
         const monthView = document.getElementById('month-view');
         const weekView = document.getElementById('week-view');
         const dayHeader = document.getElementById('day-view-header');
@@ -4047,13 +4042,8 @@
   </div>
 
   <div style="display:flex; align-items:center; gap:4px;">
-  <button
-    onclick="event.stopPropagation(); callReservationCustomer(${realIndex})"
-    style="border:none; background:transparent; cursor:pointer; font-size:16px; padding:2px 4px;"
-    title="전화"
-  >
-    📞
-  </button>
+
+  
     <button
       onclick="event.stopPropagation(); editReservation(${realIndex})"
       style="border:none; background:transparent; cursor:pointer; font-size:16px; padding:2px 4px;"
@@ -4070,6 +4060,24 @@
       ✕
     </button>
   </div>
+
+  <div style="position:absolute; right:8px; bottom:6px; display:flex; gap:4px;">
+
+  <button
+    onclick="event.stopPropagation(); openSmsTemplatePopup(${realIndex})"
+    style="border:none; background:transparent; cursor:pointer; font-size:16px; padding:2px 4px;"
+    title="문자"
+  >
+    💬
+  </button>
+
+  <button
+    onclick="event.stopPropagation(); callReservationCustomer(${realIndex})"
+    style="border:none; background:transparent; cursor:pointer; font-size:16px; padding:2px 4px;"
+    title="전화"
+  >
+    📞
+  </button>
 
 </div>
 
@@ -4682,6 +4690,94 @@ async function addReservation() {
       });
     }
 
+    function openSmsTemplatePopup(index) {
+      const popup = document.getElementById('table-select-popup');
+      if (!popup) {
+        alert('선택창을 찾을 수 없습니다.');
+        return;
+      }
+
+      const title = popup.querySelector('.table-select-title');
+      const list = popup.querySelector('.table-select-list');
+
+      if (!title || !list) {
+        alert('선택창 내부 구조가 없습니다.');
+        return;
+      }
+
+      title.textContent = '문자 선택';
+
+      list.innerHTML = `
+        <div class="table-select-item" onclick="smsReservationCustomer(${index}, 'today')">
+          오늘 예약 확인
+        </div>
+        <div class="table-select-item" onclick="smsReservationCustomer(${index}, 'tomorrow')">
+          내일 예약 확인
+        </div>
+      `;
+
+      popup.classList.remove('hidden');
+    }
+
+    function smsReservationCustomer(index, type) {
+      const r = reservations[index];
+
+      if (!r || !r.phone) {
+        alert('전화번호가 없습니다.');
+        return;
+      }
+
+      const phone = String(r.phone || '').trim();
+      const name = r.name || '고객';
+      const time = r.time || '-';
+      const people = r.people ? r.people + '명' : '-';
+
+      const menu = r.menu && String(r.menu).trim() !== '' ? r.menu : '미정';
+
+      const seatParts = [];
+      if (r.seat) seatParts.push(r.seat);
+      if (r.room) seatParts.push(r.room);
+      if (r.table) seatParts.push(r.table + '번');
+
+      const seatText = seatParts.length ? seatParts.join(' ') : '-';
+
+      let dateText = '';
+      if (type === 'tomorrow' && r.date) {
+        const d = new Date(r.date);
+        dateText = `${d.getMonth() + 1}/${d.getDate()} `;
+      }
+
+      const headerText = type === 'tomorrow'
+        ? '내일 예약 확인차 문자 드립니다.'
+        : '금일 예약 확인차 문자 드립니다.';
+
+      const isMenuEmpty = !r.menu || String(r.menu).trim() === '';
+      const menuText = isMenuEmpty ? '미정' : r.menu;
+      const extraMenuGuide = isMenuEmpty
+        ? '\n\n**드실 메뉴를 미리 정해주시면 더욱 쾌적한 식사가 가능하십니다.^^'
+        : '';
+
+      const message =
+      "안녕하세요 고객님. 해운대 수림횟집 입니다.\n" +
+      headerText + "\n\n" +
+      "*예약시간 - " + dateText + time + "\n" +
+      "*예약인원 - " + people + "\n" +
+      "*예약메뉴 - " + menuText + "\n" +
+      "*예약좌석 - " + seatText + "\n" +
+      "*예약자명 - " + name + "\n" +
+      "*주차안내 : 매장 옆 '청담더타이' 건물을 끼고 코너를 돌아 '24시 주차장'에 주차하시면 됩니다." +
+      extraMenuGuide + "\n\n" +
+      "문의사항이나 변동사항이 있으시면 꼭 매장으로 연락 부탁드립니다.\n" +
+      "감사합니다.";
+
+      const popup = document.getElementById('table-select-popup');
+      if (popup) popup.classList.add('hidden');
+
+      window.location.href =
+        'sms:' + phone.replace(/[^0-9+]/g, '') +
+        '?body=' + encodeURIComponent(message);
+    }
+
     function callReservationCustomer(index) {
       const r = reservations[index];
       if (!r || !r.phone) {
@@ -4808,6 +4904,8 @@ async function addReservation() {
     window.toggleStatus = toggleStatus;
     window.toggleSettingStatus = toggleSettingStatus;
     window.callReservationCustomer = callReservationCustomer;
+    window.smsReservationCustomer = smsReservationCustomer;
+    window.openSmsTemplatePopup = openSmsTemplatePopup;
     window.clearAllReservations = clearAllReservations;
     window.toggleRoomSelect = toggleRoomSelect;
     window.moveMonth = moveMonth;
