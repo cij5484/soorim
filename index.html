@@ -426,6 +426,7 @@
       z-index: 2000;
       padding: 20px;
     }
+    
     .modal-bg.show { display: flex; }
     .modal {
       background: white;
@@ -2128,6 +2129,14 @@
       }
       
     }
+
+    #import-preview-modal {
+      z-index: 2000 !important;
+    }
+
+    #modal {
+      z-index: 3000 !important;
+    }
         
   </style>
 </head>
@@ -2265,7 +2274,8 @@
 
         <div style="text-align:center;">
           <div style="font-size:12px; color:#666; margin-bottom:4px;">성인</div>
-          <input type="number" id="input-adult" min="0" value="2"
+          <input type="number" id="input-adult" min="0" value="0"
+            onfocus="clearZeroOnFocus(this)"
             oninput="updateTotalPeople()"
             style="width:80px; text-align:center;" />
         </div>
@@ -2273,6 +2283,7 @@
         <div style="text-align:center;">
           <div style="font-size:12px; color:#666; margin-bottom:4px;">아이</div>
           <input type="number" id="input-child" min="0" value="0"
+            onfocus="clearZeroOnFocus(this)"
             oninput="updateTotalPeople()"
             style="width:80px; text-align:center;" />
         </div>
@@ -2572,6 +2583,15 @@
     }
     window.clearPhoneInput = clearPhoneInput;
 
+    function clearZeroOnFocus(el) {
+      if (el.value === '0') {
+        el.value = '';
+      }
+      updateTotalPeople();
+    }
+
+    window.clearZeroOnFocus = clearZeroOnFocus;
+
     function movePhonePrev(event, currentEl, prevId) {
       if (event.key === 'Backspace' && currentEl.value.length === 0 && prevId) {
         const prevEl = document.getElementById(prevId);
@@ -2629,6 +2649,7 @@
     let reservations = [];
     let editingIndex = null;
     let importPreviewList = [];
+    let editingPreviewIndex = null;
     let currentView = localStorage.getItem('currentView') || 'month';
     let selectedDate = localStorage.getItem('selectedDate') || getTodayString();
     let searchKeyword = '';
@@ -2756,6 +2777,7 @@
     }
 
     function setView(view) {
+      document.getElementById('seat-map-view').style.display = 'none';
       currentView = view;
       localStorage.setItem('currentView', currentView);
       render();
@@ -2952,12 +2974,21 @@
 
             </div>
 
-            <button
-              onclick="removePreviewItem(${r.__index})"
-              style="background:#e74c3c; color:white; border:none; padding:6px 10px; border-radius:6px; cursor:pointer; font-size:12px;"
-            >
-              제외
-            </button>
+            <div style="display:flex; gap:6px;">
+  <button
+    onclick="editPreviewItem(${r.__index})"
+    style="background:#2563eb; color:white; border:none; padding:6px 10px; border-radius:6px; cursor:pointer; font-size:12px;"
+  >
+    수정
+  </button>
+
+  <button
+    onclick="removePreviewItem(${r.__index})"
+    style="background:#e74c3c; color:white; border:none; padding:6px 10px; border-radius:6px; cursor:pointer; font-size:12px;"
+  >
+    제외
+  </button>
+</div>
 
           </div>
         `).join('');
@@ -2976,6 +3007,65 @@
     function removePreviewItem(index) {
       importPreviewList.splice(index, 1);
       renderImportPreview();
+    }
+
+    function editPreviewItem(index) {
+      const r = importPreviewList[index];
+      if (!r) return;
+
+      editingPreviewIndex = index;
+
+      document.getElementById('modal').classList.add('show');
+      document.getElementById('modal-title').innerText = '불러오기 수정';
+
+      document.getElementById('delete-btn').style.display = 'none';
+
+      document.getElementById('input-date').value = r.date || '';
+
+      if (r.time) {
+        const [h, m] = r.time.split(':');
+        document.getElementById('input-hour').value = h || '';
+        document.getElementById('input-minute').value = m || '';
+      }
+
+      document.getElementById('input-name').value = r.name || '';
+
+      const phone = (r.phone || '').replace(/\D/g, '');
+      document.getElementById('input-phone-1').value = phone.slice(0, 3);
+      document.getElementById('input-phone-2').value = phone.slice(3, 7);
+      document.getElementById('input-phone-3').value = phone.slice(7, 11);
+
+      document.getElementById('input-adult').value = r.adult || 0;
+      document.getElementById('input-child').value = r.child || 0;
+      document.getElementById('input-people-text').value = r.peopleText || '';
+
+      document.getElementById('input-seat').value = r.seat || '홀';
+      toggleRoomSelect();
+      // 테이블 체크박스 초기화
+      document.querySelectorAll('.table-checkbox').forEach(cb => cb.checked = false);
+
+      // r.table이 있으면 ','로 분리해서 해당 체크박스 체크
+      if (r.table) {
+        r.table.split(',').map(t => t.trim()).forEach(tableNum => {
+          const cb = document.querySelector(`.table-checkbox[data-table="${tableNum}"]`);
+          if (cb) cb.checked = true;
+        });
+      }
+
+      // 테이블 체크박스 초기화
+      document.querySelectorAll('.table-checkbox').forEach(cb => cb.checked = false);
+
+      // r.table 기준으로 체크 복원
+      if (r.table) {
+        r.table.split(',').map(t => t.trim()).forEach(tableNum => {
+          const cb = document.querySelector(`.table-checkbox[data-table="${tableNum}"]`);
+          if (cb) cb.checked = true;
+        });
+      }
+      document.getElementById('input-menu').value = r.menu || '';
+      document.getElementById('input-memo').value = r.memo || '';
+
+      updateTotalPeople();
     }
 
     function isSameImportedReservation(a, b) {
@@ -3601,6 +3691,7 @@
     function updateRoomTablePreview() {
       const preview = document.getElementById('room-table-preview');
       const seat = document.getElementById('input-seat').value;
+      const tableInput = document.getElementById('input-table');
 
       if (!preview) return;
 
@@ -3608,30 +3699,54 @@
         document.querySelectorAll('#room-checkboxes input.room-check:checked')
       ).map(cb => cb.value);
 
-      // 룸이 아니거나, 룸 선택이 0개면 숨김
-      if (seat !== '룸' || checkedRooms.length === 0) {
+      // 룸이 아니면 테이블 미리보기 숨김
+      if (seat !== '룸') {
         preview.style.display = 'none';
         preview.innerHTML = '';
         return;
       }
 
-      // 룸 2개 이상이면 어차피 전체 사용이므로 숨김
+      // 룸인데 선택된 룸이 없으면 테이블값도 비우고 숨김
+      if (checkedRooms.length === 0) {
+        if (tableInput) tableInput.value = '';
+        preview.style.display = 'none';
+        preview.innerHTML = '';
+        return;
+      }
+
+      // 룸 2개 이상이면 전체/묶음 사용으로 보고 세부 테이블 선택 숨김
       if (checkedRooms.length >= 2) {
+        if (tableInput) tableInput.value = '';
         preview.style.display = 'none';
         preview.innerHTML = '';
         return;
       }
 
-      // 룸 1개일 때만 사용 테이블 표시
+      // 룸 1개일 때만 세부 테이블 체크박스 표시
       const room = checkedRooms[0];
       const tables = ROOM_TABLE_MAP[room] || [];
+
+      // 기존에 저장되어 있던 테이블값을 읽어서 체크 상태 복원
+      const selectedTables = new Set(
+        String(tableInput?.value || '')
+          .split(',')
+          .map(v => v.trim())
+          .filter(Boolean)
+      );
 
       preview.style.display = 'block';
       preview.innerHTML = `
         <div class="table-grid" style="display:grid; gap:4px 8px; align-items:center; justify-content:flex-start;">
           ${tables.map(t => `
             <label style="margin:0; font-weight:normal; display:flex; align-items:center; gap:4px; white-space:nowrap; font-size:13px;">
-              <input type="checkbox" class="table-check" value="${t}" style="width:auto; margin:0;">
+              <input
+                type="checkbox"
+                class="table-check"
+                value="${t}"
+                ${selectedTables.has(String(t)) ? 'checked' : ''}
+                onchange="syncRoomTableInput()"
+                style="width:auto; margin:0;"
+              >
               ${t}
             </label>
           `).join('')}
@@ -3639,7 +3754,59 @@
       `;
     }
 
+    function syncRoomTableInput() {
+      const tableInput = document.getElementById('input-table');
+      if (!tableInput) return;
+
+      const checkedTableValues = Array.from(
+        document.querySelectorAll('.table-check:checked')
+      ).map(cb => cb.value);
+
+      tableInput.value = checkedTableValues.join(', ');
+    }
+
     window.updateRoomTablePreview = updateRoomTablePreview;
+    window.syncRoomTableInput = syncRoomTableInput;
+
+
+    const roomTables = {
+      '1실': ['21','22','23','24'],
+      '2실': ['31','32','33','34'],
+      '3실': ['41','42','43','44'],
+      '4실': ['51','52','53','54'],
+      '5실': ['61','62','63','64'],
+    };
+
+    // 특정 날짜에 모든 룸이 만석인지 확인
+    function isRoomFullyBooked(dateString) {
+      const dayReservations = reservations.filter(r => r.date === dateString);
+      if (!dayReservations.length) return false;
+
+      const roomStatus = {};
+
+      for (const room in roomTables) {
+        const tables = roomTables[room];
+
+        const reserved = new Set();
+
+        dayReservations.forEach(r => {
+          if (r.seat && r.seat.includes(room)) {
+            if (r.seat === `예약 ${room}`) {
+              // 예약 1실처럼 룸 전체 예약 표시 → 룸 전체 테이블 추가
+              tables.forEach(t => reserved.add(t));
+            } else if (r.table) {
+              r.table.split(',').map(t => t.trim()).forEach(t => reserved.add(t));
+            }
+          }
+        });
+
+        // 해당 룸의 모든 테이블이 예약되어야 true
+        roomStatus[room] = tables.every(t => reserved.has(t));
+      }
+
+      // 모든 룸이 만석이어야 true
+      return Object.values(roomStatus).every(v => v);
+    }
 
         function renderMonthView() {
         const monthView = document.getElementById('month-view');
@@ -3718,7 +3885,11 @@
 
         const totalPeople = dayReservations.reduce((sum, r) => sum + (Number(r.people) || 0), 0);
         const roomCount = dayReservations.filter(r => r.seat === '룸').length;
-       
+        let roomFullHtml = '';
+        if (isRoomFullyBooked(dateString)) {
+          roomFullHtml = `<br><span style="color:#dc2626; font-weight:900;">룸 만석확인</span>`;
+        }
+              
 
         html += `
           <div
@@ -3728,10 +3899,11 @@
             <div class="calendar-date">${day}</div>
 
             <div class="calendar-summary">
-              ${dayReservations.length ? `예약 ${dayReservations.length}건` : '<span style="color:#9ca3af;">예약 없음</span>'}
-              ${totalPeople ? `<br>총 ${totalPeople}명` : ''}
-              ${roomCount ? `<br>룸 ${roomCount}건` : ''}
-            </div>
+  ${dayReservations.length ? `예약 ${dayReservations.length}건` : '<span style="color:#9ca3af;">예약 없음</span>'}
+  ${totalPeople ? `<br>총 ${totalPeople}명` : ''}
+  ${roomCount ? `<br>룸 ${roomCount}건` : ''}
+  ${roomFullHtml}
+</div>
 
           </div>
         `;
@@ -3901,21 +4073,53 @@
       return seat || '-';
     }
 
-    function getTVPeopleText(r) {
-      // ✅ 직접 입력 우선
-      if (r.peopleText && r.peopleText.trim() !== '') {
-        return r.peopleText;
-      }
-
+    function getPeopleDisplayText(r) {
       const adult = Number(r.adult) || 0;
       const child = Number(r.child) || 0;
       const people = Number(r.people) || 0;
 
-      if (adult && child) return `어른${adult} 아이${child}`;
-      if (adult) return `${adult}명`;
-      if (people) return `${people}명`;
+      const directText = String(r.peopleText || '').trim();
+
+      // 예전 코드에서 자동 저장됐던 문구들은 직접입력으로 보지 않음
+      const oldAutoTexts = new Set([
+        adult > 0 && child > 0 ? `성인 ${adult}명, 아이 ${child}명` : '',
+        adult > 0 ? `성인 ${adult}명` : '',
+        child > 0 ? `아이 ${child}명` : ''
+      ]);
+
+      // 1순위: 직접입력 표시칸
+      // 예: 10~20명, 35~40명, 단체 25명
+      if (directText && !oldAutoTexts.has(directText)) {
+        return directText;
+      }
+
+      // 2순위: 성인 + 아이가 같이 있으면 반드시 구분
+      // 성인 수는 메뉴 수와 관련, 아이 수는 좌석 수와 관련
+      if (adult > 0 && child > 0) {
+        return `성인${adult}, 아이${child}`;
+      }
+
+      // 3순위: 성인만 있으면 자연스럽게 N명
+      if (adult > 0) {
+        return `${adult}명`;
+      }
+
+      // 4순위: 아이만 있는 경우는 거의 없지만 방어용
+      if (child > 0) {
+        return `아이${child}`;
+      }
+
+      // 5순위: 예전 데이터에 people 숫자만 있는 경우
+      if (people > 0) {
+        return `${people}명`;
+      }
 
       return '-';
+    }
+
+    // 기존 TV 코드들이 깨지지 않게 이름은 그대로 연결해둠
+    function getTVPeopleText(r) {
+      return getPeopleDisplayText(r);
     }
 
     function renderTVView() {
@@ -3956,7 +4160,7 @@
         const menu = String(r.menu || '').trim();
         const menuHtml = menu
           ? `<span class="tv-menu">${escapeHtml(menu)}</span>`
-          : `<span class="tv-menu tv-menu-empty">미정</span>`;
+          : `<span class="tv-menu tv-menu-empty"></span>`;
 
         return `
           <tr>
@@ -4231,6 +4435,13 @@
       }
 
       if (tableReservations.length === 1) {
+        const isRoomTable = Number(tableNumber) >= 20;
+
+        if (isRoomTable) {
+          showRoomSingleActionPopup(tableNumber, tableReservations[0]);
+          return;
+        }
+
         const index = reservations.indexOf(tableReservations[0]);
         if (index !== -1) editReservation(index);
         return;
@@ -4240,21 +4451,22 @@
     }
 
     function openAddReservationWithTable(tableNumber) {
-      editingIndex = null;
+      if (!requireLogin()) return;
 
-      // 모달 열기
-      document.getElementById('modal-title').textContent = '새 예약 추가';
-      document.getElementById('modal').classList.add('show');
-
-      // 날짜 자동 입력
-      document.getElementById('input-date').value = selectedDate;
+      // 기존 새 예약 모달 열기 방식을 그대로 사용해서 먼저 깨끗하게 초기화
+      openModal();
 
       // 좌석 자동 설정
-      const isRoom = tableNumber >= 20; // 21번부터 룸
+      const isRoom = Number(tableNumber) >= 20;
       document.getElementById('input-seat').value = isRoom ? '룸' : '홀';
       toggleRoomSelect();
 
-      // 룸 선택 자동 체크
+      // 룸 체크박스 초기화
+      document.querySelectorAll('#room-checkboxes input').forEach(cb => {
+        cb.checked = false;
+      });
+
+      // 룸 테이블인 경우 해당 룸 자동 체크
       if (isRoom) {
         const roomMap = {
           21: '1실', 22: '1실', 23: '1실', 24: '1실',
@@ -4264,32 +4476,59 @@
           61: '5실', 62: '5실', 63: '5실', 64: '5실'
         };
 
-        const room = roomMap[tableNumber];
+        const room = roomMap[Number(tableNumber)];
 
-        document.querySelectorAll('#room-checkboxes input').forEach(cb => {
+        document.querySelectorAll('#room-checkboxes .room-check').forEach(cb => {
           cb.checked = cb.value === room;
         });
-
-        updateRoomTablePreview();
       }
 
       // 테이블 번호 자동 입력
-      document.getElementById('input-table').value = tableNumber;
+      document.getElementById('input-table').value = String(tableNumber);
 
-      // 나머지 초기화
-      document.getElementById('input-name').value = '';
-      clearPhoneInputs();
-      document.getElementById('input-adult').value = 2;
-      document.getElementById('input-child').value = 0;
-      updateTotalPeople();
-      document.getElementById('input-menu').value = '';
-      document.getElementById('input-memo').value = '';
-      document.getElementById('input-naver').checked = false;
+      // 룸 테이블 미리보기 갱신
+      updateRoomTablePreview();
     }
 
     
     function closeTableSelectPopup() {
       document.getElementById('table-select-popup').classList.add('hidden');
+    }
+
+    function showRoomSingleActionPopup(tableNumber, reservation) {
+      const popup = document.getElementById('table-select-popup');
+      const title = popup.querySelector('.table-select-title');
+      const list = popup.querySelector('.table-select-list');
+
+      title.textContent = tableNumber + '번 작업 선택';
+      list.innerHTML = '';
+
+      const editItem = document.createElement('div');
+      editItem.className = 'table-select-item';
+      editItem.textContent = '기존예약수정';
+
+      editItem.onclick = () => {
+        popup.classList.add('hidden');
+
+        const index = reservations.indexOf(reservation);
+        if (index !== -1) {
+          editReservation(index);
+        }
+      };
+
+      const addItem = document.createElement('div');
+      addItem.className = 'table-select-item';
+      addItem.textContent = '새예약추가';
+
+      addItem.onclick = () => {
+        popup.classList.add('hidden');
+        openAddReservationWithTable(tableNumber);
+      };
+
+      list.appendChild(editItem);
+      list.appendChild(addItem);
+
+      popup.classList.remove('hidden');
     }
 
     // ===== 일반 수정용 =====
@@ -4453,6 +4692,9 @@
       } else {
         mapView.style.display = 'none';
         list.style.display = 'block';
+
+        // 좌석맵에서 돌아올 때 일간 예약카드를 최신 상태로 다시 그림
+        render();
       }
     }
 
@@ -5125,15 +5367,36 @@
       document.getElementById('input-memo').value = '';
       document.getElementById('input-people-text').value = '';
       document.getElementById('modal').classList.add('show');
-      document.getElementById('input-adult').value = '2';
+      document.getElementById('input-adult').value = '0';
       document.getElementById('input-child').value = '0';
       updateTotalPeople();
     }
 
     function closeModal() {
       editingIndex = null;
-      document.getElementById('modal').classList.remove('show');
+      editingPreviewIndex = null;
+
+      const deleteBtn = document.getElementById('delete-btn');
+      if (deleteBtn) {
+        deleteBtn.style.display = 'none';
+      }
+
+      const modal = document.getElementById('modal');
+      if (modal) {
+        modal.classList.remove('show');
+      }
     }
+
+    function refreshCurrentScreen() {
+      const seatMapView = document.getElementById('seat-map-view');
+
+      if (seatMapView && seatMapView.style.display === 'block') {
+        renderSeatMapContent();
+      } else {
+        render();
+      }
+    }
+    
     function editReservation(index) {
       if (!requireLogin()) return;
       const r = reservations[index];
@@ -5212,154 +5475,201 @@
       return isSameTable(r1, r2);
     }
     
-async function addReservation() {
-  if (!requireLogin()) return;
-  const date = document.getElementById('input-date').value.trim();
-  const isNaver = document.getElementById('input-naver').checked;
-  const name = document.getElementById('input-name').value.trim();
-  const phone = getPhoneValue();
-  const hour = document.getElementById('input-hour').value;
-  const minute = document.getElementById('input-minute').value;
-  const time = `${hour}:${minute}`;
-      
-  const availableTimes = getAvailableTimes(date);
-    if (!availableTimes.includes(time)) {
-      alert('선택한 날짜에는 예약이 불가능한 시간입니다.');
-      return;
-    }
+    async function addReservation() {
+      if (editingPreviewIndex !== null) {
+        const reservationData = {
+          date: document.getElementById('input-date').value,
+          time: document.getElementById('input-hour').value + ':' + document.getElementById('input-minute').value,
+          name: document.getElementById('input-name').value.trim(),
+          phone:
+            document.getElementById('input-phone-1').value +
+            document.getElementById('input-phone-2').value +
+            document.getElementById('input-phone-3').value,
+          adult: Number(document.getElementById('input-adult').value) || 0,
+          child: Number(document.getElementById('input-child').value) || 0,
+          people:
+            (Number(document.getElementById('input-adult').value) || 0) +
+            (Number(document.getElementById('input-child').value) || 0),
+          table: document.getElementById('input-table').value.trim(),
+          menu: document.getElementById('input-menu').value.trim(),
+          memo: document.getElementById('input-memo').value.trim(),
+          seat: document.getElementById('input-seat').value || '' // 추가
+        };
 
-  const adult = Number(document.getElementById('input-adult').value || 0);
-  const child = Number(document.getElementById('input-child').value || 0);
-  const people = adult + child;
+        // ====== 문자 전송용 인원 텍스트 계산 ======
+        // ====== 문자 전송용 인원 텍스트 계산 ======
+        reservationData.peopleText = document.getElementById('input-people-text')?.value.trim() || '';
 
-  const seat = document.getElementById('input-seat').value;
-  const selectedRooms = Array.from(
-    document.querySelectorAll('#room-checkboxes input.room-check:checked')
-  ).map(cb => cb.value);
+        // 문자 메시지 생성
+        const msg = `안녕하세요 고객님. 해운대 수림횟집 입니다.
+        금일 예약 확인차 문자 드립니다.
 
-  const room = seat === '룸'
-    ? (selectedRooms.length === 5 ? '전체' : selectedRooms.join(', '))
-    : '';
-  let table = document.getElementById('input-table').value.trim();
+        *예약시간 - ${reservationData.time}
+        *예약인원 - ${reservationData.peopleText}
+        *예약메뉴 - ${reservationData.menu || ''}
+        *예약좌석 - ${reservationData.seat}
+        *예약자명 - ${reservationData.name}
+        *주차안내 : 매장 옆 '청담더타이' 건물을 끼고 코너를 돌아 '24시 주차장'에 주차하시면 됩니다.
 
-  const checkedTableValues = Array.from(
-    document.querySelectorAll('.table-check:checked')
-  ).map(cb => cb.value);
+        문의사항이나 변동사항이 있으시면 꼭 매장으로 연락 부탁드립니다.
+        감사합니다.`;
 
-  if (seat === '룸' && checkedTableValues.length > 0) {
-    table = checkedTableValues.join(', ');
-  }
-  const menu = document.getElementById('input-menu').value.trim();
-  const memo = document.getElementById('input-memo').value.trim();
+        // sendSMS(msg, reservationData.phone); // 실제 발송
+        console.log("보낼 문자:\n", msg);
 
-  if (!date || !name) {
-    alert('날짜와 이름은 꼭 입력해주세요.');
-    return;
-  }
-
-  
-  const reservationData = {
-    date,
-    name,
-    phone,
-    time,
-    people,
-    adult,
-    child,
-    seat,
-    room,
-    table,
-    menu,
-    isNaver,
-    memo,
-    status: editingIndex !== null ? reservations[editingIndex].status : '예약',
-    peopleText: document.getElementById('input-people-text')?.value.trim() || '',
-  };
-
-  const hasConflict = reservations.some((existing, index) => {
-    if (editingIndex !== null && index === editingIndex) {
-      return false;
-    }
-
-    return isConflict(reservationData, existing);
-  });
-
-  if (hasConflict) {
-    const conflict = reservations.find(existing => {
-      if (existing.date !== date) return false;
-
-      const newTables = splitValues(table);
-      const oldTables = splitValues(existing.table);
-
-      const newRooms = splitValues(room);
-      const oldRooms = splitValues(existing.room);
-
-      const sameTable = newTables.some(t => oldTables.includes(t));
-      const sameRoom =
-        seat === '룸' &&
-        existing.seat === '룸' &&
-        newRooms.some(r => oldRooms.includes(r));
-
-      return (sameTable || sameRoom) &&
-        isTimeConflict(time, existing.time, seat, existing.seat);
-    });
-
-    if (conflict) {
-      let message = '';
-
-      if (conflict.time) {
-        message += `${conflict.time} `;
+        importPreviewList[editingPreviewIndex] = reservationData;
+        editingPreviewIndex = null;
+        closeModal();
+        renderImportPreview();
+        return;
       }
 
-      if (conflict.name) {
-        message += `${conflict.name} `;
+      if (!requireLogin()) return;
+
+      // 기본 입력값
+      const date = document.getElementById('input-date').value.trim();
+      const isNaver = document.getElementById('input-naver').checked;
+      const name = document.getElementById('input-name').value.trim();
+      const phone = getPhoneValue();
+      const hour = document.getElementById('input-hour').value;
+      const minute = document.getElementById('input-minute').value;
+      const time = `${hour}:${minute}`;
+
+      // 예약 가능 시간 체크
+      const availableTimes = getAvailableTimes(date);
+      if (!availableTimes.includes(time)) {
+        alert('선택한 날짜에는 예약이 불가능한 시간입니다.');
+        return;
       }
 
-      if (conflict.room && !conflict.table) {
-        message += `(${conflict.room} 전체) `;
+      const adult = Number(document.getElementById('input-adult').value || 0);
+      const child = Number(document.getElementById('input-child').value || 0);
+      const people = adult + child;
+
+      const seat = document.getElementById('input-seat').value;
+      const selectedRooms = Array.from(
+        document.querySelectorAll('#room-checkboxes input.room-check:checked')
+      ).map(cb => cb.value);
+
+      const room = seat === '룸'
+        ? (selectedRooms.length === 5 ? '전체' : selectedRooms.join(', '))
+        : '';
+
+      let table = document.getElementById('input-table').value.trim();
+      const checkedTableValues = Array.from(
+        document.querySelectorAll('.table-check:checked')
+      ).map(cb => cb.value);
+
+      if (seat === '룸' && checkedTableValues.length > 0) {
+        table = checkedTableValues.join(', ');
       }
 
-      if (conflict.table) {
-        message += `(${conflict.table}번 테이블) `;
+      const menu = document.getElementById('input-menu').value.trim(); // 메뉴 그대로
+      const memo = document.getElementById('input-memo').value.trim();
+
+      if (!date || !name) {
+        alert('날짜와 이름은 꼭 입력해주세요.');
+        return;
       }
 
-      message += '이미 사용 중입니다.';
+      // 사람 수 텍스트 처리
+      const peopleText = document.getElementById('input-people-text')?.value.trim() || '';
 
-      alert(message);
-    } else {
-      alert('겹치는 예약이 있습니다.');
-    }
-
-    return;
-  }
-
-    try {
-    if (editingIndex !== null && reservations[editingIndex]?.id) {
-      const editId = reservations[editingIndex].id;
-
-      await setDoc(doc(db, "reservations", editId), reservationData);
-
-      // 테이블맵 즉시 반영용
-      reservations[editingIndex] = {
-        ...reservationData,
-        id: editId
+      const reservationData = {
+        date,
+        name,
+        phone,
+        time,
+        people,
+        adult,
+        child,
+        seat,
+        room,
+        table,
+        menu,
+        isNaver,
+        memo,
+        status: editingIndex !== null ? reservations[editingIndex].status : '예약',
+        peopleText,
       };
 
-      } else {
-        await addDoc(reservationsCollection, reservationData);
+      // 예약 중복 체크
+      const hasConflict = reservations.some((existing, index) => {
+        if (editingIndex !== null && index === editingIndex) return false;
+
+        return isConflict(reservationData, existing);
+      });
+
+      if (hasConflict) {
+        const conflict = reservations.find(existing => {
+          if (existing.date !== date) return false;
+
+          const newTables = splitValues(table);
+          const oldTables = splitValues(existing.table);
+
+          const newRooms = splitValues(room);
+          const oldRooms = splitValues(existing.room);
+
+          const sameTable = newTables.some(t => oldTables.includes(t));
+          const sameRoom =
+            seat === '룸' &&
+            existing.seat === '룸' &&
+            newRooms.some(r => oldRooms.includes(r));
+
+          return (sameTable || sameRoom) &&
+            isTimeConflict(time, existing.time, seat, existing.seat);
+        });
+
+        if (conflict) {
+          let message = '';
+          if (conflict.time) message += `${conflict.time} `;
+          if (conflict.name) message += `${conflict.name} `;
+          if (conflict.room && !conflict.table) message += `(${conflict.room} 전체) `;
+          if (conflict.table) message += `(${conflict.table}번 테이블) `;
+          message += '이미 사용 중입니다.';
+          alert(message);
+        } else {
+          alert('겹치는 예약이 있습니다.');
+        }
+        return;
       }
 
-    selectedDate = date;
-    syncSelectedDateUI();
-    closeModal();
+        try {
+          if (editingIndex !== null && reservations[editingIndex]?.id) {
+            const editId = reservations[editingIndex].id;
 
-      // 화면 갱신은 Firebase onSnapshot에서 자동으로 처리
-      
-  } catch (error) {
-    console.error("예약 저장 오류:", error);
-    alert("예약 저장 중 오류가 발생했습니다.");
-  }
-}
+            await setDoc(doc(db, "reservations", editId), reservationData);
+
+            // 화면에 바로 반영하기 위해 현재 배열도 즉시 수정
+            reservations[editingIndex] = { ...reservationData, id: editId };
+          } else {
+            await addDoc(reservationsCollection, reservationData);
+          }
+
+          // 날짜/시간 순서 정리
+          reservations.sort((a, b) => {
+            const dateCompare = (a.date || '').localeCompare(b.date || '');
+            if (dateCompare !== 0) return dateCompare;
+            return (a.time || '').localeCompare(b.time || '');
+          });
+
+          selectedDate = date;
+          syncSelectedDateUI();
+          closeModal();
+          refreshCurrentScreen();
+
+          // TV 모드 메뉴 표시 시 빈 칸 처리
+          // menuCell.textContent = reservationData.menu || '';
+
+          // 문자 발송 시 peopleText 반영
+          // const msg = createReservationMessage(reservationData);
+          // sendSMS(msg, reservationData.phone);
+
+        } catch (error) {
+        console.error("예약 저장 오류:", error);
+        alert("예약 저장 중 오류가 발생했습니다.");
+      }
+    }
 
     
     // ====== 상태 변경 ======
@@ -5441,7 +5751,7 @@ async function addReservation() {
       const phone = String(r.phone || '').trim();
       const name = r.name || '고객';
       const time = r.time || '-';
-      const people = r.people ? r.people + '명' : '-';
+      const people = getPeopleDisplayText(r);
 
       const menu = r.menu && String(r.menu).trim() !== '' ? r.menu : '미정';
 
@@ -5508,22 +5818,33 @@ async function addReservation() {
     // ====== 예약 삭제 ======
     async function deleteReservation(index) {
       if (!requireLogin()) return;
-  const r = reservations[index];
-  if (!r) return;
 
-  if (!confirm('이 예약을 삭제하시겠습니까?')) return;
+      const r = reservations[index];
+      if (!r) return;
 
-  try {
-    if (r.id) {
-      await deleteDoc(doc(db, "reservations", r.id));
+      if (!confirm('이 예약을 삭제하시겠습니까?')) return;
+
+      try {
+        if (r.id) {
+          await deleteDoc(doc(db, "reservations", r.id));
+        }
+
+        // 화면에 바로 반영하기 위해 현재 배열에서도 즉시 제거
+        reservations.splice(index, 1);
+
+        refreshCurrentScreen();
+      } catch (error) {
+        console.error("예약 삭제 오류:", error);
+        alert("예약 삭제 중 오류가 발생했습니다.");
+      }
     }
-  } catch (error) {
-    console.error("예약 삭제 오류:", error);
-    alert("예약 삭제 중 오류가 발생했습니다.");
-  }
-}
-    function clearAllReservations() {
-      const dailyReservations = reservations.filter(r => (r.date || '') === selectedDate);
+    
+    async function clearAllReservations() {
+      if (!requireLogin()) return;
+
+      const targetDate = selectedDate;
+
+      const dailyReservations = reservations.filter(r => (r.date || '') === targetDate);
 
       if (dailyReservations.length === 0) {
         alert('이 날짜에 삭제할 예약이 없습니다.');
@@ -5531,39 +5852,34 @@ async function addReservation() {
       }
 
       const ok = confirm(
-        `${formatDateLabel(selectedDate)} 예약 ${dailyReservations.length}건을 모두 삭제할까요?\n이 작업은 되돌릴 수 없습니다.`
+        `${formatDateLabel(targetDate)} 예약 ${dailyReservations.length}건을 모두 삭제할까요?\n이 작업은 되돌릴 수 없습니다.`
       );
+
       if (!ok) return;
 
-      async function clearAllReservations() {
-  const dailyReservations = reservations.filter(r => (r.date || '') === selectedDate);
+      try {
+        const deleteJobs = dailyReservations
+          .filter(r => r.id)
+          .map(r => deleteDoc(doc(db, "reservations", r.id)));
 
-  if (dailyReservations.length === 0) {
-    alert('이 날짜에 삭제할 예약이 없습니다.');
-    return;
-  }
+        await Promise.all(deleteJobs);
 
-  const ok = confirm(
-    `${formatDateLabel(selectedDate)} 예약 ${dailyReservations.length}건을 모두 삭제할까요?\n이 작업은 되돌릴 수 없습니다.`
-  );
-  if (!ok) return;
+        // 화면을 바로 비워주기 위해 현재 배열에서도 제거
+        reservations = reservations.filter(r => (r.date || '') !== targetDate);
 
-  try {
-    for (const r of dailyReservations) {
-      if (r.id) {
-        await deleteDoc(doc(db, "reservations", r.id));
+        if (document.getElementById('seat-map-view').style.display === 'block') {
+          renderSeatMapContent();
+        } else {
+          render();
+        }
+
+        alert(`${formatDateLabel(targetDate)} 예약이 모두 삭제되었습니다.`);
+      } catch (error) {
+        console.error("당일삭제 오류:", error);
+        alert("당일삭제 중 오류가 발생했습니다.");
       }
     }
-
-    alert(`${formatDateLabel(selectedDate)} 예약이 모두 삭제되었습니다.`);
-  } catch (error) {
-    console.error("당일삭제 오류:", error);
-    alert("당일삭제 중 오류가 발생했습니다.");
-  }
-}
-
-      alert(`${formatDateLabel(selectedDate)} 예약이 모두 삭제되었습니다.`);
-    }
+    
     function updateTotalPeople() {
       const adult = Number(document.getElementById('input-adult').value) || 0;
       const child = Number(document.getElementById('input-child').value) || 0;
@@ -5608,6 +5924,7 @@ async function addReservation() {
     window.previewImport = previewImport;
     window.confirmImport = confirmImport;
     window.removePreviewItem = removePreviewItem;
+    window.editPreviewItem = editPreviewItem;
     window.goToReservationFromSearch = goToReservationFromSearch;
     window.editReservationFromSearch = editReservationFromSearch;
     window.editReservation = editReservation;
