@@ -1194,7 +1194,7 @@
         display: grid;
         grid-template-columns: 39% 61%;
         gap: 10px;
-        font-family: "Malgun Gothic", "Apple SD Gothic Neo", sans-serif;
+        font-family: "휴먼옛체", "Malgun Gothic", "Apple SD Gothic Neo", sans-serif;
       }
 
       .tv-photo-panel,
@@ -1228,7 +1228,7 @@
 
       #tv-time {
         font-size: 72px;
-        font-weight: 900;
+        font-weight: 400;
         line-height: 1;
         letter-spacing: -2px;
         margin-top: -8px;
@@ -1241,7 +1241,7 @@
       #tv-date {
         margin-bottom: 3px;
         font-size: 34px;
-        font-weight: 900;
+        font-weight: 400;
         color: #111;
         margin-left: 50px;
       }
@@ -1277,12 +1277,127 @@
         position: relative;
         text-align: center;
         font-size: 36px;
-        font-weight: 900;
+        font-weight: 400;
         letter-spacing: -1px;
         margin: 8px 0 10px;
         line-height: 1.05;
       }
 
+      .tv-settings-btn {
+        position: absolute;
+        left: 8px;
+        top: 50%;
+        transform: translateY(-50%);
+
+        width: 32px;
+        height: 28px;
+        padding: 0;
+        border: 1px solid #888;
+        border-radius: 6px;
+        background: #f3f4f6;
+        color: #111;
+        font-size: 17px;
+        line-height: 1;
+        cursor: pointer;
+      }
+
+      .tv-settings-btn:hover {
+        background: #e5e7eb;
+      }
+
+      .tv-settings-modal-bg {
+        display: none;
+        position: fixed;
+        inset: 0;
+        z-index: 99999;
+        background: rgba(0, 0, 0, 0.35);
+        align-items: center;
+        justify-content: center;
+      }
+
+      .tv-settings-modal-bg.show {
+        display: flex;
+      }
+
+      .tv-settings-modal {
+        width: 360px;
+        background: white;
+        border: 3px solid #111;
+        border-radius: 14px;
+        padding: 16px;
+        color: #111;
+        box-shadow: 0 12px 40px rgba(0, 0, 0, 0.28);
+        font-family: "휴먼옛체", "Malgun Gothic", "Apple SD Gothic Neo", sans-serif;
+      }
+
+      .tv-settings-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 14px;
+      }
+
+      .tv-settings-title {
+        font-size: 24px;
+        font-weight: 400;
+      }
+
+      .tv-settings-close {
+        width: 34px;
+        height: 34px;
+        border: none;
+        border-radius: 8px;
+        background: #e5e7eb;
+        color: #111;
+        font-size: 24px;
+        cursor: pointer;
+      }
+
+      .tv-setting-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        padding: 12px 0;
+        border-top: 1px solid #e5e7eb;
+      }
+
+      .tv-setting-label {
+        font-size: 20px;
+        font-weight: 400;
+      }
+
+      .tv-setting-controls {
+        display: flex;
+        gap: 8px;
+      }
+
+      .tv-setting-btn {
+        width: 54px;
+        height: 38px;
+        border: 1px solid #999;
+        border-radius: 8px;
+        background: #f3f4f6;
+        color: #111;
+        font-size: 18px;
+        cursor: pointer;
+      }
+
+      .tv-setting-btn:hover {
+        background: #e5e7eb;
+      }
+
+      .tv-reset-btn {
+        width: 82px;
+        font-size: 16px;
+      }
+
+      .tv-setting-help {
+        margin-top: 10px;
+        font-size: 15px;
+        color: #555;
+        line-height: 1.4;
+      }
 
       .tv-table {
         width: 100%;
@@ -1295,7 +1410,7 @@
         background: #b7d0e8;
         color: #111;
         font-size: 26px;
-        font-weight: 900;
+        font-weight: 400;
         padding: 8px 6px;
         border-right: 2px solid white;
         border-bottom: 2px solid #111;
@@ -1307,8 +1422,8 @@
       }
 
       .tv-table td {
-        font-size: 24px;
-        font-weight: 900;
+        font-size: var(--tv-reservation-font-size, 24px);
+        font-weight: 400;
         padding: 8px 6px;
         border-bottom: 2px solid #333;
         text-align: center;
@@ -1316,30 +1431,40 @@
         vertical-align: middle;
       }
 
+      .tv-table tr.tv-status-exit td {
+        background: #cbd5e1;
+        color: #475569;
+      }
+
+      .tv-table tr.tv-status-exit .tv-seat,
+      .tv-table tr.tv-status-exit .tv-menu {
+        color: #475569;
+      }
+
       .tv-table .time-col {
-        width: 13%;
+        width: var(--tv-col-time, 13%);
       }
       .tv-table .name-col {
-        width: 30%;
+        width: var(--tv-col-name, 30%);
       }
       .tv-table .people-col {
-        width: 18%;
+        width: var(--tv-col-people, 18%);
       }
       .tv-table .seat-col {
-        width: 21%;
+        width: var(--tv-col-seat, 21%);
       }
       .tv-table .menu-col {
-        width: 20%;
+        width: var(--tv-col-menu, 20%);
       }
 
       .tv-seat {
         color: red;
-        font-weight: 900;
+        font-weight: 400;
       }
 
       .tv-menu {
         color: #5b9bd5;
-        font-weight: 900;
+        font-weight: 400;
         text-decoration: none;
       }
 
@@ -2964,6 +3089,113 @@
 
       // ====== 데이터 (브라우저에 저장) ======
       let reservations = [];
+      let tvReservationFontSize =
+        Number(localStorage.getItem("tvReservationFontSize")) || 24;
+      let tvColumnWidths = JSON.parse(
+        localStorage.getItem("tvColumnWidths") ||
+          '{"time":13,"name":30,"people":18,"seat":21,"menu":20}',
+      );
+
+      function applyTVColumnWidths() {
+        document.documentElement.style.setProperty(
+          "--tv-col-time",
+          `${tvColumnWidths.time}%`,
+        );
+        document.documentElement.style.setProperty(
+          "--tv-col-name",
+          `${tvColumnWidths.name}%`,
+        );
+        document.documentElement.style.setProperty(
+          "--tv-col-people",
+          `${tvColumnWidths.people}%`,
+        );
+        document.documentElement.style.setProperty(
+          "--tv-col-seat",
+          `${tvColumnWidths.seat}%`,
+        );
+        document.documentElement.style.setProperty(
+          "--tv-col-menu",
+          `${tvColumnWidths.menu}%`,
+        );
+      }
+
+      function changeTVColumnWidth(column, amount) {
+        const pairMap = {
+          time: "name",
+          name: "people",
+          people: "seat",
+          seat: "menu",
+          menu: "seat",
+        };
+
+        const neighbor = pairMap[column];
+        if (!neighbor) return;
+
+        const minWidth = 8;
+
+        const currentWidth = Number(tvColumnWidths[column] || 0);
+        const neighborWidth = Number(tvColumnWidths[neighbor] || 0);
+
+        // 선택한 칸을 키울 때: 옆 칸이 너무 작아지면 중단
+        if (amount > 0 && neighborWidth <= minWidth) return;
+
+        // 선택한 칸을 줄일 때: 선택한 칸이 너무 작아지면 중단
+        if (amount < 0 && currentWidth <= minWidth) return;
+
+        tvColumnWidths[column] = currentWidth + amount;
+        tvColumnWidths[neighbor] = neighborWidth - amount;
+
+        localStorage.setItem("tvColumnWidths", JSON.stringify(tvColumnWidths));
+        applyTVColumnWidths();
+      }
+
+      function resetTVColumnWidths() {
+        tvColumnWidths = {
+          time: 13,
+          name: 30,
+          people: 18,
+          seat: 21,
+          menu: 20,
+        };
+
+        localStorage.setItem("tvColumnWidths", JSON.stringify(tvColumnWidths));
+        applyTVColumnWidths();
+      }
+
+      function applyTVReservationFontSize() {
+        document.documentElement.style.setProperty(
+          "--tv-reservation-font-size",
+          `${tvReservationFontSize}px`,
+        );
+      }
+
+      function changeTVReservationFontSize(amount) {
+        tvReservationFontSize = Math.max(
+          16,
+          Math.min(36, tvReservationFontSize + amount),
+        );
+
+        localStorage.setItem("tvReservationFontSize", String(tvReservationFontSize));
+        applyTVReservationFontSize();
+      }
+
+      function openTVSettingsModal() {
+        const modal = document.getElementById("tv-settings-modal");
+        if (modal) modal.classList.add("show");
+      }
+
+      function closeTVSettingsModal() {
+        const modal = document.getElementById("tv-settings-modal");
+        if (modal) modal.classList.remove("show");
+      }
+      window.changeTVReservationFontSize = changeTVReservationFontSize;
+      window.changeTVColumnWidth = changeTVColumnWidth;
+      window.resetTVColumnWidths = resetTVColumnWidths;
+      window.openTVSettingsModal = openTVSettingsModal;
+      window.closeTVSettingsModal = closeTVSettingsModal;
+
+      applyTVReservationFontSize();
+      applyTVColumnWidths();
       let editingIndex = null;
       let editingReservationId = null;
       let importPreviewList = [];
@@ -4574,7 +4806,7 @@
         // 2순위: 성인 + 아이가 같이 있으면 반드시 구분
         // 성인 수는 메뉴 수와 관련, 아이 수는 좌석 수와 관련
         if (adult > 0 && child > 0) {
-          return `성인${adult}, 아이${child}`;
+          return `성인${adult} 아이${child}`;
         }
 
         // 3순위: 성인만 있으면 자연스럽게 N명
@@ -4707,7 +4939,7 @@
               : `<span class="tv-menu tv-menu-empty"></span>`;
 
             return `
-          <tr>
+          <tr class="${r.status === "퇴장" ? "tv-status-exit" : ""}">
             <td>${escapeHtml(formatTVTime(r.time || ""))}</td>
             <td>${escapeHtml(r.name || "")}</td>
             <td>${escapeHtml(getTVPeopleText(r))}</td>
@@ -4744,7 +4976,173 @@
           </div>
 
           <div class="tv-reservation-panel">
-            <div class="tv-title">오늘 예약(${formatTVDate(today)})</div>
+            <div class="tv-title">
+  <button
+    class="tv-settings-btn"
+    onclick="window.openTVSettingsModal()"
+    type="button"
+  >
+    ⚙
+  </button>
+  오늘 예약(${formatTVDate(today)})
+</div>
+
+<div
+  class="tv-settings-modal-bg"
+  id="tv-settings-modal"
+  onclick="if (event.target === this) window.closeTVSettingsModal()"
+>
+  <div class="tv-settings-modal">
+    <div class="tv-settings-header">
+      <div class="tv-settings-title">TV 화면 설정</div>
+      <button
+        class="tv-settings-close"
+        onclick="window.closeTVSettingsModal()"
+        type="button"
+      >
+        ×
+      </button>
+    </div>
+
+    <div class="tv-setting-row">
+      <div class="tv-setting-label">예약 글자 크기</div>
+      <div class="tv-setting-controls">
+        <button
+          class="tv-setting-btn"
+          onclick="window.changeTVReservationFontSize(-1)"
+          type="button"
+        >
+          ▼
+        </button>
+        <button
+          class="tv-setting-btn"
+          onclick="window.changeTVReservationFontSize(1)"
+          type="button"
+        >
+          ▲
+        </button>
+      </div>
+    </div>
+
+    <div class="tv-setting-row">
+      <div class="tv-setting-label">시간 칸</div>
+      <div class="tv-setting-controls">
+        <button
+          class="tv-setting-btn"
+          onclick="window.changeTVColumnWidth('time', -1)"
+          type="button"
+        >
+          -
+        </button>
+        <button
+          class="tv-setting-btn"
+          onclick="window.changeTVColumnWidth('time', 1)"
+          type="button"
+        >
+          +
+        </button>
+      </div>
+    </div>
+
+    <div class="tv-setting-row">
+      <div class="tv-setting-label">예약자명 칸</div>
+      <div class="tv-setting-controls">
+        <button
+          class="tv-setting-btn"
+          onclick="window.changeTVColumnWidth('name', -1)"
+          type="button"
+        >
+          -
+        </button>
+        <button
+          class="tv-setting-btn"
+          onclick="window.changeTVColumnWidth('name', 1)"
+          type="button"
+        >
+          +
+        </button>
+      </div>
+    </div>
+
+    <div class="tv-setting-row">
+      <div class="tv-setting-label">인원수 칸</div>
+      <div class="tv-setting-controls">
+        <button
+          class="tv-setting-btn"
+          onclick="window.changeTVColumnWidth('people', -1)"
+          type="button"
+        >
+          -
+        </button>
+        <button
+          class="tv-setting-btn"
+          onclick="window.changeTVColumnWidth('people', 1)"
+          type="button"
+        >
+          +
+        </button>
+      </div>
+    </div>
+
+    <div class="tv-setting-row">
+      <div class="tv-setting-label">좌석 칸</div>
+      <div class="tv-setting-controls">
+        <button
+          class="tv-setting-btn"
+          onclick="window.changeTVColumnWidth('seat', -1)"
+          type="button"
+        >
+          -
+        </button>
+        <button
+          class="tv-setting-btn"
+          onclick="window.changeTVColumnWidth('seat', 1)"
+          type="button"
+        >
+          +
+        </button>
+      </div>
+    </div>
+
+    <div class="tv-setting-row">
+      <div class="tv-setting-label">메뉴 칸</div>
+      <div class="tv-setting-controls">
+        <button
+          class="tv-setting-btn"
+          onclick="window.changeTVColumnWidth('menu', -1)"
+          type="button"
+        >
+          -
+        </button>
+        <button
+          class="tv-setting-btn"
+          onclick="window.changeTVColumnWidth('menu', 1)"
+          type="button"
+        >
+          +
+        </button>
+      </div>
+    </div>
+
+    <div class="tv-setting-row">
+      <div class="tv-setting-label">표 너비 초기화</div>
+      <div class="tv-setting-controls">
+        <button
+          class="tv-setting-btn tv-reset-btn"
+          onclick="window.resetTVColumnWidths()"
+          type="button"
+        >
+          초기화
+        </button>
+      </div>
+    </div>
+
+    <div class="tv-setting-help">
+      실제 예약 행의 글자 크기만 조절됩니다.<br>
+      시간 / 예약자명 / 인원수 / 좌석 / 메뉴 제목줄은 그대로 유지됩니다.
+    </div>
+  </div>
+</div>
 
             ${
               todayReservations.length
@@ -5231,6 +5629,18 @@
           doc(db, "reservations", movingReservation.id),
           updatedReservation,
         );
+
+        // 화면에 바로 반영하기 위해 현재 배열도 즉시 수정
+        const localIndex = reservations.findIndex(
+          (r) => r.id === movingReservation.id,
+        );
+
+        if (localIndex !== -1) {
+          reservations[localIndex] = {
+            ...updatedReservation,
+            id: movingReservation.id,
+          };
+        }
 
         movingReservation = null;
         movingFromTable = null;
@@ -5931,23 +6341,56 @@
       }
 
       async function deleteAllReservations() {
-        if (!reservations.length) {
+        if (!requireLogin()) return;
+
+        const targets = reservations.filter((r) => r.id);
+
+        if (!targets.length) {
           alert("삭제할 예약이 없습니다.");
           return;
         }
 
-        const ok = confirm(
-          `전체 예약 ${reservations.length}건을 모두 삭제할까요?`,
-        );
-        if (!ok) return;
+        const previewList = targets
+          .slice(0, 10)
+          .map(
+            (r) =>
+              `- ${r.date || "-"} ${r.time || "-"} ${r.name || "이름없음"} / ${getPeopleDisplayText(r)}`,
+          )
+          .join("\n");
 
-        for (const r of reservations) {
-          if (r.id) {
-            await deleteDoc(doc(db, "reservations", r.id));
-          }
+        const moreText =
+          targets.length > 10 ? `\n...외 ${targets.length - 10}건` : "";
+
+        const firstOk = confirm(
+          `전체 예약 ${targets.length}건을 모두 삭제하시겠습니까?\n\n${previewList}${moreText}\n\n정말 전체 예약이 삭제됩니다.`,
+        );
+
+        if (!firstOk) return;
+
+        const typed = prompt(
+          `전체 예약 삭제를 진행하려면 아래 문구를 정확히 입력하세요.\n\n전체삭제`,
+        );
+
+        if (typed !== "전체삭제") {
+          alert("입력 문구가 맞지 않아 삭제를 취소했습니다.");
+          return;
         }
 
-        alert("전체 예약을 삭제했습니다.");
+        try {
+          const targetIds = targets.map((r) => r.id);
+
+          for (const id of targetIds) {
+            await deleteDoc(doc(db, "reservations", id));
+          }
+
+          reservations = reservations.filter((r) => !targetIds.includes(r.id));
+
+          alert("전체 예약을 삭제했습니다.");
+          refreshCurrentScreen();
+        } catch (error) {
+          console.error("전체 예약 삭제 오류:", error);
+          alert("전체 예약 삭제 중 오류가 발생했습니다.");
+        }
       }
 
       window.deleteAllReservations = deleteAllReservations;
@@ -6326,10 +6769,15 @@
         if (!r || !r.id) return;
 
         try {
-          await setDoc(doc(db, "reservations", r.id), {
+          const updatedReservation = {
             ...r,
             status: newStatus,
-          });
+          };
+
+          await setDoc(doc(db, "reservations", r.id), updatedReservation);
+
+          reservations[index] = updatedReservation;
+          refreshCurrentScreen();
         } catch (error) {
           console.error("상태 변경 오류:", error);
           alert("상태 변경 중 오류가 발생했습니다.");
@@ -6342,20 +6790,40 @@
 
         const newStatus = r.status === "퇴장" ? "예약" : "퇴장";
 
-        await setDoc(doc(db, "reservations", r.id), {
-          ...r,
-          status: newStatus,
-        });
+        try {
+          const updatedReservation = {
+            ...r,
+            status: newStatus,
+          };
+
+          await setDoc(doc(db, "reservations", r.id), updatedReservation);
+
+          reservations[index] = updatedReservation;
+          refreshCurrentScreen();
+        } catch (error) {
+          console.error("상태 변경 오류:", error);
+          alert("상태 변경 중 오류가 발생했습니다.");
+        }
       }
 
       async function toggleSettingStatus(index, field, checked) {
         const r = reservations[index];
         if (!r || !r.id) return;
 
-        await setDoc(doc(db, "reservations", r.id), {
-          ...r,
-          [field]: checked,
-        });
+        try {
+          const updatedReservation = {
+            ...r,
+            [field]: checked,
+          };
+
+          await setDoc(doc(db, "reservations", r.id), updatedReservation);
+
+          reservations[index] = updatedReservation;
+          refreshCurrentScreen();
+        } catch (error) {
+          console.error("세팅 변경 오류:", error);
+          alert("세팅 변경 중 오류가 발생했습니다.");
+        }
       }
 
       function openSmsTemplatePopup(index) {
@@ -6638,6 +7106,7 @@
       window.movePhoneNext = movePhoneNext;
       window.movePhonePrev = movePhonePrev;
       window.updateTotalPeople = updateTotalPeople;
+      window.changeTVReservationFontSize = changeTVReservationFontSize;
       // 첫 화면 그리기
       initTimeSelects();
       document
