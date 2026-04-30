@@ -1327,7 +1327,7 @@
         padding: 16px;
         color: #111;
         box-shadow: 0 12px 40px rgba(0, 0, 0, 0.28);
-        font-family: "휴먼옛체", "Malgun Gothic", "Apple SD Gothic Neo", sans-serif;
+        font-family: "Malgun Gothic", "Apple SD Gothic Neo", sans-serif;
       }
 
       .tv-settings-header {
@@ -1387,16 +1387,30 @@
         background: #e5e7eb;
       }
 
-      .tv-reset-btn {
-        width: 82px;
-        font-size: 16px;
+      .tv-preset-btn {
+        width: 66px;
+        height: 34px;
+        font-size: 14px;
       }
 
-      .tv-setting-help {
-        margin-top: 10px;
-        font-size: 15px;
-        color: #555;
-        line-height: 1.4;
+      .tv-preset-save {
+        background: #2563eb;
+        border-color: #1d4ed8;
+        color: white;
+      }
+
+      .tv-preset-save:hover {
+        background: #1d4ed8;
+      }
+
+      .tv-preset-reset {
+        background: #ef4444;
+        border-color: #dc2626;
+        color: white;
+      }
+
+      .tv-preset-reset:hover {
+        background: #dc2626;
       }
 
       .tv-table {
@@ -1424,7 +1438,7 @@
       .tv-table td {
         font-size: var(--tv-reservation-font-size, 24px);
         font-weight: 400;
-        padding: 8px 6px;
+        padding: var(--tv-row-padding-y, 8px) 6px;
         border-bottom: 2px solid #333;
         text-align: center;
         line-height: 1.25;
@@ -3091,6 +3105,29 @@
       let reservations = [];
       let tvReservationFontSize =
         Number(localStorage.getItem("tvReservationFontSize")) || 24;
+      let tvReservationRowPadding =
+        Number(localStorage.getItem("tvReservationRowPadding")) || 8;
+
+      function applyTVReservationRowHeight() {
+        document.documentElement.style.setProperty(
+          "--tv-row-padding-y",
+          `${tvReservationRowPadding}px`,
+        );
+      }
+
+      function changeTVReservationRowHeight(amount) {
+        tvReservationRowPadding = Math.max(
+          2,
+          Math.min(24, tvReservationRowPadding + amount),
+        );
+
+        localStorage.setItem(
+          "tvReservationRowPadding",
+          String(tvReservationRowPadding),
+        );
+
+        applyTVReservationRowHeight();
+      }
       let tvColumnWidths = JSON.parse(
         localStorage.getItem("tvColumnWidths") ||
           '{"time":13,"name":30,"people":18,"seat":21,"menu":20}',
@@ -3162,6 +3199,93 @@
         applyTVColumnWidths();
       }
 
+      function getCurrentTVSettings() {
+        return {
+          fontSize: tvReservationFontSize,
+          rowPadding: tvReservationRowPadding,
+          columnWidths: {
+            ...tvColumnWidths,
+          },
+        };
+      }
+
+      function applyTVSettings(settings) {
+        if (!settings) return;
+
+        tvReservationFontSize = Number(settings.fontSize) || 24;
+        tvReservationRowPadding = Number(settings.rowPadding) || 8;
+
+        tvColumnWidths = {
+          time: Number(settings.columnWidths?.time) || 13,
+          name: Number(settings.columnWidths?.name) || 30,
+          people: Number(settings.columnWidths?.people) || 18,
+          seat: Number(settings.columnWidths?.seat) || 21,
+          menu: Number(settings.columnWidths?.menu) || 20,
+        };
+
+        localStorage.setItem("tvReservationFontSize", String(tvReservationFontSize));
+        localStorage.setItem(
+          "tvReservationRowPadding",
+          String(tvReservationRowPadding),
+        );
+        localStorage.setItem("tvColumnWidths", JSON.stringify(tvColumnWidths));
+
+        applyTVReservationFontSize();
+        applyTVReservationRowHeight();
+        applyTVColumnWidths();
+      }
+
+      function saveTVSettingsPreset() {
+        const currentSettings = getCurrentTVSettings();
+
+        localStorage.setItem(
+          "tvSavedSettingsPreset",
+          JSON.stringify(currentSettings),
+        );
+       
+      }
+
+      function resetTVSettingsToSaved() {
+        const savedText = localStorage.getItem("tvSavedSettingsPreset");
+
+        if (savedText) {
+          try {
+            const savedSettings = JSON.parse(savedText);
+            applyTVSettings(savedSettings);
+            return;
+          } catch (error) {
+            console.error("TV 저장 설정 불러오기 오류:", error);
+          }
+        }
+
+        applyTVSettings({
+          fontSize: 24,
+          rowPadding: 8,
+          columnWidths: {
+            time: 13,
+            name: 30,
+            people: 18,
+            seat: 21,
+            menu: 20,
+          },
+        });
+
+      }
+
+      function resetTVSettingsDefault() {
+        applyTVSettings({
+          fontSize: 24,
+          rowPadding: 8,
+          columnWidths: {
+            time: 13,
+            name: 30,
+            people: 18,
+            seat: 21,
+            menu: 20,
+          },
+        });
+      }
+
       function applyTVReservationFontSize() {
         document.documentElement.style.setProperty(
           "--tv-reservation-font-size",
@@ -3189,12 +3313,17 @@
         if (modal) modal.classList.remove("show");
       }
       window.changeTVReservationFontSize = changeTVReservationFontSize;
+      window.changeTVReservationRowHeight = changeTVReservationRowHeight;
       window.changeTVColumnWidth = changeTVColumnWidth;
       window.resetTVColumnWidths = resetTVColumnWidths;
+      window.saveTVSettingsPreset = saveTVSettingsPreset;
+      window.resetTVSettingsToSaved = resetTVSettingsToSaved;
+      window.resetTVSettingsDefault = resetTVSettingsDefault;
       window.openTVSettingsModal = openTVSettingsModal;
       window.closeTVSettingsModal = closeTVSettingsModal;
 
       applyTVReservationFontSize();
+      applyTVReservationRowHeight();
       applyTVColumnWidths();
       let editingIndex = null;
       let editingReservationId = null;
@@ -5025,6 +5154,26 @@
     </div>
 
     <div class="tv-setting-row">
+      <div class="tv-setting-label">예약 행 높이</div>
+      <div class="tv-setting-controls">
+        <button
+          class="tv-setting-btn"
+          onclick="window.changeTVReservationRowHeight(-1)"
+          type="button"
+        >
+          -
+        </button>
+        <button
+          class="tv-setting-btn"
+          onclick="window.changeTVReservationRowHeight(1)"
+          type="button"
+        >
+          +
+        </button>
+      </div>
+    </div>
+
+    <div class="tv-setting-row">
       <div class="tv-setting-label">시간 칸</div>
       <div class="tv-setting-controls">
         <button
@@ -5124,23 +5273,33 @@
       </div>
     </div>
 
-    <div class="tv-setting-row">
-      <div class="tv-setting-label">표 너비 초기화</div>
-      <div class="tv-setting-controls">
-        <button
-          class="tv-setting-btn tv-reset-btn"
-          onclick="window.resetTVColumnWidths()"
-          type="button"
-        >
-          초기화
-        </button>
-      </div>
-    </div>
-
-    <div class="tv-setting-help">
-      실제 예약 행의 글자 크기만 조절됩니다.<br>
-      시간 / 예약자명 / 인원수 / 좌석 / 메뉴 제목줄은 그대로 유지됩니다.
-    </div>
+  <div class="tv-setting-row">
+  <div class="tv-setting-label">설정값</div>
+  <div class="tv-setting-controls">
+    <button
+      class="tv-setting-btn tv-preset-btn tv-preset-save"
+      onclick="window.saveTVSettingsPreset()"
+      type="button"
+    >
+      저장
+    </button>
+    <button
+      class="tv-setting-btn tv-preset-btn"
+      onclick="window.resetTVSettingsToSaved()"
+      type="button"
+    >
+      불러오기
+    </button>
+    <button
+      class="tv-setting-btn tv-preset-btn tv-preset-reset"
+      onclick="window.resetTVSettingsDefault()"
+      type="button"
+    >
+      초기화
+    </button>
+  </div>
+</div>
+    
   </div>
 </div>
 
