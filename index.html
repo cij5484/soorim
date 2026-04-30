@@ -74,6 +74,8 @@
       display: inline-flex;
       align-items: center;
       gap: 6px; /* ← 여기서 간격 완벽 제어 */
+      white-space: nowrap;
+      flex: none;
     }
 
     .month-title-custom:hover {
@@ -415,6 +417,14 @@
       border-left: 3px solid #03c75a;
     }
 
+    /* 인원 입력줄 기본값: PC */
+    .people-row {
+      display: flex;
+      gap: 10px;
+      align-items: flex-end;
+      justify-content: center;
+      width: 100%;
+    }
     
     /* ====== 모달(예약 추가) ====== */
     .modal-bg {
@@ -1619,7 +1629,13 @@
 
       .month-title-custom,
       .week-range-text {
-        font-size: 17px;
+        font-size: 16px;
+      }
+
+      .month-title-custom {
+        white-space: nowrap;
+        flex: none;
+        padding: 6px 4px;
       }
 
       .calendar-icon,
@@ -1771,6 +1787,48 @@
       }
 
       /* 예약 카드 */
+      /* 모바일 일간 카드 압축 */
+      .reservation {
+        padding: 7px 8px !important;
+        margin-bottom: 7px !important;
+      }
+
+      .reservation-top {
+        gap: 4px !important;
+        margin-bottom: 5px !important;
+      }
+
+      .setting-checks {
+        gap: 3px !important;
+        min-width: 88px !important;
+        font-size: 13px !important;
+        font-weight: 700 !important;
+      }
+
+      .setting-checks label {
+        gap: 4px !important;
+      }
+
+      .setting-checks input {
+        width: 15px !important;
+        height: 15px !important;
+      }
+
+      .info-grid {
+        gap: 5px !important;
+        margin-bottom: 6px !important;
+      }
+
+      .info-item {
+        padding: 6px 8px !important;
+      }
+
+      .memo {
+        font-size: 13px !important;
+        padding: 6px 8px !important;
+        margin-top: 4px !important;
+        margin-bottom: 6px !important;
+      }
       .reservation {
         padding: 10px;
         margin-bottom: 10px;
@@ -2044,6 +2102,28 @@
         font-size: 18px !important;
       }
 
+      #month-view .header-action-btn.add-btn,
+      #month-view .header-action-btn.import-btn {
+        width: 44px !important;
+        min-width: 44px !important;
+        height: 44px !important;
+        padding: 0 !important;
+
+        display: inline-flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        line-height: 1 !important;
+      }
+
+      #month-view .header-action-btn.add-btn {
+        font-size: 24px !important;
+        font-weight: 800 !important;
+      }
+
+      #month-view .header-action-btn.import-btn {
+        font-size: 18px !important;
+      }
+
       .nav-row {
         display: grid !important;
         grid-template-columns: 1fr auto 1fr;
@@ -2060,6 +2140,14 @@
 
       .nav-row .nav-jump-btn {
         justify-self: center;
+      }
+
+      .week-nav-left .nav-jump-btn,
+      #day-view-header .nav-jump-btn {
+        width: 64px !important;
+        min-width: 64px !important;
+        padding-left: 0 !important;
+        padding-right: 0 !important;
       }
 
       /* 새 예약 모달만 크기 줄이기 */
@@ -2083,10 +2171,10 @@
       /* 모바일 헤더 배치 */
       /* 모바일 헤더 정렬 (완전 안정 버전) */
       header {
-        padding: 10px 10px !important;
+        padding: 5px 8px !important;
         display: grid !important;
         grid-template-columns: auto 1fr auto !important;
-        gap: 8px !important;
+        gap: 4px 6px !important;
         align-items: center !important;
       }
 
@@ -2094,22 +2182,22 @@
       header h1 {
         grid-column: 1;
         grid-row: 1;
-        font-size: 22px;
+        font-size: 18px;
         white-space: nowrap;
       }
 
-      /* 검색창 (가운데) */
+      /* 검색창 */
       #search-box {
         grid-column: 2;
         grid-row: 1;
       }
 
       #search-input {
-        width: 90% !important;
+        width: 94% !important;
         margin: 0 auto;
-        height: 36px !important;
-        font-size: 13px !important;
-        padding: 8px 10px !important;
+        height: 30px !important;
+        font-size: 12px !important;
+        padding: 4px 8px !important;
       }
 
       /* 로그인 버튼 */
@@ -2117,27 +2205,388 @@
       #logout-btn {
         grid-column: 3;
         grid-row: 1;
-        height: 36px !important;
-        padding: 0 12px !important;
-        font-size: 13px !important;
+        height: 30px !important;
+        padding: 0 8px !important;
+        font-size: 12px !important;
         white-space: nowrap;
       }
 
-      /* 월 주 일 (두번째 줄) */
+      /* 월 주 일 */
       #view-buttons {
         grid-column: 1 / -1;
         grid-row: 2;
 
         display: grid !important;
         grid-template-columns: repeat(3, 1fr);
-        gap: 8px;
+        gap: 5px;
       }
 
       #view-buttons button {
         width: 100%;
-        height: 42px;
+        height: 32px;
+        padding: 0 !important;
+        font-size: 13px !important;
       }
       
+    }
+
+    @media (max-width: 768px) {
+
+        
+
+      /* ===== 모바일 주간: 날짜를 버튼 위로 ===== */
+      .week-nav-header {
+        display: grid !important;
+        grid-template-columns: 1fr auto !important;
+        grid-template-rows: auto auto !important;
+        gap: 4px !important;
+        align-items: center !important;
+      }
+
+      .week-nav-center {
+        grid-column: 1 / -1 !important;
+        grid-row: 1 !important;
+        justify-self: center !important;
+
+        display: flex !important;
+        justify-content: center !important;
+        align-items: center !important;
+        text-align: center !important;
+      }
+
+      .week-range-text {
+        font-size: 20px !important;
+        font-weight: 700 !important;
+        white-space: nowrap !important;
+      }
+
+      .week-nav-left {
+        grid-column: 1 !important;
+        grid-row: 2 !important;
+        justify-self: start !important;
+
+        display: flex !important;
+        align-items: center !important;
+        gap: 4px !important;
+      }
+
+      .week-nav-right {
+        grid-column: 2 !important;
+        grid-row: 2 !important;
+        justify-self: end !important;
+
+        display: flex !important;
+        align-items: center !important;
+        justify-content: flex-end !important;
+        gap: 6px !important;
+      }
+
+      /* ===== 모바일 일간: 날짜를 버튼 위로 ===== */
+      #day-view-header > div {
+        display: grid !important;
+        grid-template-columns: 1fr auto !important;
+        grid-template-rows: auto auto !important;
+        gap: 4px !important;
+        align-items: center !important;
+        margin-bottom: 0 !important;
+      }
+
+      #day-view-header > div > div:nth-child(2) {
+        grid-column: 1 / -1 !important;
+        grid-row: 1 !important;
+        justify-self: center !important;
+
+        display: flex !important;
+        justify-content: center !important;
+        align-items: center !important;
+        text-align: center !important;
+      }
+
+      #day-view-header .day-date-custom {
+        font-size: 20px !important;
+        font-weight: 700 !important;
+        white-space: nowrap !important;
+      }
+
+      #day-view-header > div > div:nth-child(1) {
+        grid-column: 1 !important;
+        grid-row: 2 !important;
+        justify-self: start !important;
+
+        display: flex !important;
+        align-items: center !important;
+        gap: 4px !important;
+      }
+
+      #day-view-header > div > div:nth-child(3) {
+        grid-column: 2 !important;
+        grid-row: 2 !important;
+        justify-self: end !important;
+
+        display: flex !important;
+        justify-content: flex-end !important;
+        align-items: center !important;
+        gap: 6px !important;
+      }
+
+      /* 모바일 이번주 / 오늘 버튼 가로폭만 줄이기 */
+      .week-nav-left .nav-jump-btn,
+      #day-view-header .nav-jump-btn {
+        width: 60px !important;
+        min-width: 60px !important;
+        padding-left: 0 !important;
+        padding-right: 0 !important;
+      }
+    }
+
+    @media (max-width: 768px) {
+
+      /* 주간/일간 전체 헤더는 고정하지 않음 */
+      #day-view-header,
+      .week-nav-header {
+        position: static !important;
+      }
+
+      /* 날짜 줄만 고정 */
+      /* 날짜 줄만 화면 위에 계속 고정 */
+      #day-view-header,
+      .week-nav-header {
+        position: static !important;
+        padding-top: 24px !important;
+      }
+
+      .week-nav-center,
+      #day-view-header > div > div:nth-child(2) {
+        position: fixed !important;
+        top: 72px !important;
+        left: 0 !important;
+        right: 0 !important;
+
+        z-index: 950 !important;
+        background: #eef2f5 !important;
+
+        height: 30px !important;
+        padding: 2px 0 4px !important;
+        margin: 0 !important;
+
+        display: flex !important;
+        justify-content: center !important;
+        align-items: center !important;
+        text-align: center !important;
+      }
+
+      /* 주간 날짜 크기 = 일간 날짜 크기 */
+      .week-range-text,
+      #day-view-header .day-date-custom {
+        font-size: 20px !important;
+        font-weight: 700 !important;
+        white-space: nowrap !important;
+      }
+
+      /* 주간 날짜 크기 = 일간 날짜 크기 */
+      .week-range-text,
+      #day-view-header .day-date-custom {
+        font-size: 20px !important;
+        font-weight: 700 !important;
+        white-space: nowrap !important;
+      }
+    }
+
+    @media (max-width: 768px) {
+
+      /* 모바일 월간/주간/일간: 예약추가, 불러오기 버튼 크기 축소 */
+      #month-view .header-action-btn.add-btn,
+      #month-view .header-action-btn.import-btn,
+      .week-nav-right .header-action-btn.add-btn,
+      .week-nav-right .header-action-btn.import-btn,
+      #day-view-header .header-action-btn.add-btn,
+      #day-view-header .header-action-btn.import-btn {
+        width: 40px !important;
+        min-width: 40px !important;
+        height: 38px !important;
+        min-height: 38px !important;
+        padding: 0 !important;
+
+        display: inline-flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        line-height: 1 !important;
+      }
+
+      /* + 아이콘 크기 */
+      #month-view .header-action-btn.add-btn,
+      .week-nav-right .header-action-btn.add-btn,
+      #day-view-header .header-action-btn.add-btn {
+        font-size: 22px !important;
+        font-weight: 800 !important;
+      }
+
+      /* 불러오기 아이콘 크기 */
+      #month-view .header-action-btn.import-btn,
+      .week-nav-right .header-action-btn.import-btn,
+      #day-view-header .header-action-btn.import-btn {
+        font-size: 16px !important;
+      }
+
+      /* 모바일 전체삭제 / 당일삭제 버튼 크기 축소 */
+      .week-nav-right .week-delete-mobile,
+      #day-view-header .day-delete-mobile,
+      #month-view .day-delete-btn,
+      #month-view .header-action-btn.clear-btn {
+        width: 40px !important;
+        min-width: 40px !important;
+        height: 38px !important;
+        min-height: 38px !important;
+        padding: 0 !important;
+
+        font-size: 11px !important;
+        line-height: 1.05 !important;
+        display: inline-flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        text-align: center !important;
+      }
+
+      /* 버튼 사이 간격도 살짝 줄이기 */
+      .week-nav-right,
+      #day-view-header > div > div:nth-child(3) {
+        gap: 4px !important;
+      }
+    }
+
+    @media (max-width: 768px) {
+
+      /* 모바일 예약 모달: 인원 입력줄 정렬 */
+      .people-row {
+        display: grid !important;
+        grid-template-columns: 1fr 1fr 1fr 1.15fr;
+        gap: 5px !important;
+        align-items: end !important;
+        width: 100% !important;
+        padding: 0 4px !important;
+        box-sizing: border-box !important;
+      }
+
+      .people-row > div {
+        min-width: 0 !important;
+        text-align: center !important;
+      }
+
+      .people-row input {
+        height: 36px !important;
+        padding: 6px 4px !important;
+        font-size: 14px !important;
+      }
+
+      #input-adult,
+      #input-child {
+        width: 58px !important;
+        max-width: 100% !important;
+        text-align: center !important;
+      }
+
+      #input-people-text {
+        width: 72px !important;
+        max-width: 100% !important;
+        text-align: center !important;
+      }
+
+      /* 총 인원 박스 */
+      .people-row > div:nth-child(3) > div:last-child {
+        width: 62px !important;
+        max-width: 100% !important;
+        height: 36px !important;
+        padding: 7px 0 !important;
+        font-size: 15px !important;
+        margin: 0 auto !important;
+      }
+    }
+
+    @media (max-width: 768px) {
+
+      /* 모바일 불러오기 미리보기: 수정 버튼 숨김 */
+      #import-preview-modal .preview-edit-btn {
+        display: none !important;
+      }
+
+      /* 모바일 불러오기 미리보기: 제외 버튼을 작은 X로 */
+      #import-preview-modal .preview-remove-btn {
+        width: 28px !important;
+        min-width: 28px !important;
+        height: 28px !important;
+        min-height: 28px !important;
+        padding: 0 !important;
+        border-radius: 999px !important;
+
+        display: inline-flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+
+        font-size: 14px !important;
+        font-weight: 900 !important;
+        line-height: 1 !important;
+      }
+    }
+
+    @media (max-width: 768px) {
+
+      /* 모바일 테이블맵: 화면 폭 더 꽉 쓰기 */
+      body:has(#seat-map-view[style*="block"]) main {
+        max-width: none !important;
+        width: 100% !important;
+        margin-left: 0 !important;
+        margin-right: 0 !important;
+        padding-left: 4px !important;
+        padding-right: 4px !important;
+      }
+
+      #seat-map-view {
+        width: 100% !important;
+        max-width: none !important;
+      }
+
+      /* 모바일 홀맵: 빈 오른쪽 칸 줄이고 테이블 폭 확대 */
+      .hall-map {
+        grid-template-columns: 35px repeat(23, minmax(0, 1fr)) !important;
+        gap: 6px !important;
+        width: 100% !important;
+        overflow-x: hidden !important;
+      }
+
+      .seat-map-tabs {
+        width: 35px !important;
+        min-width: 35px !important;
+      }
+
+      .seat-map-tab-btn,
+      .seat-map-move-btn {
+        width: 35px !important;
+        min-width: 35px !important;
+        height: 38px !important;
+        padding: 0 !important;
+        font-size: 12px !important;
+        border-radius: 8px !important;
+      }
+
+      /* 모바일 룸맵: 오른쪽 끝까지 더 사용 */
+      .room-map {
+        grid-column: 2 / 25 !important;
+        width: 100% !important;
+        min-width: 0 !important;
+      }
+
+      /* 모바일 룸 내부 테이블도 조금 더 넓게 */
+      .room-inner-map {
+        grid-template-columns: 1fr 1fr 42px 1fr 1fr !important;
+        gap: 6px !important;
+        padding-left: 8px !important;
+        padding-right: 8px !important;
+      }
+
+      .table-box,
+      .room-table-box {
+        border-radius: 9px !important;
+      }
     }
 
     #import-preview-modal {
@@ -2280,7 +2729,7 @@
       </div>
 
       <label for="input-people">인원</label>
-      <div style="display:flex; gap:10px; align-items:flex-end; justify-content:center; width:100%;">
+        <div class="people-row">
 
         <div style="text-align:center;">
           <div style="font-size:12px; color:#666; margin-bottom:4px;">성인</div>
@@ -3022,8 +3471,9 @@
 
             </div>
 
-            <div style="display:flex; gap:6px;">
+            <div style="display:flex; gap:6px; flex:none;">
   <button
+    class="preview-edit-btn"
     onclick="event.stopPropagation(); editPreviewItem(${r.__index})"
     style="background:#2563eb; color:white; border:none; padding:6px 10px; border-radius:6px; cursor:pointer; font-size:12px;"
   >
@@ -3031,10 +3481,13 @@
   </button>
 
   <button
+    class="preview-remove-btn"
     onclick="event.stopPropagation(); removePreviewItem(${r.__index})"
     style="background:#e74c3c; color:white; border:none; padding:6px 10px; border-radius:6px; cursor:pointer; font-size:12px;"
+    title="제외"
   >
-    제외
+    <span class="pc-text">제외</span>
+    <span class="mobile-text">✕</span>
   </button>
 </div>
 
@@ -3975,7 +4428,12 @@
         const totalPeople = dayReservations.reduce((sum, r) => sum + (Number(r.people) || 0), 0);
         let roomFullHtml = '';
         if (isRoomFullyBooked(dateString)) {
-          roomFullHtml = `<span style="color:#dc2626; font-weight:900;">룸 만석확인</span><br>`;
+          roomFullHtml = `
+            <span style="color:#dc2626; font-weight:900;">
+              <span class="pc-text">룸 만석확인</span>
+              <span class="mobile-text">룸확인</span>
+            </span><br>
+          `;
         }
               
 
@@ -3988,8 +4446,14 @@
 
             <div class="calendar-summary">
   ${roomFullHtml}
-  ${dayReservations.length ? `예약 ${dayReservations.length}건` : '<span style="color:#9ca3af;">예약 없음</span>'}
-  ${totalPeople ? `<br>총 ${totalPeople}명` : ''}
+  ${dayReservations.length
+    ? `<span class="pc-text">예약 ${dayReservations.length}건</span><span class="mobile-text">${dayReservations.length}건</span>`
+    : '<span style="color:#9ca3af;">예약 없음</span>'
+  }
+  ${totalPeople
+    ? `<br><span class="pc-text">총 ${totalPeople}명</span><span class="mobile-text">${totalPeople}명</span>`
+    : ''
+  }
 </div>
 
           </div>
