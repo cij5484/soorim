@@ -135,6 +135,15 @@
       .reservation:hover {
         box-shadow: 0 6px 16px rgba(0, 0, 0, 0.14);
       }
+
+      .reservation.reservation-unconfirmed {
+        border: 2px solid #fca5a5;
+      }
+
+      .week-card-item.week-unconfirmed {
+        background: #fff1f2;
+        border: 1px solid #fecdd3;
+      }
       
       /* 상태별 카드 왼쪽 색깔 (한눈에 구분) */
       .reservation.status-예약 {
@@ -196,21 +205,7 @@
       .badge-퇴장 {
         background: #757575;
       }
-      .reservation.status-예약.room-highlight {
-        border: 2px solid #1976d2;
-      }
-
-      .reservation.status-도착.room-highlight {
-        border: 2px solid #ef6c00;
-      }
-
-      .reservation.status-착석.room-highlight {
-        border: 2px solid #2e7d32;
-      }
-
-      .reservation.status-퇴장.room-highlight {
-        border: 2px solid #757575;
-      }
+      
       /* 예약 상세 정보 그리드 */
       .info-grid {
         display: grid;
@@ -656,16 +651,8 @@
         min-width: 0;
         flex: 1;
       }
-
+     
       
-      .week-card-item.room-item {
-        background: #eaf3ff;
-      }
-
-      .week-card-item.naver-item {
-        border-left: 3px solid #03c75a;
-      }
-
       .week-card-empty {
         font-size: 14px;
         color: #9ca3af;
@@ -2357,6 +2344,25 @@
           gap: 2px;
         }
 
+        /* 모바일 테이블맵: 테이블 번호를 왼쪽 위 윗첨자처럼 표시 */
+        .table-mini-number,
+        .room-table-mini-number {
+          top: 2px !important;
+          left: 3px !important;
+          right: auto !important;
+
+          font-size: 9px !important;
+          line-height: 1 !important;
+          font-weight: 900 !important;
+
+          padding: 1px 3px !important;
+          border-radius: 999px !important;
+
+          background: rgba(255, 255, 255, 0.85) !important;
+          color: #111827 !important;
+          z-index: 5 !important;
+        }
+
         /* 모바일 테이블맵: 인원 숫자 강조 */
         .table-slot .seat-map-people,
         .room-table-slot .seat-map-people {
@@ -3606,7 +3612,7 @@
             const realIndex = reservations.indexOf(r);
 
             return `
-          <div class="reservation status-${r.status} ${r.seat === "룸" ? "room-highlight" : ""}" style="margin-bottom:0;">
+          <div class="reservation status-${r.status} ${isReservationUnconfirmed(r) ? "reservation-unconfirmed" : ""}" style="margin-bottom:0;">
             <div class="reservation-top">
   <div>
     <div class="name" style="display:flex; align-items:center; flex-wrap:wrap; gap:8px; margin:0;">
@@ -3640,7 +3646,7 @@
               </div>
               <div class="info-item">
                 <div class="info-label">메뉴</div>
-                <div class="info-value"> ${escapeHtml(r.menu || "-")}</div>
+                <div class="info-value">${escapeHtml(getMenuDisplayText(r.menu) || "-")}</div>
               </div>
             </div>
 
@@ -4119,13 +4125,13 @@
         });
         const name = extractName(phoneLine);
 
-        const memoLines = lines.filter((line) => {
+          const memoLines = lines.filter((line, index) => {
           if (!line) return false;
 
           const clean = line.replace(/\s+/g, " ").trim();
 
-          // 시간 줄 제외
-          if (clean === lines[0]) return false;
+          // 첫 줄은 시간/인원/메뉴가 같이 들어가는 예약 기본 정보 줄이라 메모에서 제외
+          if (index === 0) return false;
           if (/^\d{1,2}:\d{2}$/.test(clean)) return false;
 
           // 전화번호 있는 줄 제외
@@ -4138,6 +4144,7 @@
 
           // 메뉴 줄 제외
           if (/메뉴전화/.test(clean)) return false;
+          if (/메뉴\s*다시\s*전화/.test(clean)) return false;
           if (/회정식/.test(clean)) return false;
           if (/[A-Z가-힣]\s*코스/.test(clean)) return false;
 
@@ -4396,20 +4403,41 @@
         if (!firstLine) return "";
 
         if (firstLine.includes("메뉴전화")) return "메뉴전화";
-        if (firstLine.includes("회정식")) return "회정식";
 
-        const courseWithCountMatch =
-          firstLine.match(/([A-Z가-힣])코스\s*(\d+)/);
-        if (courseWithCountMatch) {
-          return `${courseWithCountMatch[1]}코스 ${courseWithCountMatch[2]}`;
-        }
+        let menuText = firstLine
+          // 시간 제거: @6:30, 7:30 등
+          .replace(/@\s*/g, " ")
+          .replace(/\b\d{1,2}:\d{2}\b/g, " ")
 
-        const courseOnlyMatch = firstLine.match(/([A-Z가-힣])코스/);
-        if (courseOnlyMatch) {
-          return `${courseOnlyMatch[1]}코스`;
-        }
+          // 인원 제거: 11명, 어른4 아이1, 성인3 아이1 등
+          .replace(/\d+\s*~\s*\d+\s*(?:명|인)?/g, " ")
+          .replace(/(?:성인|어른|아이|아동|유아|초등)\s*\d+/g, " ")
+          .replace(/\d+\s*(?:명|인)/g, " ")
 
-        return "";
+          // 네이버/좌석 괄호 제거
+          .replace(/\(네이버(?:-[^)]+)?\)/g, " ")
+          .replace(/\(룸\)|\(홀\)|\(네이버-룸\)|\(네이버-홀\)/g, " ")
+
+          // 기사 같은 메모성 괄호 제거
+          .replace(/\(기사\d*\)/g, " ")
+
+          // 네이버 단어 제거
+          .replace(/(^|\s)네이버(?=\s|$)/g, " ")
+
+          // 공백 정리
+          .replace(/\s+/g, " ")
+          .trim();
+
+        if (!menuText) return "";
+
+        // 쉼표 뒤 공백 정리: B코스12,돈까스3 → B코스12, 돈까스3
+        menuText = menuText
+          .replace(/\s*,\s*/g, ", ")
+          .replace(/([A-Z가-힣])코스\s*(\d+)/g, "$1코스$2")
+          .replace(/\s+/g, " ")
+          .trim();
+
+        return menuText;
       }
 
       function splitValues(value) {
@@ -4919,8 +4947,7 @@
             .map((r) => {
               const classes = [
                 "week-card-item",
-                r.seat === "룸" ? "room-item" : "",
-                r.isNaver ? "naver-item" : "",
+                isReservationUnconfirmed(r) ? "week-unconfirmed" : "",
               ]
                 .filter(Boolean)
                 .join(" ");
@@ -5009,6 +5036,12 @@
         return getSeatDisplayText(r);
       }
 
+      function getMenuDisplayText(menu) {
+        return String(menu || "")
+          .replace(/([A-Z가-힣])코스\s+(\d+)/g, "$1코스$2")
+          .trim();
+      }
+
       function getPeopleDisplayText(r) {
         const adult = Number(r.adult) || 0;
         const child = Number(r.child) || 0;
@@ -5056,6 +5089,43 @@
       // 기존 TV 코드들이 깨지지 않게 이름은 그대로 연결해둠
       function getTVPeopleText(r) {
         return getPeopleDisplayText(r);
+      }
+
+      function isSeatUnconfirmed(r) {
+        const seat = String(r?.seat || "").trim();
+        const room = String(r?.room || "").trim();
+        const table = String(r?.table || "").trim();
+
+        if (!seat) return true;
+
+        // 홀은 테이블 번호가 있어야 좌석 확정
+        if (seat === "홀") {
+          return !table;
+        }
+
+        // 룸은 room 값이 있으면 전체룸/부분룸 모두 좌석 확정으로 봄
+        if (seat === "룸") {
+          return !room;
+        }
+
+        return false;
+      }
+
+      function isMenuUnconfirmed(r) {
+        const menu = String(r?.menu || "").trim();
+
+        if (!menu) return true;
+        if (menu === "-") return true;
+        if (/메뉴\s*전화/.test(menu)) return true;
+        if (/메뉴\s*다시\s*전화/.test(menu)) return true;
+        if (/다시\s*전화/.test(menu)) return true;
+        if (/미정/.test(menu)) return true;
+
+        return false;
+      }
+
+      function isReservationUnconfirmed(r) {
+        return isSeatUnconfirmed(r) || isMenuUnconfirmed(r);
       }
 
       function getSeatDisplayText(r) {
@@ -5159,7 +5229,7 @@
 
         const rowsHtml = todayReservations
           .map((r) => {
-            const menu = String(r.menu || "").trim();
+            const menu = getMenuDisplayText(r.menu);
             const menuHtml = menu
               ? `<span class="tv-menu">${escapeHtml(menu)}</span>`
               : `<span class="tv-menu tv-menu-empty"></span>`;
@@ -6406,7 +6476,7 @@ ${modalSeatPickMode ? `
 
             return `
           <div
-            class="reservation status-${r.status} ${r.seat === "룸" ? "room-highlight" : ""}"
+            class="reservation status-${r.status} ${isReservationUnconfirmed(r) ? "reservation-unconfirmed" : ""}"
             onclick="event.stopPropagation(); editReservation(${realIndex})"
             style="cursor:pointer;"
           >
@@ -6523,7 +6593,7 @@ ${modalSeatPickMode ? `
 
               <div class="info-item" style="display:flex; align-items:center; gap:6px; padding:4px 8px;">
                 <div class="info-label" style="margin-bottom:0;">메뉴</div>
-                <div class="info-value">${escapeHtml(r.menu || "-")}</div>
+                <div class="info-value">${escapeHtml(getMenuDisplayText(r.menu) || "-")}</div>
               </div>
             </div>
 
