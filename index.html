@@ -149,17 +149,12 @@
       .reservation.status-예약 {
         background: #f5faff;
       }
+      
       .reservation.status-도착 {
-        background: #fff8f0;
-      }
-      .reservation.status-착석 {
-        background: #f4fbf5;
-      }
-      .reservation.status-퇴장 {
         background: #f5f5f5;
         opacity: 0.75;
       }
-
+      
       .reservation-top {
         display: flex;
         justify-content: space-between;
@@ -197,15 +192,9 @@
         background: #1976d2;
       }
       .badge-도착 {
-        background: #ef6c00;
-      }
-      .badge-착석 {
-        background: #2e7d32;
-      }
-      .badge-퇴장 {
         background: #757575;
       }
-      
+           
       /* 예약 상세 정보 그리드 */
       .info-grid {
         display: grid;
@@ -3612,7 +3601,7 @@
             const realIndex = reservations.indexOf(r);
 
             return `
-          <div class="reservation status-${r.status} ${isReservationUnconfirmed(r) ? "reservation-unconfirmed" : ""}" style="margin-bottom:0;">
+          <div class="reservation status-${getDisplayStatus(r.status)} ${isReservationUnconfirmed(r) ? "reservation-unconfirmed" : ""}" style="margin-bottom:0;">
             <div class="reservation-top">
   <div>
     <div class="name" style="display:flex; align-items:center; flex-wrap:wrap; gap:8px; margin:0;">
@@ -3626,7 +3615,7 @@
   <div style="display:flex; align-items:center; gap:8px;">
     ${r.isNaver ? `<span style="background:#03c75a; color:white; font-size:12px; font-weight:bold; padding:6px 10px; border-radius:999px;">네이버</span>` : ""}
    <span 
-  class="status-badge badge-${r.status}" 
+  class="status-badge badge-${getDisplayStatus(r.status)}" 
   onclick="toggleStatus(${realIndex})"
   style="cursor:pointer;"
 >
@@ -5091,6 +5080,13 @@
         return getPeopleDisplayText(r);
       }
 
+      function getDisplayStatus(status) {
+        if (status === "퇴장") return "도착";
+        if (status === "착석") return "도착";
+        if (status === "도착") return "도착";
+        return "예약";
+      }
+
       function isSeatUnconfirmed(r) {
         const seat = String(r?.seat || "").trim();
         const room = String(r?.room || "").trim();
@@ -5235,7 +5231,7 @@
               : `<span class="tv-menu tv-menu-empty"></span>`;
 
             return `
-          <tr class="${r.status === "퇴장" ? "tv-status-exit" : ""}">
+          <tr class="${getDisplayStatus(r.status) === "도착" ? "tv-status-exit" : ""}">
             <td>${escapeHtml(formatTVTime(r.time || ""))}</td>
             <td>${escapeHtml(r.name || "")}</td>
             <td>${escapeHtml(getTVPeopleText(r))}</td>
@@ -6476,7 +6472,7 @@ ${modalSeatPickMode ? `
 
             return `
           <div
-            class="reservation status-${r.status} ${isReservationUnconfirmed(r) ? "reservation-unconfirmed" : ""}"
+            class="reservation status-${getDisplayStatus(r.status)} ${isReservationUnconfirmed(r) ? "reservation-unconfirmed" : ""}"
             onclick="event.stopPropagation(); editReservation(${realIndex})"
             style="cursor:pointer;"
           >
@@ -6485,11 +6481,11 @@ ${modalSeatPickMode ? `
 
                 <div style="display:flex; align-items:center; flex-wrap:wrap; gap:8px; min-width:0;">
                   <span
-                    class="status-badge badge-${r.status}"
+                    class="status-badge badge-${getDisplayStatus(r.status)}"
                     onclick="event.stopPropagation(); toggleStatus(${realIndex})"
                     style="cursor:pointer; font-size:11px; padding:3px 7px;"
                   >
-                    ${r.status}
+                    ${getDisplayStatus(r.status)}
                   </span>
 
                   <span style="font-size:16px; font-weight:700; color:#1f2d3d;">
@@ -7384,14 +7380,17 @@ ${modalSeatPickMode ? `
         if (!r || !r.id) return;
 
         try {
-          const updatedReservation = {
+          await setDoc(
+            doc(db, "reservations", r.id),
+            { status: newStatus },
+            { merge: true },
+          );
+
+          reservations[index] = {
             ...r,
             status: newStatus,
           };
 
-          await setDoc(doc(db, "reservations", r.id), updatedReservation);
-
-          reservations[index] = updatedReservation;
           refreshCurrentScreen();
         } catch (error) {
           console.error("상태 변경 오류:", error);
@@ -7403,17 +7402,21 @@ ${modalSeatPickMode ? `
         const r = reservations[index];
         if (!r || !r.id) return;
 
-        const newStatus = r.status === "퇴장" ? "예약" : "퇴장";
+        const currentStatus = r.status === "퇴장" ? "도착" : r.status;
+        const newStatus = currentStatus === "도착" ? "예약" : "도착";
 
         try {
-          const updatedReservation = {
+          await setDoc(
+            doc(db, "reservations", r.id),
+            { status: newStatus },
+            { merge: true },
+          );
+
+          reservations[index] = {
             ...r,
             status: newStatus,
           };
 
-          await setDoc(doc(db, "reservations", r.id), updatedReservation);
-
-          reservations[index] = updatedReservation;
           refreshCurrentScreen();
         } catch (error) {
           console.error("상태 변경 오류:", error);
@@ -7426,14 +7429,17 @@ ${modalSeatPickMode ? `
         if (!r || !r.id) return;
 
         try {
-          const updatedReservation = {
+          await setDoc(
+            doc(db, "reservations", r.id),
+            { [field]: checked },
+            { merge: true },
+          );
+
+          reservations[index] = {
             ...r,
             [field]: checked,
           };
 
-          await setDoc(doc(db, "reservations", r.id), updatedReservation);
-
-          reservations[index] = updatedReservation;
           refreshCurrentScreen();
         } catch (error) {
           console.error("세팅 변경 오류:", error);
