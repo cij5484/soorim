@@ -1900,6 +1900,78 @@
         background: #e5e7eb;
       }
 
+      /* ====== 모바일 TV 하단 슬라이더 설정 패널 ====== */
+      .mobile-tv-settings-panel {
+        display: none;
+      }
+
+      .mobile-tv-setting-tabs {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        overflow-x: auto;
+        white-space: nowrap;
+        padding: 2px 0;
+      }
+
+      .mobile-tv-setting-tab {
+        flex: 0 0 auto;
+        height: 36px;
+        padding: 0 12px;
+        border: 1px solid #cbd5e1;
+        border-radius: 999px;
+        background: #f3f4f6;
+        color: #111827;
+        font-size: 14px;
+        font-weight: 900;
+        cursor: pointer;
+      }
+
+      .mobile-tv-setting-tab.close {
+        background: #ef4444;
+        border-color: #dc2626;
+        color: white;
+      }
+
+      .mobile-tv-slider-view {
+        display: grid;
+        grid-template-columns: 34px 42px 1fr 42px;
+        align-items: center;
+        gap: 8px;
+        height: 44px;
+      }
+
+      .mobile-tv-setting-back {
+        width: 34px;
+        height: 34px;
+        border: none;
+        border-radius: 999px;
+        background: #e5e7eb;
+        color: #111827;
+        font-size: 20px;
+        font-weight: 900;
+        cursor: pointer;
+      }
+
+      .mobile-tv-setting-name {
+        font-size: 14px;
+        font-weight: 900;
+        color: #111827;
+        text-align: center;
+      }
+
+      .mobile-tv-setting-range {
+        width: 100%;
+        accent-color: #2563eb;
+      }
+
+      .mobile-tv-setting-value {
+        font-size: 13px;
+        font-weight: 900;
+        color: #2563eb;
+        text-align: right;
+      }
+
       .tv-preset-btn {
         width: 66px;
         height: 34px;
@@ -2240,9 +2312,34 @@
           font-size: 24px !important;
         }
 
+        body.tv-mode-body .tv-settings-modal-bg.show {
+          display: flex !important;
+          align-items: flex-end !important;
+          justify-content: center !important;
+          background: transparent !important;
+        }
+
         body.tv-mode-body .tv-settings-modal {
-          width: 92vw !important;
-          max-width: 360px !important;
+          width: 100vw !important;
+          max-width: none !important;
+
+          border-left: none !important;
+          border-right: none !important;
+          border-bottom: none !important;
+          border-radius: 14px 14px 0 0 !important;
+
+          padding: 8px 8px 10px !important;
+          background: white !important;
+          box-shadow: 0 -8px 30px rgba(0, 0, 0, 0.24) !important;
+        }
+
+        body.tv-mode-body .tv-settings-header,
+        body.tv-mode-body .tv-setting-row {
+          display: none !important;
+        }
+
+        body.tv-mode-body .mobile-tv-settings-panel {
+          display: block !important;
         }
 
         body.tv-mode-body .tv-setting-label {
@@ -4545,15 +4642,199 @@
         applyTVSettings(getTVDefaultSettings());
       }
 
+      let activeMobileTVSetting = null;
+
+      function getMobileTVSettingConfig(key) {
+        const configs = {
+          font: {
+            label: "글자",
+            min: 12,
+            max: 40,
+            step: 1,
+            value: tvReservationFontSize,
+            unit: "px",
+          },
+          row: {
+            label: "행",
+            min: 2,
+            max: 24,
+            step: 1,
+            value: tvReservationRowPadding,
+            unit: "px",
+          },
+          time: {
+            label: "시간",
+            min: 8,
+            max: 30,
+            step: 1,
+            value: tvColumnWidths.time,
+            unit: "%",
+          },
+          name: {
+            label: "이름",
+            min: 12,
+            max: 45,
+            step: 1,
+            value: tvColumnWidths.name,
+            unit: "%",
+          },
+          people: {
+            label: "인원",
+            min: 8,
+            max: 30,
+            step: 1,
+            value: tvColumnWidths.people,
+            unit: "%",
+          },
+          seat: {
+            label: "좌석",
+            min: 8,
+            max: 35,
+            step: 1,
+            value: tvColumnWidths.seat,
+            unit: "%",
+          },
+          menu: {
+            label: "메뉴",
+            min: 8,
+            max: 35,
+            step: 1,
+            value: tvColumnWidths.menu,
+            unit: "%",
+          },
+        };
+
+        return configs[key];
+      }
+
+      function setTVColumnWidthFromSlider(column, value) {
+        const currentWidth = Number(tvColumnWidths[column] || 0);
+        const targetWidth = Number(value);
+
+        if (!Number.isFinite(targetWidth)) return;
+
+        const amount = targetWidth - currentWidth;
+
+        if (amount === 0) return;
+
+        changeTVColumnWidth(column, amount);
+      }
+
+      function syncMobileTVSettingSlider(key) {
+        const config = getMobileTVSettingConfig(key);
+        if (!config) return;
+
+        const slider = document.getElementById("mobile-tv-setting-range");
+        const valueText = document.getElementById("mobile-tv-setting-value");
+
+        if (slider) slider.value = config.value;
+        if (valueText) valueText.textContent = `${Math.round(config.value)}${config.unit}`;
+      }
+
+      function changeMobileTVSetting(key, value) {
+        const numberValue = Number(value);
+        if (!Number.isFinite(numberValue)) return;
+
+        if (key === "font") {
+          tvReservationFontSize = Math.max(12, Math.min(40, numberValue));
+          saveCurrentTVSettingsToStorage();
+          applyTVReservationFontSize();
+          syncMobileTVSettingSlider(key);
+          return;
+        }
+
+        if (key === "row") {
+          tvReservationRowPadding = Math.max(2, Math.min(24, numberValue));
+          saveCurrentTVSettingsToStorage();
+          applyTVReservationRowHeight();
+          syncMobileTVSettingSlider(key);
+          return;
+        }
+
+        setTVColumnWidthFromSlider(key, numberValue);
+        syncMobileTVSettingSlider(key);
+      }
+
+      function openMobileTVSetting(key) {
+        activeMobileTVSetting = key;
+        renderMobileTVSettingsPanel();
+      }
+
+      function openMobileTVSettingsMenu() {
+        activeMobileTVSetting = null;
+        renderMobileTVSettingsPanel();
+      }
+
+      function renderMobileTVSettingsPanel() {
+        const panel = document.getElementById("mobile-tv-settings-panel");
+        if (!panel) return;
+
+        if (!activeMobileTVSetting) {
+          panel.innerHTML = `
+            <div class="mobile-tv-setting-tabs">
+              <button class="mobile-tv-setting-tab" onclick="window.openMobileTVSetting('font')" type="button">글자</button>
+              <button class="mobile-tv-setting-tab" onclick="window.openMobileTVSetting('row')" type="button">행</button>
+              <button class="mobile-tv-setting-tab" onclick="window.openMobileTVSetting('time')" type="button">시간</button>
+              <button class="mobile-tv-setting-tab" onclick="window.openMobileTVSetting('name')" type="button">이름</button>
+              <button class="mobile-tv-setting-tab" onclick="window.openMobileTVSetting('people')" type="button">인원</button>
+              <button class="mobile-tv-setting-tab" onclick="window.openMobileTVSetting('seat')" type="button">좌석</button>
+              <button class="mobile-tv-setting-tab" onclick="window.openMobileTVSetting('menu')" type="button">메뉴</button>
+              <button class="mobile-tv-setting-tab close" onclick="window.closeTVSettingsModal()" type="button">닫기</button>
+            </div>
+          `;
+          return;
+        }
+
+        const config = getMobileTVSettingConfig(activeMobileTVSetting);
+        if (!config) return;
+
+        panel.innerHTML = `
+          <div class="mobile-tv-slider-view">
+            <button
+              class="mobile-tv-setting-back"
+              onclick="window.openMobileTVSettingsMenu()"
+              type="button"
+            >
+              ‹
+            </button>
+
+            <div class="mobile-tv-setting-name">${config.label}</div>
+
+            <input
+              id="mobile-tv-setting-range"
+              class="mobile-tv-setting-range"
+              type="range"
+              min="${config.min}"
+              max="${config.max}"
+              step="${config.step}"
+              value="${config.value}"
+              oninput="window.changeMobileTVSetting('${activeMobileTVSetting}', this.value)"
+            />
+
+            <div
+              id="mobile-tv-setting-value"
+              class="mobile-tv-setting-value"
+            >
+              ${Math.round(config.value)}${config.unit}
+            </div>
+          </div>
+        `;
+      }
+
       function openTVSettingsModal() {
         loadTVSettingsForCurrentScreen();
         applyAllTVSettings();
+
+        activeMobileTVSetting = null;
+        renderMobileTVSettingsPanel();
 
         const modal = document.getElementById("tv-settings-modal");
         if (modal) modal.classList.add("show");
       }
 
       function closeTVSettingsModal() {
+        activeMobileTVSetting = null;
+
         const modal = document.getElementById("tv-settings-modal");
         if (modal) modal.classList.remove("show");
       }
@@ -4585,6 +4866,9 @@
       window.openTVSettingsModal = openTVSettingsModal;
       window.closeTVSettingsModal = closeTVSettingsModal;
       window.printTVReservationPanel = printTVReservationPanel;
+      window.openMobileTVSetting = openMobileTVSetting;
+      window.openMobileTVSettingsMenu = openMobileTVSettingsMenu;
+      window.changeMobileTVSetting = changeMobileTVSetting;
       let editingIndex = null;
       let editingReservationId = null;
       let importPreviewList = [];
@@ -7164,6 +7448,11 @@ ${String(r.memo || "").trim() ? `<span style="margin-left:6px; background:#fff3c
         ×
       </button>
     </div>
+
+    <div
+      class="mobile-tv-settings-panel"
+      id="mobile-tv-settings-panel"
+    ></div>
 
     <div class="tv-setting-row">
       <div class="tv-setting-label">예약 글자 크기</div>
