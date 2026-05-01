@@ -48,11 +48,10 @@
       }
 
       .reservation-icon-actions {
-        display: grid;
-        grid-template-columns: repeat(2, 26px);
-        gap: 3px 4px;
+        display: flex;
         align-items: center;
-        justify-content: end;
+        justify-content: flex-end;
+        gap: 5px;
         flex: none;
       }
 
@@ -68,6 +67,50 @@
         display: inline-flex;
         align-items: center;
         justify-content: center;
+      }
+
+      .day-card-pc-right {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-end;
+        gap: 9px;
+        flex: none;
+        margin-left: auto;
+      }
+
+      .day-card-pc-top {
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+        gap: 14px;
+      }
+
+      .day-card-pc-bottom {
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+        gap: 5px;
+      }
+
+      .reservation-delete-icon-btn {
+        width: 24px !important;
+        height: 24px !important;
+        border: none !important;
+        border-radius: 5px !important;
+        background: #ef4444 !important;
+        color: white !important;
+        font-size: 16px !important;
+        font-weight: 900 !important;
+        line-height: 1 !important;
+        cursor: pointer !important;
+
+        display: inline-flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+      }
+
+      .reservation-delete-icon-btn:hover {
+        background: #dc2626 !important;
       }
 
       .day-card-mobile-head {
@@ -94,8 +137,7 @@
         gap: 4px;
       }
 
-      .reservation-card-first-line,
-      .reservation-card-second-line {
+      .reservation-card-first-line {
         display: flex;
         align-items: center;
         flex-wrap: wrap;
@@ -109,11 +151,62 @@
         color: #1f2d3d;
       }
 
-      .reservation-phone {
-        font-size: 13px;
-        color: #666;
+      .pc-name-phone-stack {
+        display: inline-flex;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 3px;
+        min-width: 0;
       }
 
+      .pc-phone-under-name {
+        font-size: 12px;
+        font-weight: 500;
+        color: #6b7280;
+        line-height: 1;
+        margin-top: 1px;
+        white-space: nowrap;
+      }
+
+      .pc-day-summary-chip {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 5px;
+
+        padding: 5px 10px;
+        border-radius: 8px;
+        border: 1px solid #e5e7eb;
+        background: rgba(255, 255, 255, 0.65);
+
+        font-size: 13px;
+        font-weight: 700;
+        color: #1f2d3d;
+        line-height: 1.15;
+        white-space: nowrap;
+      }
+
+      .search-result-pc-line .pc-day-summary-chip {
+        padding: 4px 8px;
+        gap: 3px;
+      }
+
+      .pc-day-summary-label {
+        font-size: 11px;
+        font-weight: 700;
+        color: #9ca3af;
+      }
+
+      .pc-day-summary-value {
+        font-size: 13px;
+        font-weight: 800;
+        color: #1f2d3d;
+      }
+
+      .mobile-summary-info-item {
+        display: none !important;
+      }
+      
       .mobile-setting-bottom-row {
         display: none;
       }
@@ -139,6 +232,116 @@
 
       .search-dim {
         opacity: 0.35;
+      }
+
+      /* ====== 검색결과 예약카드 ====== */
+      .search-result-card {
+        margin-bottom: 10px !important;
+      }
+
+      .search-result-pc-line {
+        display: inline-flex;
+        align-items: center;
+        justify-content: flex-start;
+        flex-wrap: wrap;
+        gap: 4px;
+        min-width: 0;
+        width: auto;
+      }
+
+      .search-result-pc-line .pc-day-summary-chip {
+        padding: 4px 7px;
+        gap: 3px;
+        margin-left: 0;
+      }
+
+      .search-result-pc-line .pc-name-phone-stack {
+        margin-right: 2px;
+      }
+
+      .search-result-mobile-info-row {
+        display: none;
+      }
+
+      .search-result-actions {
+        display: flex;
+        align-items: center;
+        justify-content: flex-start;
+        gap: 6px;
+        margin-top: 6px;
+      }
+
+      .search-result-date-text {
+        margin-right: auto;
+        font-size: 14px;
+        font-weight: 900;
+        color: #374151;
+      }
+
+      .search-result-action-btn {
+        border: none;
+        padding: 8px 13px;
+        border-radius: 8px;
+        cursor: pointer;
+        font-size: 13px;
+        font-weight: 800;
+        color: white;
+      }
+
+      .search-result-action-btn.go-date {
+        background: #1f4e79;
+      }
+
+      .search-result-action-btn.edit-now {
+        background: #2563eb;
+      }
+
+      .search-result-action-btn.go-date:hover {
+        background: #163a5a;
+      }
+
+      .search-result-action-btn.edit-now:hover {
+        background: #1d4ed8;
+      }
+
+      /* ====== 불러오기 미리보기 상태 배지 ====== */
+      .import-preview-status-badge {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+
+        margin-right: 6px;
+        padding: 2px 7px;
+        border-radius: 999px;
+
+        font-size: 11px;
+        font-weight: 900;
+        line-height: 1;
+        white-space: nowrap;
+      }
+
+      .import-preview-status-badge.new {
+        background: #dcfce7;
+        color: #166534;
+        border: 1px solid #86efac;
+      }
+
+      .import-preview-status-badge.update {
+        background: #dbeafe;
+        color: #1d4ed8;
+        border: 1px solid #93c5fd;
+      }
+
+      .import-preview-status-badge.same {
+        background: #e5e7eb;
+        color: #4b5563;
+        border: 1px solid #d1d5db;
+      }
+
+      .import-preview-status-badge.conflict {
+        background: #fee2e2;
+        color: #b91c1c;
+        border: 1px solid #fca5a5;
       }
 
       .month-title-custom {
@@ -424,27 +627,7 @@
         align-items: center;
         flex-wrap: wrap;
       }
-      .actions select {
-        padding: 10px 12px;
-        border-radius: 8px;
-        border: 1px solid #bbb;
-        font-size: 15px;
-        background: white;
-        cursor: pointer;
-      }
-      .actions .delete-btn {
-        background: #e74c3c;
-        color: white;
-        border: none;
-        padding: 10px 16px;
-        border-radius: 8px;
-        cursor: pointer;
-        font-size: 15px;
-      }
-      .actions .delete-btn:hover {
-        background: #c0392b;
-      }
-
+      
       .empty {
         text-align: center;
         color: #888;
@@ -2118,7 +2301,7 @@
         /* 예약 카드 */
         .reservation {
           padding: 7px 8px !important;
-          margin-bottom: 7px !important;
+          margin-bottom: 11px !important;
           border-radius: 10px;
         }
 
@@ -2181,21 +2364,34 @@
           height: 13px !important;
         }
 
-        /* 모바일 일간 카드: 수정/삭제/문자/전화 아이콘 한 줄 압축 */
+        /* 모바일 일간 카드: 문자/전화/삭제 아이콘 오른쪽 정렬 */
         .reservation-icon-actions {
-          grid-template-columns: repeat(4, 21px) !important;
-          gap: 1px !important;
+          display: flex !important;
+          align-items: center !important;
+          justify-content: flex-end !important;
+          gap: 3px !important;
         }
 
         .day-card-mobile-head .reservation-icon-actions {
           margin-left: auto !important;
           justify-self: end !important;
+          align-self: start !important;
         }
 
         .reservation-icon-actions button {
-          width: 21px !important;
-          height: 21px !important;
+          width: 22px !important;
+          height: 22px !important;
           font-size: 13px !important;
+        }
+
+        .reservation-delete-icon-btn {
+          width: 22px !important;
+          height: 22px !important;
+          border-radius: 4px !important;
+          background: #ef4444 !important;
+          color: white !important;
+          font-size: 15px !important;
+          font-weight: 900 !important;
         }
 
         .day-card-pc-head {
@@ -2219,18 +2415,6 @@
         .reservation-card-first-line {
           gap: 5px !important;
           flex-wrap: nowrap !important;
-        }
-
-        .reservation-card-second-line {
-          width: 100% !important;
-          gap: 7px !important;
-          flex-wrap: nowrap !important;
-          margin-top: 1px !important;
-          justify-content: space-between !important;
-        }
-
-        .reservation-card-second-line .setting-checks {
-          margin-left: auto !important;
         }
 
         /* 모바일 일간 카드: 인원/좌석/메뉴 + 기본/전체 한 줄 */
@@ -2261,8 +2445,8 @@
         .mobile-info-setting-row .setting-checks {
           margin-left: auto !important;
           justify-content: flex-end !important;
-          gap: 4px !important;
-          font-size: 11px !important;
+          gap: 10px !important;
+          font-size: 13px !important;
         }
 
         .mobile-info-setting-row .setting-checks label {
@@ -2270,8 +2454,8 @@
         }
 
         .mobile-info-setting-row .setting-checks input {
-          width: 12px !important;
-          height: 12px !important;
+          width: 18px !important;
+          height: 18px !important;
         }
 
         /* 기본/전체가 들어오므로 메뉴칸은 조금 더 짧게 */
@@ -2280,21 +2464,39 @@
         }
 
         .tv-display-badge {
-          min-width: 27px !important;
-          height: 19px !important;
-          padding: 0 6px !important;
-          font-size: 10px !important;
+          min-width: auto !important;
+          height: auto !important;
+          padding: 3px 7px !important;
+          font-size: 11px !important;
+          line-height: 1 !important;
+          border-radius: 20px !important;
+          margin-right: 8px !important;
         }
 
         .reservation-time-text {
           font-size: 14px !important;
           line-height: 1.1 !important;
         }
+        
+        .pc-day-summary-chip {
+          display: none !important;
+        }
 
-        .reservation-phone {
-          font-size: 11px !important;
-          line-height: 1.1 !important;
-          color: #666 !important;
+        .pc-name-phone-stack {
+          display: inline-flex !important;
+        }
+
+        .pc-phone-under-name {
+          display: none !important;
+        }
+
+        .pc-day-summary-label,
+        .pc-day-summary-value {
+          display: none !important;
+        }
+
+        .mobile-summary-info-item {
+          display: inline-flex !important;
         }
 
         .reservation-name-wrap {
@@ -2308,6 +2510,40 @@
           white-space: nowrap !important;
           overflow: hidden !important;
           text-overflow: ellipsis !important;
+        }
+
+        /* 모바일 검색결과 카드 */
+        .search-result-card {
+          margin-bottom: 9px !important;
+        }
+
+        .search-result-mobile-info-row {
+          display: flex !important;
+          align-items: center !important;
+          gap: 4px !important;
+          width: 100% !important;
+          margin-top: 5px !important;
+          margin-bottom: 4px !important;
+        }
+
+        .search-result-actions {
+          display: grid !important;
+          grid-template-columns: 1fr 1fr;
+          gap: 6px !important;
+          margin-top: 7px !important;
+        }
+
+        .search-result-date-text {
+          grid-column: 1 / -1;
+          margin-right: 0 !important;
+          font-size: 11px !important;
+        }
+
+        .search-result-action-btn {
+          width: 100%;
+          height: 34px;
+          padding: 0 8px !important;
+          font-size: 12px !important;
         }
 
         /* 모바일 일간 카드: 인원/좌석/메뉴 한 줄 압축 */
@@ -2342,8 +2578,8 @@
         }
 
         .info-value {
-          font-size: 12px !important;
-          line-height: 1.1 !important;
+          font-size: 13px !important;
+          line-height: 1.15 !important;
           white-space: nowrap !important;
           overflow: hidden !important;
           text-overflow: ellipsis !important;
@@ -2393,8 +2629,7 @@
           display: none;
         }
 
-        .actions > button,
-        .actions .delete-btn {
+        .actions > button {
           width: 100%;
           justify-content: center;
         }
@@ -3648,7 +3883,7 @@
             class="btn-save"
             onclick="confirmImport()"
           >
-            예약 추가
+            예약 반영
           </button>
         </div>
       </div>
@@ -4401,6 +4636,21 @@
         currentView = view;
         localStorage.setItem("currentView", currentView);
         render();
+
+        // 주간보기에서 선택 날짜로 자동 스크롤된 뒤
+        // 다시 일간 탭을 누르면 화면 맨 위부터 보이게 한다.
+        if (view === "day") {
+          setTimeout(() => {
+            window.scrollTo({
+              top: 0,
+              left: 0,
+              behavior: "auto",
+            });
+
+            document.documentElement.scrollTop = 0;
+            document.body.scrollTop = 0;
+          }, 0);
+        }
       }
 
       function openDayView(dateString) {
@@ -4409,6 +4659,147 @@
         saveViewState();
         syncSelectedDateUI();
         render();
+      }
+
+      function renderSearchResultReservationCard(r, realIndex) {
+        return `
+          <div
+            class="reservation search-result-card status-${getDisplayStatus(r.status)} ${isReservationUnconfirmed(r) ? "reservation-unconfirmed" : ""}"
+          >
+            <div class="reservation-top">
+
+              <!-- PC 검색결과 카드 -->
+              <div class="day-card-pc-head" style="width:100%;">
+                <div class="search-result-pc-line">
+                  <span
+                    class="status-badge badge-${getDisplayStatus(r.status)}"
+                    onclick="event.stopPropagation(); toggleStatus(${realIndex})"
+                    style="cursor:pointer; font-size:11px; padding:3px 7px;"
+                  >
+                    ${getDisplayStatus(r.status)}
+                  </span>
+
+                  <span class="reservation-time-text">
+                    ${escapeHtml(r.time || "")}
+                  </span>
+
+                  <span class="pc-name-phone-stack">
+                    <span class="reservation-name-wrap">
+                      <span class="reservation-name-text">
+                        ${escapeHtml(getReservationDisplayName(r))}
+                      </span>
+                      ${
+                        r.isNaver
+                          ? `<span class="naver-mini-badge" title="네이버 예약">N</span>`
+                          : ""
+                      }
+                    </span>
+
+                    <span class="pc-phone-under-name">
+                      ${escapeHtml(r.phone || "")}
+                    </span>
+                  </span>
+
+                  <span class="pc-day-summary-chip">
+                    <span class="pc-day-summary-label">인원</span>
+                    <span class="pc-day-summary-value">${escapeHtml(getPeopleDisplayText(r))}</span>
+                  </span>
+
+                  <span class="pc-day-summary-chip">
+                    <span class="pc-day-summary-label">좌석</span>
+                    <span class="pc-day-summary-value">${getSeatDisplayHtml(r, "card")}</span>
+                  </span>
+
+                  <span class="pc-day-summary-chip">
+                    <span class="pc-day-summary-label">메뉴</span>
+                    <span class="pc-day-summary-value">${escapeHtml(getMenuDisplayText(r.menu) || "-")}</span>
+                  </span>
+                </div>
+              </div>
+
+              <!-- 모바일 검색결과 카드 -->
+              <div class="day-card-mobile-head">
+                <div class="reservation-card-head">
+                  <div class="reservation-card-main">
+                    <div class="reservation-card-first-line">
+                      <span
+                        class="status-badge badge-${getDisplayStatus(r.status)}"
+                        onclick="event.stopPropagation(); toggleStatus(${realIndex})"
+                        style="cursor:pointer; font-size:11px; padding:3px 7px;"
+                      >
+                        ${getDisplayStatus(r.status)}
+                      </span>
+
+                      <span class="reservation-time-text">
+                        ${escapeHtml(r.time || "")}
+                      </span>
+
+                      <span class="reservation-name-wrap">
+                        <span class="reservation-name-text">
+                          ${escapeHtml(getReservationDisplayName(r))}
+                        </span>
+                        ${
+                          r.isNaver
+                            ? `<span class="naver-mini-badge" title="네이버 예약">N</span>`
+                            : ""
+                        }
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+
+            <div class="search-result-mobile-info-row">
+              <div class="info-grid" style="display:flex; gap:4px; align-items:center; flex-wrap:nowrap;">
+                <div class="info-item mobile-summary-info-item">
+                  <div class="info-value">${escapeHtml(getPeopleDisplayText(r))}</div>
+                </div>
+
+                <div class="info-item mobile-summary-info-item">
+                  <div class="info-value">${getSeatDisplayHtml(r, "card")}</div>
+                </div>
+
+                <div class="info-item mobile-summary-info-item">
+                  <div class="info-value">${escapeHtml(getMenuDisplayText(r.menu) || "-")}</div>
+                </div>
+              </div>
+            </div>
+
+            ${
+              r.memo
+                ? `
+                  <div class="memo">
+                    <span class="memo-label">메모:</span>${escapeHtml(r.memo)}
+                  </div>
+                `
+                : ""
+            }
+
+            <div class="search-result-actions" onclick="event.stopPropagation();">
+              <span class="search-result-date-text">
+                ${escapeHtml(r.date || "")}
+              </span>
+
+              <button
+                class="search-result-action-btn go-date"
+                onclick="goToReservationFromSearch(${realIndex})"
+                type="button"
+              >
+                해당 날짜 보기
+              </button>
+
+              <button
+                class="search-result-action-btn edit-now"
+                onclick="editReservationFromSearch(${realIndex})"
+                type="button"
+              >
+                바로 수정
+              </button>
+            </div>
+          </div>
+        `;
       }
 
       function renderSearchResults() {
@@ -4421,83 +4812,23 @@
 
         if (!searchResults.length) {
           list.innerHTML = `
-          <div class="empty" style="padding:30px 20px;">
-            검색 결과가 없습니다.
-          </div>
-        `;
+            <div class="empty" style="padding:30px 20px;">
+              검색 결과가 없습니다.
+            </div>
+          `;
           return;
         }
 
         list.innerHTML = searchResults
-          .map((r, index) => {
-            const realIndex = reservations.indexOf(r);
+          .map((r) => {
+            const realIndex = reservations.findIndex((item) => {
+              if (item.id && r.id) return item.id === r.id;
+              return item === r;
+            });
 
-            return `
-          <div class="reservation status-${getDisplayStatus(r.status)} ${isReservationUnconfirmed(r) ? "reservation-unconfirmed" : ""}" style="margin-bottom:0;">
-            <div class="reservation-top">
-  <div>
-    <div class="name" style="display:flex; align-items:center; flex-wrap:wrap; gap:8px; margin:0;">
-      <span style="font-size:18px; color:#1f2d3d; font-weight:700;">${escapeHtml(r.time)}</span>
-      <span>${escapeHtml(r.name)}</span>
-      <span style="font-size:14px; color:#666; font-weight:400;">
-        ${escapeHtml(r.phone || "")}
-      </span>
-    </div>
-  </div>
-  <div style="display:flex; align-items:center; gap:8px;">
-    ${r.isNaver ? `<span style="background:#03c75a; color:white; font-size:12px; font-weight:bold; padding:6px 10px; border-radius:999px;">네이버</span>` : ""}
-   <span 
-  class="status-badge badge-${getDisplayStatus(r.status)}" 
-  onclick="toggleStatus(${realIndex})"
-  style="cursor:pointer;"
->
-  ${r.status}
-</span>
-  </div>
-</div>
+            if (realIndex < 0) return "";
 
-            <div class="info-grid">
-              <div class="info-item">
-                <div class="info-label">인원</div>
-                <div class="info-value">${escapeHtml(getPeopleDisplayText(r))}</div>
-              </div>
-              <div class="info-item">
-                <div class="info-label">좌석</div>
-                <div class="info-value">${getSeatDisplayHtml(r, "card")}</div>
-              </div>
-              <div class="info-item">
-                <div class="info-label">메뉴</div>
-                <div class="info-value">${escapeHtml(getMenuDisplayText(r.menu) || "-")}</div>
-              </div>
-            </div>
-
-            ${
-              r.memo
-                ? `
-              <div class="memo">
-                <span class="memo-label">메모:</span>${escapeHtml(r.memo)}
-              </div>
-            `
-                : ""
-            }
-
-            <div class="actions">
-              <button
-                onclick="goToReservationFromSearch(${realIndex})"
-                style="background:#1f4e79; color:white; border:none; padding:10px 16px; border-radius:8px; cursor:pointer; font-size:15px;"
-              >
-                해당 날짜 보기
-              </button>
-
-              <button
-                onclick="editReservationFromSearch(${realIndex})"
-                style="background:#2563eb; color:white; border:none; padding:10px 16px; border-radius:8px; cursor:pointer; font-size:15px;"
-              >
-                바로 수정
-              </button>
-            </div>
-          </div>
-        `;
+            return renderSearchResultReservationCard(r, realIndex);
           })
           .join("");
       }
@@ -4576,8 +4907,8 @@
 
         if (confirmBtn) {
           confirmBtn.textContent = count
-            ? `${count}건 예약 추가`
-            : "추가할 예약 없음";
+            ? `${count}건 예약 반영`
+            : "반영할 예약 없음";
           confirmBtn.disabled = count === 0;
         }
 
@@ -4614,7 +4945,8 @@
             <div style="display:flex; flex-direction:column; gap:4px;">
 
               <div style="font-size:15px; font-weight:600;">
-                <span style="color:#333; font-weight:600;">${escapeHtml(r.time)}</span>
+                ${getImportPreviewBadgeHtml(r)}
+<span style="color:#333; font-weight:600;">${escapeHtml(r.time)}</span>
 <span style="margin-left:8px;">${escapeHtml(r.name)}</span>
                 ${r.seat ? `<span style="margin-left:6px; color:#888;">${escapeHtml(r.seat)}</span>` : ""}
                 ${r.people ? `<span style="margin-left:6px; color:#888;">${escapeHtml(getTVPeopleText(r))}</span>` : ""}
@@ -4742,110 +5074,352 @@ ${String(r.memo || "").trim() ? `<span style="margin-left:6px; background:#fff3c
         updateTotalPeople();
       }
 
-      function isSameImportedReservation(a, b) {
-        return (
-          String(a.date || "") === String(b.date || "") &&
-          String(a.time || "") === String(b.time || "") &&
-          String(a.name || "").trim() === String(b.name || "").trim() &&
-          String(a.people || "") === String(b.people || "")
+      function normalizeImportPhone(value) {
+        return String(value || "").replace(/\D/g, "");
+      }
+
+      function normalizeImportText(value) {
+        return String(value || "")
+          .replace(/\s+/g, " ")
+          .trim();
+      }
+
+      function findMatchingImportedReservation(newReservation) {
+        const newDate = String(newReservation.date || "");
+        const newPhone = normalizeImportPhone(newReservation.phone);
+        const newName = normalizeImportText(newReservation.name);
+
+        const sameDateReservations = reservations.filter(
+          (existing) => String(existing.date || "") === newDate,
         );
+
+        // 1순위: 같은 날짜 + 같은 전화번호
+        if (newPhone) {
+          const phoneMatches = sameDateReservations.filter(
+            (existing) => normalizeImportPhone(existing.phone) === newPhone,
+          );
+
+          if (phoneMatches.length === 1) {
+            return phoneMatches[0];
+          }
+
+          // 같은 전화번호가 여러 개면 이름까지 같은 예약을 찾는다
+          if (phoneMatches.length > 1 && newName) {
+            const nameAndPhoneMatch = phoneMatches.find(
+              (existing) => normalizeImportText(existing.name) === newName,
+            );
+
+            if (nameAndPhoneMatch) {
+              return nameAndPhoneMatch;
+            }
+          }
+
+          // 같은 전화번호가 여러 개인데 이름으로도 구분이 안 되면
+          // 잘못 수정하지 않도록 기존 예약 매칭을 포기한다
+          if (phoneMatches.length > 1) {
+            return null;
+          }
+        }
+
+        // 2순위: 전화번호가 없으면 같은 날짜 + 같은 예약자명
+        if (newName) {
+          const nameMatches = sameDateReservations.filter(
+            (existing) => normalizeImportText(existing.name) === newName,
+          );
+
+          if (nameMatches.length === 1) {
+            return nameMatches[0];
+          }
+        }
+
+        return null;
+      }
+
+      function makeImportMergedReservation(newReservation, existingReservation) {
+        return {
+          ...newReservation,
+
+          // 현장에서 체크한 운영 상태는 불러오기로 덮어쓰지 않고 유지
+          status: existingReservation?.status || newReservation.status || "예약",
+          basicSetting: !!existingReservation?.basicSetting,
+          fullSetting: !!existingReservation?.fullSetting,
+          nameDisplayMode: !!existingReservation?.nameDisplayMode,
+          tvHidden: !!existingReservation?.tvHidden,
+        };
+      }
+
+      function hasImportReservationChanged(nextReservation, existingReservation) {
+        const fieldsToCompare = [
+          "date",
+          "time",
+          "name",
+          "phone",
+          "people",
+          "adult",
+          "child",
+          "peopleText",
+          "seat",
+          "room",
+          "table",
+          "menu",
+          "isNaver",
+          "memo",
+        ];
+
+        const normalizeForCompare = (value) => {
+          if (typeof value === "boolean") return value ? "true" : "false";
+          if (typeof value === "number") return String(value);
+
+          return String(value ?? "")
+            .replace(/\s+/g, " ")
+            .trim();
+        };
+
+        return fieldsToCompare.some(
+          (field) =>
+            normalizeForCompare(nextReservation?.[field]) !==
+            normalizeForCompare(existingReservation?.[field]),
+        );
+      }
+
+      function getImportReservationLabel(r) {
+        return `${r.time || "-"} ${r.name || "이름없음"} (${getTVPeopleText(r)})`;
+      }
+
+          function isImportReservationConflictWithExisting(
+            reservationToCheck,
+            matchingExisting = null,
+            baseReservations = reservations,
+          ) {
+            return baseReservations.some((existing) => {
+          if ((existing.date || "") !== (reservationToCheck.date || "")) {
+            return false;
+          }
+
+          // 기존 예약을 수정하는 경우 자기 자신은 충돌 검사에서 제외
+          if (
+            matchingExisting &&
+            existing.id &&
+            matchingExisting.id &&
+            existing.id === matchingExisting.id
+          ) {
+            return false;
+          }
+
+          if (!reservationToCheck.time || !existing.time) {
+            return false;
+          }
+
+          const newTables = splitValues(reservationToCheck.table);
+          const oldTables = splitValues(existing.table);
+
+          const newRooms = splitValues(reservationToCheck.room);
+          const oldRooms = splitValues(existing.room);
+
+          const sameTable = newTables.some((t) => oldTables.includes(t));
+          const sameRoom =
+            reservationToCheck.seat === "룸" &&
+            existing.seat === "룸" &&
+            newRooms.some((r) => oldRooms.includes(r));
+
+          const newRoomFull =
+            reservationToCheck.seat === "룸" && newTables.length === 0;
+          const oldRoomFull = existing.seat === "룸" && oldTables.length === 0;
+
+          // 홀은 같은 테이블이면 충돌
+          if (reservationToCheck.seat !== "룸" || existing.seat !== "룸") {
+            return (
+              sameTable &&
+              isTimeConflict(
+                reservationToCheck.time,
+                existing.time,
+                reservationToCheck.seat,
+                existing.seat,
+              )
+            );
+          }
+
+          // 룸끼리는 같은 룸이 아니면 충돌 아님
+          if (!sameRoom) return false;
+
+          // 같은 룸이어도 둘 다 테이블 지정이면 같은 테이블일 때만 충돌
+          if (!newRoomFull && !oldRoomFull) {
+            return (
+              sameTable &&
+              isTimeConflict(
+                reservationToCheck.time,
+                existing.time,
+                reservationToCheck.seat,
+                existing.seat,
+              )
+            );
+          }
+
+          // 둘 중 하나가 룸 전체 사용이면 같은 룸에서 충돌
+          return isTimeConflict(
+            reservationToCheck.time,
+            existing.time,
+            reservationToCheck.seat,
+            existing.seat,
+          );
+        });
+      }
+
+      function getImportPreviewStatusInfo(newReservation) {
+        const matchingExisting = findMatchingImportedReservation(newReservation);
+
+        const reservationToCheck = matchingExisting
+          ? makeImportMergedReservation(newReservation, matchingExisting)
+          : {
+              ...newReservation,
+              status: newReservation.status || "예약",
+              basicSetting: false,
+              fullSetting: false,
+            nameDisplayMode: true,
+            tvHidden: false,
+            };
+
+        const hasConflict = isImportReservationConflictWithExisting(
+          reservationToCheck,
+          matchingExisting,
+        );
+
+        if (hasConflict) {
+          return {
+            label: "충돌",
+            className: "conflict",
+            title: "기존 예약과 시간 또는 좌석이 겹칩니다.",
+          };
+        }
+
+        if (matchingExisting) {
+          if (hasImportReservationChanged(reservationToCheck, matchingExisting)) {
+            return {
+              label: "수정",
+              className: "update",
+              title: "기존 예약의 변경사항을 수정합니다.",
+            };
+          }
+
+          return {
+            label: "변경없음",
+            className: "same",
+            title: "기존 예약과 내용이 같습니다.",
+          };
+        }
+
+        return {
+          label: "신규",
+          className: "new",
+          title: "새 예약으로 추가됩니다.",
+        };
+      }
+
+      function getImportPreviewBadgeHtml(r) {
+        const statusInfo = getImportPreviewStatusInfo(r);
+
+        return `
+          <span
+            class="import-preview-status-badge ${statusInfo.className}"
+            title="${escapeHtml(statusInfo.title)}"
+          >
+            ${escapeHtml(statusInfo.label)}
+          </span>
+        `;
       }
 
       async function confirmImport() {
         if (!requireLogin()) return;
+
         if (!importPreviewList.length) {
-          alert("추가할 예약이 없습니다.");
+          alert("반영할 예약이 없습니다.");
           return;
         }
 
         let addedCount = 0;
+        let updatedCount = 0;
+        let unchangedCount = 0;
         let skippedCount = 0;
         let skippedList = [];
 
-        for (const newReservation of importPreviewList) {
-          const isDuplicate = reservations.some((existing) =>
-            isSameImportedReservation(newReservation, existing),
+        // 불러오기 처리 중 충돌 확인에만 쓰는 임시 배열입니다.
+        // 실제 화면용 reservations에는 직접 push하지 않습니다.
+        let importWorkingReservations = [...reservations];
+
+        for (const newReservationRaw of importPreviewList) {
+          const newReservation = {
+            ...newReservationRaw,
+            status: newReservationRaw.status || "예약",
+          };
+
+          const savedReservations = reservations;
+          reservations = importWorkingReservations;
+          const matchingExisting = findMatchingImportedReservation(newReservation);
+          reservations = savedReservations;
+
+          const reservationToSave = matchingExisting
+            ? makeImportMergedReservation(newReservation, matchingExisting)
+            : {
+                ...newReservation,
+                basicSetting: false,
+                fullSetting: false,
+                nameDisplayMode: true,
+                tvHidden: false,
+              };
+
+          // 충돌 체크
+          // 기존 예약을 수정하는 경우에는 자기 자신은 충돌 검사에서 제외
+          const hasConflict = isImportReservationConflictWithExisting(
+            reservationToSave,
+            matchingExisting,
+            importWorkingReservations,
           );
 
-          if (isDuplicate) {
-            console.log("중복 건너뜀:", newReservation);
+          if (hasConflict) {
             skippedCount++;
-            skippedList.push(
-              `중복 - ${newReservation.time || "-"} ${newReservation.name || "이름없음"} (${getTVPeopleText(newReservation)})`,
-            );
+            skippedList.push(`충돌 - ${getImportReservationLabel(newReservation)}`);
             continue;
           }
-          const hasConflict = reservations.some((existing) => {
-            if ((existing.date || "") !== (newReservation.date || "")) {
-              return false;
-            }
 
-            const newTables = splitValues(newReservation.table);
-            const oldTables = splitValues(existing.table);
-
-            const newRooms = splitValues(newReservation.room);
-            const oldRooms = splitValues(existing.room);
-
-            const sameTable = newTables.some((t) => oldTables.includes(t));
-            const sameRoom =
-              newReservation.seat === "룸" &&
-              existing.seat === "룸" &&
-              newRooms.some((r) => oldRooms.includes(r));
-
-            const newRoomFull =
-              newReservation.seat === "룸" && newTables.length === 0;
-            const oldRoomFull =
-              existing.seat === "룸" && oldTables.length === 0;
-
-            // 홀은 같은 테이블이면 충돌
-            if (newReservation.seat !== "룸" || existing.seat !== "룸") {
-              return (
-                sameTable &&
-                isTimeConflict(
-                  newReservation.time,
-                  existing.time,
-                  newReservation.seat,
-                  existing.seat,
-                )
+          // 기존 예약이 있으면 수정
+          if (matchingExisting) {
+            if (!matchingExisting.id) {
+              skippedCount++;
+              skippedList.push(
+                `수정불가 - ${getImportReservationLabel(newReservation)}`,
               );
+              continue;
             }
 
-            // 룸끼리는:
-            // 1) 같은 룸이 아니면 충돌 아님
-            if (!sameRoom) return false;
-
-            // 2) 같은 룸이어도 둘 다 테이블 지정이면 같은 테이블일 때만 충돌
-            if (!newRoomFull && !oldRoomFull) {
-              return (
-                sameTable &&
-                isTimeConflict(
-                  newReservation.time,
-                  existing.time,
-                  newReservation.seat,
-                  existing.seat,
-                )
-              );
+            if (!hasImportReservationChanged(reservationToSave, matchingExisting)) {
+              unchangedCount++;
+              continue;
             }
 
-            // 3) 둘 중 하나가 룸 전체 사용이면 같은 룸에서 충돌
-            return isTimeConflict(
-              newReservation.time,
-              existing.time,
-              newReservation.seat,
-              existing.seat,
+            await setDoc(
+              doc(db, "reservations", matchingExisting.id),
+              reservationToSave,
+              { merge: true },
             );
+
+            // 같은 불러오기 안에서 뒤 예약 충돌 체크가 정확하도록 임시 배열만 갱신
+            importWorkingReservations = importWorkingReservations.map((r) =>
+              r.id === matchingExisting.id ? { ...r, ...reservationToSave } : r,
+            );
+
+            updatedCount++;
+            continue;
+          }
+
+          // 기존 예약이 없으면 새로 추가
+          const addedDocRef = await addDoc(reservationsCollection, reservationToSave);
+
+          // 같은 불러오기 안에서 뒤 예약 충돌 체크가 정확하도록 임시 배열에만 반영
+          importWorkingReservations.push({
+            ...reservationToSave,
+            id: addedDocRef.id,
           });
 
-          if (hasConflict) {
-            console.log("최종 건너뜀:", newReservation);
-            skippedCount++;
-            skippedList.push(
-              `충돌 - ${newReservation.time || "-"} ${newReservation.name || "이름없음"} (${getTVPeopleText(newReservation)})`,
-            );
-            continue;
-          }
-
-          await addDoc(reservationsCollection, newReservation);
           addedCount++;
         }
 
@@ -4858,7 +5432,7 @@ ${String(r.memo || "").trim() ? `<span style="margin-left:6px; background:#fff3c
           : "";
 
         alert(
-          `완료\n추가: ${addedCount}건\n건너뜀: ${skippedCount}건${skippedText}`,
+          `완료\n추가: ${addedCount}건\n수정: ${updatedCount}건\n변경없음: ${unchangedCount}건\n건너뜀: ${skippedCount}건${skippedText}`,
         );
       }
 
@@ -5075,6 +5649,7 @@ ${String(r.memo || "").trim() ? `<span style="margin-left:6px; background:#fff3c
           isNaver,
           memo: memoLines.join(" / "),
           status: "예약",
+          nameDisplayMode: true,
           tvHidden: false,
         };
       }
@@ -5413,11 +5988,17 @@ ${String(r.memo || "").trim() ? `<span style="margin-left:6px; background:#fff3c
             .replace(/\(네이버(?:-[^)]+)?\)/g, " ")
             .replace(/\(룸\)|\(홀\)|\(네이버-룸\)|\(네이버-홀\)/g, " ")
 
+            // 광고/체험단 같은 메모성 괄호 제거
+            .replace(/\(\s*(릴스\s*촬영|리뷰\s*노트|체험단)\s*\)/g, " ")
+
             // 기사 같은 메모성 괄호 제거
             .replace(/\(기사\d*\)/g, " ")
 
             // 네이버 단어 제거
             .replace(/(^|\s)네이버(?=\s|$)/g, " ")
+
+            // 혹시 괄호가 이미 제거된 상태로 남아도 메뉴에서 제외
+            .replace(/릴스\s*촬영|리뷰\s*노트|체험단/g, " ")
 
             // 괄호만 남은 경우 정리
             .replace(/[()]/g, " ")
@@ -5567,8 +6148,8 @@ ${String(r.memo || "").trim() ? `<span style="margin-left:6px; background:#fff3c
 
         const diff = Math.abs(toMin(newTime) - toMin(existingTime));
 
-        // 홀: 120분 / 룸: 150분
-        const limit = seat === "룸" || newSeat === "룸" ? 150 : 120;
+        // 홀/룸 모두 120분 간격
+        const limit = 120;
 
         return diff < limit;
       }
@@ -6006,6 +6587,18 @@ ${String(r.memo || "").trim() ? `<span style="margin-left:6px; background:#fff3c
 
         html += `</div>`;
         weekView.innerHTML = html;
+
+        // 주간보기로 들어왔을 때 선택된 날짜 카드가 바로 보이도록 자동 스크롤
+        setTimeout(() => {
+          const selectedWeekCard = weekView.querySelector(".week-card.selected-date");
+
+          if (!selectedWeekCard) return;
+
+          selectedWeekCard.scrollIntoView({
+            behavior: "smooth",
+            block: "center",
+          });
+        }, 0);
       }
 
       function moveMonth(diff) {
@@ -6094,6 +6687,12 @@ ${String(r.memo || "").trim() ? `<span style="margin-left:6px; background:#fff3c
         return getPeopleDisplayText(r);
       }
 
+      function isAdReservation(r) {
+        const text = `${r?.memo || ""} ${r?.menu || ""}`;
+
+        return /(릴스\s*촬영|리뷰\s*노트|체험단)/.test(text);
+      }
+
       function getDisplayStatus(status) {
         if (status === "퇴장") return "도착";
         if (status === "착석") return "도착";
@@ -6129,7 +6728,11 @@ ${String(r.memo || "").trim() ? `<span style="margin-left:6px; background:#fff3c
 
         if (!name) return "";
 
-        return r.nameDisplayMode ? formatCustomerNameWithNim(name) : name;
+        const displayName = r.nameDisplayMode
+          ? formatCustomerNameWithNim(name)
+          : name;
+
+        return isAdReservation(r) ? `${displayName}*` : displayName;
       }
 
       function isSeatUnconfirmed(r) {
@@ -6877,10 +7480,17 @@ ${getModalSeatPickGuideHtml()}
         modalSeatPickSelectedTables = currentTables;
 
         const modal = document.getElementById("modal");
+        const importPreviewModal = document.getElementById("import-preview-modal");
         const mapView = document.getElementById("seat-map-view");
         const list = document.getElementById("reservation-list");
 
         if (modal) modal.classList.remove("show");
+
+        // 불러오기 미리보기 수정 중 테이블맵을 열면,
+        // 미리보기 모달도 잠시 숨겨서 테이블맵 선택을 방해하지 않게 한다.
+        if (importPreviewModal) {
+          importPreviewModal.classList.remove("show");
+        }
 
         isSeatMapVisible = true;
 
@@ -7657,9 +8267,9 @@ ${
           >
             <div class="reservation-top">
 
-  <!-- PC용: 예전처럼 한 줄 구조 -->
+  <!-- PC용 -->
   <div class="day-card-pc-head">
-    <div style="display:flex; align-items:center; justify-content:space-between; width:100%; gap:8px;">
+    <div style="display:flex; align-items:flex-start; justify-content:space-between; width:100%; gap:8px;">
 
       <div style="display:flex; align-items:center; flex-wrap:wrap; gap:8px; min-width:0;">
         <span
@@ -7678,7 +8288,7 @@ ${
           TV
         </span>
 
-        <span style="font-size:16px; font-weight:700; color:#1f2d3d;">
+        <span class="reservation-time-text">
           ${escapeHtml(r.time || "")}
         </span>
 
@@ -7691,84 +8301,100 @@ ${
           title="예약자명 님 표시"
         />
 
-        <span class="reservation-name-wrap">
-          <span class="reservation-name-text">
-            ${escapeHtml(getReservationDisplayName(r))}
+        <span class="pc-name-phone-stack">
+          <span class="reservation-name-wrap">
+            <span class="reservation-name-text">
+              ${escapeHtml(getReservationDisplayName(r))}
+            </span>
+            ${
+              r.isNaver
+                ? `<span class="naver-mini-badge" title="네이버 예약">N</span>`
+                : ""
+            }
           </span>
-          ${
-            r.isNaver
-              ? `<span class="naver-mini-badge" title="네이버 예약">N</span>`
-              : ""
-          }
+
+          <span class="pc-phone-under-name">
+            ${escapeHtml(r.phone || "")}
+          </span>
         </span>
 
-        <span style="font-size:13px; color:#666;">
-          ${escapeHtml(r.phone || "")}
+        <span class="pc-day-summary-chip">
+          <span class="pc-day-summary-label">인원</span>
+          <span class="pc-day-summary-value">${escapeHtml(getPeopleDisplayText(r))}</span>
+        </span>
+
+        <span class="pc-day-summary-chip">
+          <span class="pc-day-summary-label">좌석</span>
+          <span class="pc-day-summary-value">${getSeatDisplayHtml(r, "card")}</span>
+        </span>
+
+        <span class="pc-day-summary-chip">
+          <span class="pc-day-summary-label">메뉴</span>
+          <span class="pc-day-summary-value">${escapeHtml(getMenuDisplayText(r.menu) || "-")}</span>
         </span>
       </div>
 
-      <div style="display:flex; align-items:center; gap:18px; flex:none;">
+      <div class="day-card-pc-right" onclick="event.stopPropagation();">
 
-        <div class="setting-checks" onclick="event.stopPropagation();">
-          <label>
-            <input
-              type="checkbox"
-              ${r.basicSetting ? "checked" : ""}
-              onchange="toggleSettingStatus(${realIndex}, 'basicSetting', this.checked)"
-            />
-            기본
-          </label>
+  <div class="day-card-pc-top reservation-icon-actions">
+    <button
+      onclick="event.stopPropagation(); openSmsTemplatePopup(${realIndex})"
+      title="문자"
+      type="button"
+    >
+      💬
+    </button>
 
-          <label>
-            <input
-              type="checkbox"
-              ${r.fullSetting ? "checked" : ""}
-              onchange="toggleSettingStatus(${realIndex}, 'fullSetting', this.checked)"
-            />
-            전체
-          </label>
-        </div>
+    <button
+      onclick="event.stopPropagation(); callReservationCustomer(${realIndex})"
+      title="전화"
+      type="button"
+    >
+      📞
+    </button>
 
-        <div class="reservation-icon-actions" onclick="event.stopPropagation();">
-          <button
-            onclick="event.stopPropagation(); editReservation(${realIndex})"
-            title="수정"
-          >
-            ✏️
-          </button>
+    <button
+      class="reservation-delete-icon-btn"
+      onclick="event.stopPropagation(); deleteReservation(${realIndex})"
+      title="삭제"
+      type="button"
+    >
+      ✕
+    </button>
+  </div>
 
-          <button
-            onclick="event.stopPropagation(); deleteReservation(${realIndex})"
-            title="삭제"
-          >
-            ✕
-          </button>
+  <div class="day-card-pc-bottom">
+    <div class="setting-checks">
+      <label>
+        <input
+          type="checkbox"
+          ${r.basicSetting ? "checked" : ""}
+          onchange="toggleSettingStatus(${realIndex}, 'basicSetting', this.checked)"
+        />
+        기본
+      </label>
 
-          <button
-            onclick="event.stopPropagation(); openSmsTemplatePopup(${realIndex})"
-            title="문자"
-          >
-            💬
-          </button>
-
-          <button
-            onclick="event.stopPropagation(); callReservationCustomer(${realIndex})"
-            title="전화"
-          >
-            📞
-          </button>
-        </div>
-
-      </div>
+      <label>
+        <input
+          type="checkbox"
+          ${r.fullSetting ? "checked" : ""}
+          onchange="toggleSettingStatus(${realIndex}, 'fullSetting', this.checked)"
+        />
+        전체
+      </label>
     </div>
   </div>
 
-  <!-- 모바일용: 압축 2줄 구조 -->
+</div>
+
+    </div>
+  </div>
+
+  <!-- 모바일용 -->
   <div class="day-card-mobile-head">
     <div class="reservation-card-head">
 
       <div class="reservation-card-main">
-
         <div class="reservation-card-first-line">
           <span
             class="status-badge badge-${getDisplayStatus(r.status)}"
@@ -7810,62 +8436,59 @@ ${
             }
           </span>
         </div>
-
       </div>
 
       <div class="reservation-icon-actions" onclick="event.stopPropagation();">
-  <button
-    onclick="event.stopPropagation(); openSmsTemplatePopup(${realIndex})"
-    title="문자"
-  >
-    💬
-  </button>
+        <button
+          onclick="event.stopPropagation(); openSmsTemplatePopup(${realIndex})"
+          title="문자"
+          type="button"
+        >
+          💬
+        </button>
 
-  <button
-    onclick="event.stopPropagation(); callReservationCustomer(${realIndex})"
-    title="전화"
-  >
-    📞
-  </button>
+        <button
+          onclick="event.stopPropagation(); callReservationCustomer(${realIndex})"
+          title="전화"
+          type="button"
+        >
+          📞
+        </button>
 
-  <button
-    onclick="event.stopPropagation(); editReservation(${realIndex})"
-    title="수정"
-  >
-    ✏️
-  </button>
-
-  <button
-    onclick="event.stopPropagation(); deleteReservation(${realIndex})"
-    title="삭제"
-  >
-    ✕
-  </button>
-</div>
+        <button
+          class="reservation-delete-icon-btn"
+          onclick="event.stopPropagation(); deleteReservation(${realIndex})"
+          title="삭제"
+          type="button"
+        >
+          ✕
+        </button>
+      </div>
 
     </div>
   </div>
 
 </div>
 
-    
-          <div class="mobile-info-setting-row">
-            <div class="info-grid" style="display:flex; gap:14px; align-items:center; flex-wrap:wrap;">
-              <div class="info-item" style="display:flex; align-items:center; gap:8px; padding:8px 12px;">
-                <div class="info-label" style="margin-bottom:0;">인원</div>
-                <div class="info-value">${escapeHtml(getPeopleDisplayText(r))}</div>
-              </div>
+<div class="mobile-info-setting-row">
+  <div class="info-grid" style="display:flex; gap:14px; align-items:center; flex-wrap:wrap; margin-bottom:0; line-height:1;">
+    <!-- 연락처는 이름 바로 아래에만 표시 -->
 
-              <div class="info-item" style="display:flex; align-items:center; gap:8px; padding:8px 12px;">
-                <div class="info-label" style="margin-bottom:0;">좌석</div>
-                <div class="info-value">${getSeatDisplayHtml(r, "card")}</div>
-              </div>
+    <div class="info-item mobile-summary-info-item" style="display:flex; align-items:center; gap:8px; padding:8px 12px;">
+      <div class="info-label" style="margin-bottom:0;">인원</div>
+      <div class="info-value">${escapeHtml(getPeopleDisplayText(r))}</div>
+    </div>
 
-              <div class="info-item" style="display:flex; align-items:center; gap:8px; padding:8px 12px;">
-                <div class="info-label" style="margin-bottom:0;">메뉴</div>
-                <div class="info-value">${escapeHtml(getMenuDisplayText(r.menu) || "-")}</div>
-              </div>
-            </div>
+    <div class="info-item mobile-summary-info-item" style="display:flex; align-items:center; gap:8px; padding:8px 12px;">
+      <div class="info-label" style="margin-bottom:0;">좌석</div>
+      <div class="info-value">${getSeatDisplayHtml(r, "card")}</div>
+    </div>
+
+    <div class="info-item mobile-summary-info-item" style="display:flex; align-items:center; gap:8px; padding:8px 12px;">
+      <div class="info-label" style="margin-bottom:0;">메뉴</div>
+      <div class="info-value">${escapeHtml(getMenuDisplayText(r.menu) || "-")}</div>
+    </div>
+  </div>
 
             <div class="mobile-setting-bottom-row" onclick="event.stopPropagation();">
               <div class="setting-checks">
@@ -8336,6 +8959,9 @@ ${
       }
 
       function closeModal() {
+        const shouldReturnToImportPreview =
+          editingPreviewIndex !== null && importPreviewList.length > 0;
+
         editingIndex = null;
         editingReservationId = null;
         editingPreviewIndex = null;
@@ -8348,6 +8974,17 @@ ${
         const modal = document.getElementById("modal");
         if (modal) {
           modal.classList.remove("show");
+        }
+
+        // 불러오기 미리보기에서 수정하다가 취소한 경우,
+        // 다시 미리보기 모달로 돌아간다.
+        if (shouldReturnToImportPreview) {
+          renderImportPreview();
+
+          const importPreviewModal = document.getElementById("import-preview-modal");
+          if (importPreviewModal) {
+            importPreviewModal.classList.add("show");
+          }
         }
       }
 
@@ -8534,6 +9171,9 @@ ${
               menu: document.getElementById("input-menu").value.trim(),
               memo: document.getElementById("input-memo").value.trim(),
               seat: previewSeat,
+              nameDisplayMode: true,
+              tvHidden: false,
+              status: "예약",
           };
 
           // ====== 문자 전송용 인원 텍스트 계산 ======
@@ -8558,11 +9198,17 @@ ${
           // sendSMS(msg, reservationData.phone); // 실제 발송
           console.log("보낼 문자:\n", msg);
 
-          importPreviewList[editingPreviewIndex] = reservationData;
-          editingPreviewIndex = null;
-          closeModal();
-          renderImportPreview();
-          return;
+              importPreviewList[editingPreviewIndex] = reservationData;
+              editingPreviewIndex = null;
+              closeModal();
+              renderImportPreview();
+
+              const importPreviewModal = document.getElementById("import-preview-modal");
+              if (importPreviewModal) {
+                importPreviewModal.classList.add("show");
+              }
+
+              return;
         }
 
         if (!requireLogin()) return;
@@ -8643,8 +9289,8 @@ ${
             : "예약",
           peopleText,
           nameDisplayMode: editingReservation
-            ? !!editingReservation.nameDisplayMode
-            : false,
+          ? !!editingReservation.nameDisplayMode
+          : true,
           tvHidden: editingReservation ? !!editingReservation.tvHidden : false,
         };
 
