@@ -398,6 +398,74 @@
         background: #eef2f5;
         color: #1f2d3d;
       }
+
+      /* ====== 앱 초기 로딩 화면 ====== */
+      .app-loading-screen {
+        position: fixed;
+        inset: 0;
+        z-index: 999999;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        background: #eef2f5;
+        color: #1f2d3d;
+
+        transition:
+          opacity 0.2s ease,
+          visibility 0.2s ease;
+      }
+
+      .app-loading-screen.hidden {
+        opacity: 0;
+        visibility: hidden;
+        pointer-events: none;
+      }
+
+      .app-loading-card {
+        width: min(280px, calc(100vw - 48px));
+        padding: 24px 20px;
+
+        background: white;
+        border-radius: 18px;
+        box-shadow: 0 12px 32px rgba(15, 23, 42, 0.16);
+
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 14px;
+      }
+
+      .app-loading-spinner {
+        width: 34px;
+        height: 34px;
+
+        border: 4px solid #dbeafe;
+        border-top-color: #1f4e79;
+        border-radius: 50%;
+
+        animation: appLoadingSpin 0.8s linear infinite;
+      }
+
+      .app-loading-title {
+        font-size: 17px;
+        font-weight: 900;
+        color: #1f4e79;
+      }
+
+      .app-loading-subtitle {
+        font-size: 13px;
+        font-weight: 700;
+        color: #6b7280;
+      }
+
+      @keyframes appLoadingSpin {
+        to {
+          transform: rotate(360deg);
+        }
+      }
+      
       header {
         background: #1f4e79;
         color: white;
@@ -2044,6 +2112,58 @@
         color: #475569;
       }
 
+      /* ====== TV 예약 변경 알림 ====== */
+      .tv-table tr.tv-new-reservation-row td {
+        animation: tvNewReservationBlink 1s ease-in-out infinite;
+      }
+
+      .tv-notice-wrap {
+        position: relative;
+        display: inline-block;
+        line-height: 1.15;
+      }
+
+      .tv-change-dot {
+        position: absolute;
+        top: -5px;
+        right: -9px;
+
+        display: block;
+        width: 8px;
+        height: 8px;
+
+        border-radius: 999px;
+        background: #ef4444;
+        box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.9);
+
+        animation: tvChangeDotBlink 0.8s ease-in-out infinite;
+        pointer-events: none;
+      }
+
+      @keyframes tvNewReservationBlink {
+        0%,
+        100% {
+          background: #fef3c7;
+        }
+
+        50% {
+          background: #ffffff;
+        }
+      }
+
+      @keyframes tvChangeDotBlink {
+        0%,
+        100% {
+          opacity: 1;
+          transform: scale(1);
+        }
+
+        50% {
+          opacity: 0.25;
+          transform: scale(0.72);
+        }
+      }
+
       .tv-table .time-col {
         width: var(--tv-col-time, 13%);
       }
@@ -3636,6 +3756,13 @@
     </style>
   </head>
   <body spellcheck="false">
+    <div id="app-loading" class="app-loading-screen">
+      <div class="app-loading-card">
+        <div class="app-loading-spinner"></div>
+        <div class="app-loading-title">수림 예약 불러오는 중</div>
+        <div class="app-loading-subtitle">잠시만 기다려 주세요</div>
+      </div>
+    </div>
     <div class="modal-bg" id="login-modal">
       <div class="modal" style="max-width: 360px">
         <h2 style="margin: 0 0 12px 0">로그인</h2>
@@ -5509,12 +5636,27 @@
           .join("");
       }
 
+      let appLoadingHidden = false;
+
+      function hideAppLoading() {
+        if (appLoadingHidden) return;
+
+        appLoadingHidden = true;
+
+        const loading = document.getElementById("app-loading");
+        if (!loading) return;
+
+        loading.classList.add("hidden");
+      }
+
       function subscribeReservations() {
         // 인덱스 없이도 동작하도록 정렬 없이 가져오고, 클라이언트에서 정렬합니다.
         onSnapshot(
           reservationsCollection,
           (snapshot) => {
-            reservations = snapshot.docs
+            const previousReservations = reservations;
+
+            const nextReservations = snapshot.docs
               .map((docSnap) => ({
                 id: docSnap.id,
                 ...docSnap.data(),
@@ -5526,6 +5668,10 @@
                 return (a.time || "").localeCompare(b.time || "");
               });
 
+            updateTVReservationNotices(previousReservations, nextReservations);
+
+            reservations = nextReservations;
+
             if (
               document.getElementById("seat-map-view").style.display === "block"
             ) {
@@ -5533,9 +5679,13 @@
             } else {
               render();
             }
+
+            hideAppLoading();
           },
           (error) => {
             console.error("Firestore 불러오기 오류:", error);
+            hideAppLoading();
+
             alert(
               "예약 데이터를 불러오지 못했습니다. (" +
                 (error.code || error.message) +
@@ -7568,6 +7718,204 @@ ${String(r.memo || "").trim() ? `<span style="margin-left:6px; background:#fff3c
 
       window.changeTVDateOffset = changeTVDateOffset;
 
+      const TV_RESERVATION_NOTICE_DURATION = 5 * 60 * 1000; // 5분
+
+      let tvReservationNoticeMap = {};
+      let tvReservationNoticeBaselineReady = false;
+      let tvReservationNoticeTimer = null;
+
+      function getTVNoticeReservationKey(r) {
+        return String(
+          r?.id ||
+            `${r?.date || ""}-${r?.time || ""}-${r?.name || ""}-${r?.phone || ""}`,
+        );
+      }
+
+      function getTVNoticeSnapshot(r) {
+        return {
+          date: String(r?.date || ""),
+          time: String(r?.time || ""),
+          name: String(getReservationDisplayName(r) || ""),
+          people: String(getTVPeopleText(r) || ""),
+          seat: String(getTVSeatText(r) || ""),
+          menu: String(getMenuDisplayText(r?.menu) || ""),
+          status: String(getDisplayStatus(r?.status) || ""),
+          tvHidden: r?.tvHidden === true ? "1" : "0",
+        };
+      }
+
+      function getTVChangedFields(previousSnapshot, nextSnapshot) {
+        const fields = [];
+
+        // 날짜가 바뀐 경우도 시간 칸 쪽에 표시
+        if (
+          previousSnapshot.date !== nextSnapshot.date ||
+          previousSnapshot.time !== nextSnapshot.time
+        ) {
+          fields.push("time");
+        }
+
+        if (previousSnapshot.name !== nextSnapshot.name) {
+          fields.push("name");
+        }
+
+        if (previousSnapshot.people !== nextSnapshot.people) {
+          fields.push("people");
+        }
+
+        if (previousSnapshot.seat !== nextSnapshot.seat) {
+          fields.push("seat");
+        }
+
+        if (previousSnapshot.menu !== nextSnapshot.menu) {
+          fields.push("menu");
+        }
+
+        // 상태 변경은 TV에 별도 칸이 없으므로 이름 칸에 표시
+        if (previousSnapshot.status !== nextSnapshot.status) {
+          fields.push("name");
+        }
+
+        return [...new Set(fields)];
+      }
+
+      function cleanupExpiredTVReservationNotices() {
+        const now = Date.now();
+
+        Object.keys(tvReservationNoticeMap).forEach((key) => {
+          if ((tvReservationNoticeMap[key]?.until || 0) <= now) {
+            delete tvReservationNoticeMap[key];
+          }
+        });
+      }
+
+      function scheduleTVReservationNoticeCleanup() {
+        clearTimeout(tvReservationNoticeTimer);
+
+        const now = Date.now();
+
+        const remainTimes = Object.values(tvReservationNoticeMap)
+          .map((notice) => (notice.until || 0) - now)
+          .filter((time) => time > 0);
+
+        if (!remainTimes.length) return;
+
+        const nextDelay = Math.min(...remainTimes);
+
+        tvReservationNoticeTimer = setTimeout(() => {
+          cleanupExpiredTVReservationNotices();
+
+          if (document.body.classList.contains("tv-mode-body")) {
+            renderTVView();
+          }
+
+          scheduleTVReservationNoticeCleanup();
+        }, nextDelay + 50);
+      }
+
+      function setTVReservationNotice(key, notice) {
+        if (!key) return;
+
+        const previousNotice = tvReservationNoticeMap[key] || {};
+        const previousFields = Array.isArray(previousNotice.fields)
+          ? previousNotice.fields
+          : [];
+        const nextFields = Array.isArray(notice.fields) ? notice.fields : [];
+
+        const mergedFields = [...new Set([...previousFields, ...nextFields])];
+
+        // 신규 알림이 이미 있으면 신규 상태를 유지한다.
+        // 예: 새 예약 추가 후 5분 안에 인원 수정 → 행 깜빡임 유지 + 인원 점 표시
+        const mergedType =
+          previousNotice.type === "new" || notice.type === "new"
+            ? "new"
+            : "updated";
+
+        tvReservationNoticeMap[key] = {
+          ...previousNotice,
+          ...notice,
+          type: mergedType,
+          fields: mergedFields,
+          until: Date.now() + TV_RESERVATION_NOTICE_DURATION,
+        };
+
+        scheduleTVReservationNoticeCleanup();
+      }
+
+      function updateTVReservationNotices(previousReservations, nextReservations) {
+        cleanupExpiredTVReservationNotices();
+
+        // 앱 첫 로딩 때 기존 예약들을 전부 신규로 표시하지 않기 위한 기준선
+        if (!tvReservationNoticeBaselineReady) {
+          tvReservationNoticeBaselineReady = true;
+          scheduleTVReservationNoticeCleanup();
+          return;
+        }
+
+        const previousMap = new Map();
+
+        previousReservations.forEach((r) => {
+          previousMap.set(getTVNoticeReservationKey(r), getTVNoticeSnapshot(r));
+        });
+
+        nextReservations.forEach((r) => {
+          const key = getTVNoticeReservationKey(r);
+          const previousSnapshot = previousMap.get(key);
+          const nextSnapshot = getTVNoticeSnapshot(r);
+
+          // 새 예약
+          if (!previousSnapshot) {
+            setTVReservationNotice(key, {
+              type: "new",
+              fields: [],
+            });
+            return;
+          }
+
+          // 기존 예약 변경
+          const changedFields = getTVChangedFields(previousSnapshot, nextSnapshot);
+
+          if (changedFields.length) {
+            setTVReservationNotice(key, {
+              type: "updated",
+              fields: changedFields,
+            });
+          }
+        });
+      }
+
+      function getTVReservationNotice(r) {
+        cleanupExpiredTVReservationNotices();
+
+        const key = getTVNoticeReservationKey(r);
+        return tvReservationNoticeMap[key] || null;
+      }
+
+      function getTVReservationNoticeType(r) {
+        return getTVReservationNotice(r)?.type || "";
+      }
+
+      function getTVFieldNoticeDot(r, fieldName) {
+        const notice = getTVReservationNotice(r);
+
+        if (!notice) return "";
+
+        const fields = notice.fields || [];
+
+        if (!fields.includes(fieldName)) return "";
+
+        return `<span class="tv-change-dot"></span>`;
+      }
+
+      function wrapTVNoticeContent(contentHtml, r, fieldName) {
+        return `
+          <span class="tv-notice-wrap">
+            ${contentHtml}
+            ${getTVFieldNoticeDot(r, fieldName)}
+          </span>
+        `;
+      }
+
       function renderTVView() {
         loadTVSettingsForCurrentScreen();
         applyAllTVSettings();
@@ -7629,21 +7977,40 @@ ${String(r.memo || "").trim() ? `<span style="margin-left:6px; background:#fff3c
               previousMinutes <= breakTimeMinutes &&
               currentMinutes > breakTimeMinutes;
 
+            const tvNoticeType = getTVReservationNoticeType(r);
+
             const rowClasses = [
               getDisplayStatus(r.status) === "도착" ? "tv-status-exit" : "",
               isFirstAfterBreak ? "tv-after-break" : "",
+              tvNoticeType === "new" ? "tv-new-reservation-row" : "",
             ]
               .filter(Boolean)
               .join(" ");
 
             return `
           <tr class="${rowClasses}">
-            <td>${escapeHtml(formatTVTime(r.time || ""))}</td>
-            <td>${escapeHtml(getReservationDisplayName(r))}</td>
-            <td>${escapeHtml(getTVPeopleText(r))}</td>
-            <td><span class="tv-seat">${getSeatDisplayHtml(r, "tv")}</span></td>
-            <td>${menuHtml}</td>
-          </tr>
+  <td>
+    ${wrapTVNoticeContent(escapeHtml(formatTVTime(r.time || "")), r, "time")}
+  </td>
+
+  <td>
+    ${wrapTVNoticeContent(escapeHtml(getReservationDisplayName(r)), r, "name")}
+  </td>
+
+  <td>
+    ${wrapTVNoticeContent(escapeHtml(getTVPeopleText(r)), r, "people")}
+  </td>
+
+  <td>
+    <span class="tv-seat">
+      ${wrapTVNoticeContent(getSeatDisplayHtml(r, "tv"), r, "seat")}
+    </span>
+  </td>
+
+  <td>
+    ${wrapTVNoticeContent(menuHtml, r, "menu")}
+  </td>
+</tr>
         `;
           })
           .join("");
@@ -10613,7 +10980,6 @@ ${
       ensureReservationDates();
       syncSelectedDateUI();
       initMobileSwipeNavigation();
-      render();
       onAuthStateChanged(auth, (user) => {
         isLoggedIn = !!user;
 
@@ -10630,8 +10996,6 @@ ${
 
         // 🔥 이게 핵심 (데이터 다시 불러오기)
         subscribeReservations();
-
-        render();
       });
 
       updateTotalPeople();
