@@ -2288,6 +2288,10 @@
           font-size: 15px !important;
         }
 
+        body.tv-mode-body .tv-date-nav-btn {
+          display: none !important;
+        }
+
         body.tv-mode-body .tv-table th {
           font-size: 15px !important;
           padding: 6px 3px !important;
@@ -2830,6 +2834,67 @@
         .actions > button {
           width: 100%;
           justify-content: center;
+        }
+
+        /* ===== 모바일 스와이프 화면 전환 효과 ===== */
+        @media (max-width: 768px) {
+          body.mobile-swipe-transitioning #reservation-list,
+          body.mobile-swipe-transitioning #day-view-header {
+            transition:
+              opacity 0.12s ease,
+              transform 0.12s ease;
+            will-change: opacity, transform;
+          }
+
+          body.mobile-swipe-out-left #reservation-list,
+          body.mobile-swipe-out-left #day-view-header {
+            opacity: 0.55;
+            transform: translateX(-25px) scale(0.985);
+          }
+
+          body.mobile-swipe-out-right #reservation-list,
+          body.mobile-swipe-out-right #day-view-header {
+            opacity: 0.55;
+            transform: translateX(25px) scale(0.985);
+          }
+
+          body.mobile-swipe-in-from-right #reservation-list,
+          body.mobile-swipe-in-from-right #day-view-header {
+            animation: mobileSwipeInFromRight 0.18s ease-out;
+          }
+
+          body.mobile-swipe-in-from-left #reservation-list,
+          body.mobile-swipe-in-from-left #day-view-header {
+            animation: mobileSwipeInFromLeft 0.18s ease-out;
+          }
+
+          body.tv-mode-body.mobile-swipe-transitioning .tv-wrap,
+          body.tv-mode-body.mobile-swipe-in-from-right .tv-wrap,
+          body.tv-mode-body.mobile-swipe-in-from-left .tv-wrap {
+            will-change: opacity, transform;
+          }
+
+          @keyframes mobileSwipeInFromRight {
+            from {
+              opacity: 0.55;
+              transform: translateX(25px) scale(0.985);
+            }
+            to {
+              opacity: 1;
+              transform: translateX(0) scale(1);
+            }
+          }
+
+          @keyframes mobileSwipeInFromLeft {
+            from {
+              opacity: 0.55;
+              transform: translateX(-25px) scale(0.985);
+            }
+            to {
+              opacity: 1;
+              transform: translateX(0) scale(1);
+            }
+          }
         }
 
         /* ===== 모바일 예약/수정 모달 ===== */
@@ -4837,6 +4902,214 @@
 
         const modal = document.getElementById("tv-settings-modal");
         if (modal) modal.classList.remove("show");
+      }
+      let mobileSwipeNavigationReady = false;
+      let mobileSwipeStartX = 0;
+      let mobileSwipeStartY = 0;
+      let mobileSwipeStartTime = 0;
+      let mobileSwipeStartTarget = null;
+      let mobileSwipeLastRunTime = 0;
+
+      function isMobileSwipeScreen() {
+        return window.matchMedia("(max-width: 768px)").matches;
+      }
+
+      function isMobileSwipeActiveView() {
+        if (document.body.classList.contains("tv-mode-body")) return true;
+        return currentView === "day";
+      }
+
+      function isMobileSwipeBlockedTarget(target) {
+        if (!target) return true;
+
+        return !!target.closest(
+          "input, textarea, select, a, label, .modal, .tv-settings-modal, .table-select-card",
+        );
+      }
+
+      function isAnySwipeBlockingPopupOpen() {
+        return !!document.querySelector(
+          ".modal-bg.show, .tv-settings-modal-bg.show, .table-select-popup:not(.hidden)",
+        );
+      }
+
+      function scrollToMobileDayTop() {
+        setTimeout(() => {
+          window.scrollTo({
+            top: 0,
+            left: 0,
+            behavior: "auto",
+          });
+
+          document.documentElement.scrollTop = 0;
+          document.body.scrollTop = 0;
+        }, 0);
+      }
+
+      let mobileSwipeAnimationTimer1 = null;
+      let mobileSwipeAnimationTimer2 = null;
+
+      function clearMobileSwipeAnimationClasses() {
+        document.body.classList.remove(
+          "mobile-swipe-transitioning",
+          "mobile-swipe-out-left",
+          "mobile-swipe-out-right",
+          "mobile-swipe-in-from-left",
+          "mobile-swipe-in-from-right",
+        );
+      }
+
+      function playMobileSwipeTransition(direction, changeCallback) {
+        clearTimeout(mobileSwipeAnimationTimer1);
+        clearTimeout(mobileSwipeAnimationTimer2);
+
+        clearMobileSwipeAnimationClasses();
+
+        const outClass =
+          direction > 0 ? "mobile-swipe-out-left" : "mobile-swipe-out-right";
+
+        const inClass =
+          direction > 0 ? "mobile-swipe-in-from-right" : "mobile-swipe-in-from-left";
+
+        document.body.classList.add("mobile-swipe-transitioning", outClass);
+
+        mobileSwipeAnimationTimer1 = setTimeout(() => {
+          if (typeof changeCallback === "function") {
+            changeCallback();
+          }
+
+          document.body.classList.remove(outClass);
+          document.body.classList.add(inClass);
+
+          mobileSwipeAnimationTimer2 = setTimeout(() => {
+            clearMobileSwipeAnimationClasses();
+          }, 190);
+        }, 90);
+      }
+
+      function handleMobileSwipeNavigation(direction) {
+        // direction: 1 = 다음날/내일, -1 = 전날/어제
+
+        const now = Date.now();
+
+        // 너무 연속으로 두 번 넘어가는 것 방지
+        if (now - mobileSwipeLastRunTime < 350) return;
+        mobileSwipeLastRunTime = now;
+
+        // 모바일 TV 화면
+        if (document.body.classList.contains("tv-mode-body")) {
+          const nextOffset = tvDateOffset + direction;
+
+          // TV는 어제(-1), 오늘(0), 내일(1)까지만 이동
+          if (nextOffset < -1 || nextOffset > 1) {
+            return;
+          }
+
+          playMobileSwipeTransition(direction, () => {
+            changeTVDateOffset(direction);
+          });
+
+          return;
+        }
+
+        // 모바일 일간 화면
+        if (currentView === "day") {
+          const seatMapView = document.getElementById("seat-map-view");
+
+          if (seatMapView && seatMapView.style.display === "block") {
+            return;
+          }
+
+          playMobileSwipeTransition(direction, () => {
+            moveDate(direction);
+            scrollToMobileDayTop();
+          });
+        }
+      }
+
+      function resetMobileSwipeStart() {
+        mobileSwipeStartX = 0;
+        mobileSwipeStartY = 0;
+        mobileSwipeStartTime = 0;
+        mobileSwipeStartTarget = null;
+      }
+
+      function initMobileSwipeNavigation() {
+        if (mobileSwipeNavigationReady) return;
+
+        mobileSwipeNavigationReady = true;
+
+        document.addEventListener(
+          "touchstart",
+          function (event) {
+            if (!isMobileSwipeScreen()) return;
+            if (!isMobileSwipeActiveView()) return;
+            if (isAnySwipeBlockingPopupOpen()) return;
+            if (isMobileSwipeBlockedTarget(event.target)) return;
+            if (!event.touches || event.touches.length !== 1) return;
+
+            mobileSwipeStartX = event.touches[0].clientX;
+            mobileSwipeStartY = event.touches[0].clientY;
+            mobileSwipeStartTime = Date.now();
+            mobileSwipeStartTarget = event.target;
+          },
+          { passive: true },
+        );
+
+        document.addEventListener(
+          "touchend",
+          function (event) {
+            if (!isMobileSwipeScreen()) return;
+            if (!isMobileSwipeActiveView()) return;
+            if (!mobileSwipeStartTime) return;
+            if (isAnySwipeBlockingPopupOpen()) {
+              resetMobileSwipeStart();
+              return;
+            }
+            if (!event.changedTouches || event.changedTouches.length !== 1) {
+              resetMobileSwipeStart();
+              return;
+            }
+
+            const endX = event.changedTouches[0].clientX;
+            const endY = event.changedTouches[0].clientY;
+
+            const diffX = endX - mobileSwipeStartX;
+            const diffY = endY - mobileSwipeStartY;
+            const absX = Math.abs(diffX);
+            const absY = Math.abs(diffY);
+            const elapsed = Date.now() - mobileSwipeStartTime;
+
+            resetMobileSwipeStart();
+
+            // 더 짧게 밀어도 인식되게
+            if (absX < 28) return;
+
+            // 조금 천천히 넘겨도 인식되게
+            if (elapsed > 1600) return;
+
+            // 세로 움직임이 조금 더 섞여도 허용
+            if (absY > absX * 1.35) return;
+
+            // 왼쪽으로 밀면 다음날/내일
+            if (diffX < 0) {
+              handleMobileSwipeNavigation(1);
+              return;
+            }
+
+            // 오른쪽으로 밀면 전날/어제
+            handleMobileSwipeNavigation(-1);
+          },
+          { passive: true },
+        );
+
+        document.addEventListener(
+          "touchcancel",
+          function () {
+            resetMobileSwipeStart();
+          },
+          { passive: true },
+        );
       }
 
       function printTVReservationPanel() {
@@ -10339,6 +10612,7 @@ ${
 
       ensureReservationDates();
       syncSelectedDateUI();
+      initMobileSwipeNavigation();
       render();
       onAuthStateChanged(auth, (user) => {
         isLoggedIn = !!user;
