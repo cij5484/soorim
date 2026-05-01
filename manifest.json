@@ -1,9 +1,9 @@
-    {
-      "id": "/soorim/reservation-app",
-      "name": "수림 예약",
-      "short_name": "수림예약",
-      "start_url": "/soorim/",
-  "scope": "/soorim/",
+{
+  "id": "/soorim/app/",
+  "name": "수림 예약",
+  "short_name": "수림예약",
+  "start_url": "/soorim/app/",
+  "scope": "/soorim/app/",
   "display": "standalone",
   "background_color": "#eef2f5",
   "theme_color": "#1f4e79",
