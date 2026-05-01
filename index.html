@@ -7392,6 +7392,9 @@ ${modalSeatPickMode ? `
             ? editingReservation.status || "예약"
             : "예약",
           peopleText,
+          nameDisplayMode: editingReservation
+            ? !!editingReservation.nameDisplayMode
+            : false,
         };
 
         // 예약 중복 체크
