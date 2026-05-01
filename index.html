@@ -171,6 +171,14 @@
         word-break: keep-all;
       }
 
+      .name-display-check {
+        width: 16px;
+        height: 16px;
+        margin: 0;
+        cursor: pointer;
+        accent-color: #2563eb;
+      }
+
       .reservation .time {
         font-size: 14px;
         color: #555;
@@ -1486,6 +1494,10 @@
         vertical-align: middle;
       }
 
+      .tv-table tr.tv-after-break td {
+        border-top: 5px solid #111;
+      }
+
       .tv-table tr.tv-status-exit td {
         background: #cbd5e1;
         color: #475569;
@@ -1512,9 +1524,22 @@
         width: var(--tv-col-menu, 20%);
       }
 
+      .room-word-card {
+        color: #dc2626;
+        font-weight: 400;
+      }
+
+      .room-word-tv {
+        color: #991b1b;
+        font-weight: 400;
+      }
+
       .tv-seat {
+        display: block;
         color: red;
         font-weight: 400;
+        text-align: left;
+        padding-left: 8px;
       }
 
       .tv-menu {
@@ -1534,7 +1559,7 @@
         align-items: center;
         justify-content: center;
         font-size: 42px;
-        font-weight: 900;
+        font-weight: 400;
         color: #555;
       }
 
@@ -1543,7 +1568,7 @@
         border-top: 2px solid #111;
         padding: 8px 4px 0;
         font-size: 18px;
-        font-weight: 800;
+        font-weight: 400;
         text-align: right;
       }
 
@@ -3631,7 +3656,7 @@
               </div>
               <div class="info-item">
                 <div class="info-label">좌석</div>
-                <div class="info-value">${escapeHtml(getSeatDisplayText(r))}</div>
+                <div class="info-value">${getSeatDisplayHtml(r, "card")}</div>
               </div>
               <div class="info-item">
                 <div class="info-label">메뉴</div>
@@ -4945,9 +4970,9 @@
               const menuLabel = r.menu ? ` / ${escapeHtml(r.menu)}` : "";
               const seatDisplay = getSeatDisplayText(r);
               const seatLabel =
-                seatDisplay && seatDisplay !== "-"
-                  ? ` / ${escapeHtml(seatDisplay)}`
-                  : "";
+              seatDisplay && seatDisplay !== "-"
+                ? ` / ${getSeatDisplayHtml(r, "card")}`
+                : "";
 
               return `
             <div class="${classes}">
@@ -5087,6 +5112,37 @@
         return "예약";
       }
 
+      function formatCustomerNameWithNim(name) {
+        const cleanName = String(name || "").trim();
+
+        if (!cleanName) return "";
+
+        // 이미 님으로 끝나면 그대로 사용
+        if (cleanName.endsWith("님")) return cleanName;
+
+        // 이름 안에 공백이 있으면 억지로 쪼개지 않고 님만 붙임
+        // 예: 박영기 동그라미골프 → 박영기 동그라미골프님
+        if (/\s/.test(cleanName)) {
+          return `${cleanName}님`;
+        }
+
+        // 한 글자 이름은 그냥 님만 붙임
+        if (cleanName.length <= 1) {
+          return `${cleanName}님`;
+        }
+
+        // 홍길동 → 홍 길동님
+        return `${cleanName.slice(0, 1)} ${cleanName.slice(1)}님`;
+      }
+
+      function getReservationDisplayName(r) {
+        const name = String(r?.name || "").trim();
+
+        if (!name) return "";
+
+        return r.nameDisplayMode ? formatCustomerNameWithNim(name) : name;
+      }
+
       function isSeatUnconfirmed(r) {
         const seat = String(r?.seat || "").trim();
         const room = String(r?.room || "").trim();
@@ -5141,6 +5197,7 @@
             .map((v) => v.replace(/번$/g, ""))
             .join(", ");
         }
+       
 
         function formatRoomText(value) {
           return String(value || "")
@@ -5187,6 +5244,26 @@
         return parts.length ? parts.join(" ") : "-";
       }
 
+      function getSeatDisplayHtml(r, mode = "card") {
+        const seatText = getSeatDisplayText(r);
+        const className = mode === "tv" ? "room-word-tv" : "room-word-card";
+
+        return escapeHtml(seatText).replace(
+          /룸/g,
+          `<span class="${className}">룸</span>`,
+        );
+      }
+
+      function getReservationTimeMinutes(timeText) {
+        const match = String(timeText || "").match(/(\d{1,2}):(\d{2})/);
+        if (!match) return 0;
+
+        const hour = Number(match[1]) || 0;
+        const minute = Number(match[2]) || 0;
+
+        return hour * 60 + minute;
+      }
+
       function renderTVView() {
         document.body.classList.add("tv-mode-body");
 
@@ -5223,19 +5300,40 @@
             String(a.time || "").localeCompare(String(b.time || "")),
           );
 
-        const rowsHtml = todayReservations
-          .map((r) => {
+            const rowsHtml = todayReservations
+            .map((r, index) => {
             const menu = getMenuDisplayText(r.menu);
-            const menuHtml = menu
-              ? `<span class="tv-menu">${escapeHtml(menu)}</span>`
-              : `<span class="tv-menu tv-menu-empty"></span>`;
+const menuHtml = menu
+  ? `<span class="tv-menu">${escapeHtml(menu)}</span>`
+  : `<span class="tv-menu tv-menu-empty"></span>`;
 
-            return `
-          <tr class="${getDisplayStatus(r.status) === "도착" ? "tv-status-exit" : ""}">
+const breakTimeMinutes = 14 * 60 + 30;
+const currentMinutes = getReservationTimeMinutes(r.time);
+
+const previousReservation = todayReservations[index - 1];
+const previousMinutes = previousReservation
+  ? getReservationTimeMinutes(previousReservation.time)
+  : null;
+
+const isFirstAfterBreak =
+  index > 0 &&
+  previousMinutes !== null &&
+  previousMinutes <= breakTimeMinutes &&
+  currentMinutes > breakTimeMinutes;
+
+const rowClasses = [
+  getDisplayStatus(r.status) === "도착" ? "tv-status-exit" : "",
+  isFirstAfterBreak ? "tv-after-break" : "",
+]
+  .filter(Boolean)
+  .join(" ");
+
+return `
+          <tr class="${rowClasses}">
             <td>${escapeHtml(formatTVTime(r.time || ""))}</td>
-            <td>${escapeHtml(r.name || "")}</td>
+            <td>${escapeHtml(getReservationDisplayName(r))}</td>
             <td>${escapeHtml(getTVPeopleText(r))}</td>
-            <td><span class="tv-seat">${escapeHtml(getTVSeatText(r))}</span></td>
+            <td><span class="tv-seat">${getSeatDisplayHtml(r, "tv")}</span></td>
             <td>${menuHtml}</td>
           </tr>
         `;
@@ -5251,13 +5349,13 @@
         list.innerHTML = `
         <div class="tv-wrap">
           <div class="tv-photo-panel">
- <div id="tv-clock">
-  <div id="tv-date">4/25 (금)</div>
+<div id="tv-clock">
+  <div id="tv-date"></div>
   <div id="tv-time">
-  <span id="tv-hour">05</span>
-  <span id="tv-colon">:</span>
-  <span id="tv-minute">39</span>
-</div>
+    <span id="tv-hour"></span>
+    <span id="tv-colon">:</span>
+    <span id="tv-minute"></span>
+  </div>
 </div>
 
   <img class="tv-main-photo" src="tv-main.jpg" alt="수림횟집 음식 사진">
@@ -5495,6 +5593,7 @@
           </div>
         </div>
       `;
+        
       }
 
       // ====== 화면 그리기 ======
@@ -5533,6 +5632,8 @@
             좌석 선택 중 · ${count}개 선택
           </div>
         `;
+
+        updateTVClock();
       }
 
       function renderDayViewHeader() {
@@ -6492,9 +6593,18 @@ ${modalSeatPickMode ? `
                     ${escapeHtml(r.time || "")}
                   </span>
 
-                  <span style="font-size:18px; font-weight:700; color:#1f2d3d;">
-                    ${escapeHtml(r.name || "")}
-                  </span>
+                  <input
+  type="checkbox"
+  class="name-display-check"
+  ${r.nameDisplayMode ? "checked" : ""}
+  onclick="event.stopPropagation();"
+  onchange="toggleNameDisplayMode(${realIndex}, this.checked, this)"
+  title="예약자명 님 표시"
+/>
+
+<span style="font-size:18px; font-weight:700; color:#1f2d3d;">
+  ${escapeHtml(getReservationDisplayName(r))}
+</span>
 
                   <span style="font-size:13px; color:#666;">
                     ${escapeHtml(r.phone || "")}
@@ -6584,7 +6694,7 @@ ${modalSeatPickMode ? `
 
               <div class="info-item" style="display:flex; align-items:center; gap:6px; padding:4px 8px;">
                 <div class="info-label" style="margin-bottom:0;">좌석</div>
-                <div class="info-value">${escapeHtml(getSeatDisplayText(r))}</div>
+                <div class="info-value">${getSeatDisplayHtml(r, "card")}</div>
               </div>
 
               <div class="info-item" style="display:flex; align-items:center; gap:6px; padding:4px 8px;">
@@ -7446,6 +7556,37 @@ ${modalSeatPickMode ? `
           alert("세팅 변경 중 오류가 발생했습니다.");
         }
       }
+      
+      async function toggleNameDisplayMode(index, checked, checkboxEl) {
+        if (!requireLogin()) {
+          if (checkboxEl) checkboxEl.checked = !checked;
+          return;
+        }
+
+        const r = reservations[index];
+        if (!r || !r.id) return;
+
+        try {
+          await setDoc(
+            doc(db, "reservations", r.id),
+            { nameDisplayMode: checked },
+            { merge: true },
+          );
+
+          reservations[index] = {
+            ...r,
+            nameDisplayMode: checked,
+          };
+
+          refreshCurrentScreen();
+        } catch (error) {
+          console.error("예약자명 표시 변경 오류:", error);
+
+          if (checkboxEl) checkboxEl.checked = !checked;
+
+          alert("예약자명 표시 변경 중 오류가 발생했습니다.");
+        }
+      }
 
       function openSmsTemplatePopup(index) {
         if (!requireLogin()) return;
@@ -7486,7 +7627,7 @@ ${modalSeatPickMode ? `
         }
 
         const phone = String(r.phone || "").trim();
-        const name = r.name || "고객";
+        const name = getReservationDisplayName(r) || "고객";
         const time = r.time || "-";
         const people = getPeopleDisplayText(r);
 
@@ -7712,6 +7853,7 @@ ${modalSeatPickMode ? `
       window.changeStatus = changeStatus;
       window.toggleStatus = toggleStatus;
       window.toggleSettingStatus = toggleSettingStatus;
+      window.toggleNameDisplayMode = toggleNameDisplayMode;
       window.callReservationCustomer = callReservationCustomer;
       window.smsReservationCustomer = smsReservationCustomer;
       window.openSmsTemplatePopup = openSmsTemplatePopup;
