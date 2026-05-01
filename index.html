@@ -22,12 +22,14 @@
     <style>
       .setting-checks {
         display: flex;
-        flex-direction: column;
-        gap: 6px;
-        min-width: 104px;
+        flex-direction: row;
+        align-items: center;
+        gap: 12px;
+        min-width: 0;
         font-size: 15px;
         font-weight: 800;
         color: #374151;
+        white-space: nowrap;
       }
 
       .setting-checks label {
@@ -43,6 +45,81 @@
         width: 18px;
         height: 18px;
         margin: 0;
+      }
+
+      .reservation-icon-actions {
+        display: grid;
+        grid-template-columns: repeat(2, 26px);
+        gap: 3px 4px;
+        align-items: center;
+        justify-content: end;
+        flex: none;
+      }
+
+      .reservation-icon-actions button {
+        width: 26px;
+        height: 24px;
+        padding: 0;
+        border: none;
+        background: transparent;
+        cursor: pointer;
+        font-size: 16px;
+        line-height: 1;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .day-card-mobile-head {
+        display: none;
+      }
+
+      .day-card-pc-head {
+        display: block;
+      }
+
+      .reservation-card-head {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        width: 100%;
+        gap: 8px;
+      }
+
+      .reservation-card-main {
+        flex: 1;
+        min-width: 0;
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+      }
+
+      .reservation-card-first-line,
+      .reservation-card-second-line {
+        display: flex;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 8px;
+        min-width: 0;
+      }
+
+      .reservation-time-text {
+        font-size: 16px;
+        font-weight: 700;
+        color: #1f2d3d;
+      }
+
+      .reservation-phone {
+        font-size: 13px;
+        color: #666;
+      }
+
+      .mobile-setting-bottom-row {
+        display: none;
+      }
+
+      .mobile-info-setting-row {
+        display: block;
       }
 
       .table-box.move-selected,
@@ -133,9 +210,9 @@
       /* ====== 예약 카드 ====== */
       .reservation {
         background: white;
-        padding: 12px;
-        margin-bottom: 10px;
-        border-radius: 12px;
+        padding: 9px 10px;
+        margin-bottom: 8px;
+        border-radius: 10px;
         box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
         position: relative;
       }
@@ -168,8 +245,8 @@
         justify-content: space-between;
         align-items: center;
         flex-wrap: wrap;
-        gap: 6px;
-        margin-bottom: 8px;
+        gap: 5px;
+        margin-bottom: 6px;
       }
 
       .reservation .name {
@@ -187,6 +264,42 @@
         accent-color: #2563eb;
       }
 
+      .reservation-name-wrap {
+        display: inline-flex;
+        align-items: flex-start;
+        gap: 0;
+        min-width: 0;
+      }
+
+      .reservation-name-text {
+        font-size: 18px;
+        font-weight: 700;
+        color: #1f2d3d;
+        line-height: 1.1;
+      }
+
+      .naver-mini-badge {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+
+        width: 15px;
+        height: 15px;
+        margin-left: 2px;
+        margin-top: -4px;
+
+        background: #03c75a;
+        color: white;
+        border-radius: 4px;
+
+        font-size: 10px;
+        font-weight: 900;
+        line-height: 1;
+
+        flex: none;
+      }
+
+      
       .reservation .time {
         font-size: 14px;
         color: #555;
@@ -215,21 +328,21 @@
       .info-grid {
         display: grid;
         grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-        gap: 6px;
-        margin-bottom: 8px;
+        gap: 5px;
+        margin-bottom: 6px;
       }
 
       .info-item {
         background: rgba(255, 255, 255, 0.7);
-        padding: 6px 8px;
-        border-radius: 8px;
+        padding: 4px 7px;
+        border-radius: 7px;
         border: 1px solid #e0e0e0;
       }
 
       .info-label {
         font-size: 11px;
         color: #777;
-        margin-bottom: 2px;
+        margin-bottom: 1px;
       }
 
       .info-value {
@@ -241,12 +354,13 @@
       .memo {
         background: #fffbe6;
         border: 1px dashed #f0c14b;
-        padding: 10px 12px;
-        border-radius: 8px;
-        font-size: 15px;
+        padding: 7px 9px;
+        border-radius: 7px;
+        font-size: 13px;
         color: #5c4400;
-        margin-bottom: 10px;
+        margin-bottom: 7px;
       }
+      
       .memo .memo-label {
         font-weight: bold;
         margin-right: 6px;
@@ -1362,6 +1476,35 @@
         background: #e5e7eb;
       }
 
+      .tv-date-nav-btn {
+        width: 42px;
+        height: 36px;
+        margin: 0 10px;
+        border: 2px solid #111;
+        border-radius: 8px;
+        background: #f3f4f6;
+        color: #111;
+        font-size: 22px;
+        font-weight: 900;
+        line-height: 1;
+        cursor: pointer;
+        vertical-align: middle;
+      }
+
+      .tv-date-nav-btn:hover {
+        background: #e5e7eb;
+      }
+
+      .tv-date-nav-btn:disabled {
+        opacity: 0.25;
+        cursor: default;
+      }
+
+      .tv-title-text {
+        display: inline-block;
+        vertical-align: middle;
+      }
+
       .tv-settings-modal-bg {
         display: none;
         position: fixed;
@@ -1791,7 +1934,13 @@
           line-height: 1.4;
         }
 
-        
+        .name-display-check {
+          width: 13px !important;
+          height: 13px !important;
+          flex: none !important;
+        }
+
+                
         /* 예약 카드 */
         .reservation {
           padding: 7px 8px !important;
@@ -1810,6 +1959,25 @@
           font-size: 16px;
         }
 
+        .reservation-name-text {
+          font-size: 15px !important;
+        }
+
+        .name-display-check {
+          width: 13px !important;
+          height: 13px !important;
+          flex: none !important;
+        }
+
+        .naver-mini-badge {
+          width: 13px !important;
+          height: 13px !important;
+          margin-left: 1px !important;
+          margin-top: -4px !important;
+          border-radius: 4px !important;
+          font-size: 9px !important;
+        }
+
         .reservation .time {
           font-size: 13px;
         }
@@ -1819,48 +1987,205 @@
           padding: 6px 12px;
         }
 
-        /* 모바일 일간 카드: 기본세팅/전체세팅 압축 */
+        /* 모바일 일간 카드: 기본/전체 체크 압축 */
         .setting-checks {
-          gap: 3px !important;
-          min-width: 88px !important;
-          font-size: 13px !important;
+          flex-direction: row !important;
+          align-items: center !important;
+          gap: 6px !important;
+          min-width: 0 !important;
+          font-size: 12px !important;
           font-weight: 700 !important;
+          white-space: nowrap !important;
         }
 
         .setting-checks label {
-          gap: 4px !important;
+          gap: 2px !important;
         }
 
         .setting-checks input {
-          width: 15px !important;
-          height: 15px !important;
+          width: 13px !important;
+          height: 13px !important;
         }
 
-        /* 모바일 일간 카드: 인원/좌석/메뉴 압축 */
-        .info-grid {
-          grid-template-columns: 1fr;
+        /* 모바일 일간 카드: 수정/삭제/문자/전화 아이콘 한 줄 압축 */
+        .reservation-icon-actions {
+          grid-template-columns: repeat(4, 21px) !important;
+          gap: 1px !important;
+        }
+
+        .day-card-mobile-head .reservation-icon-actions {
+          margin-left: auto !important;
+          justify-self: end !important;
+        }
+
+        .reservation-icon-actions button {
+          width: 21px !important;
+          height: 21px !important;
+          font-size: 13px !important;
+        }
+
+        .day-card-pc-head {
+          display: none !important;
+        }
+
+        .day-card-mobile-head {
+          display: block !important;
+        }
+
+        /* 모바일 일간 카드: 이름/연락처 줄 압축 */
+        .reservation-card-head {
+          gap: 4px !important;
+          align-items: flex-start !important;
+        }
+
+        .reservation-card-main {
+          gap: 2px !important;
+        }
+
+        .reservation-card-first-line {
           gap: 5px !important;
-          margin-bottom: 6px !important;
+          flex-wrap: nowrap !important;
+        }
+
+        .reservation-card-second-line {
+          width: 100% !important;
+          gap: 7px !important;
+          flex-wrap: nowrap !important;
+          margin-top: 1px !important;
+          justify-content: space-between !important;
+        }
+
+        .reservation-card-second-line .setting-checks {
+          margin-left: auto !important;
+        }
+
+        /* 모바일 일간 카드: 인원/좌석/메뉴 + 기본/전체 한 줄 */
+        .mobile-info-setting-row {
+          display: flex !important;
+          align-items: center !important;
+          gap: 4px !important;
+          width: 100% !important;
+          margin-bottom: 4px !important;
+        }
+
+        .mobile-info-setting-row .info-grid {
+          flex: 1 1 auto !important;
+          min-width: 0 !important;
+          margin-bottom: 0 !important;
+        }
+
+        .mobile-info-setting-row .mobile-setting-bottom-row {
+          display: flex !important;
+          width: auto !important;
+          margin-top: 0 !important;
+          margin-left: auto !important;
+          flex: 0 0 auto !important;
+          justify-content: flex-end !important;
+          align-items: center !important;
+        }
+
+        .mobile-info-setting-row .setting-checks {
+          margin-left: auto !important;
+          justify-content: flex-end !important;
+          gap: 4px !important;
+          font-size: 11px !important;
+        }
+
+        .mobile-info-setting-row .setting-checks label {
+          gap: 2px !important;
+        }
+
+        .mobile-info-setting-row .setting-checks input {
+          width: 12px !important;
+          height: 12px !important;
+        }
+
+        /* 기본/전체가 들어오므로 메뉴칸은 조금 더 짧게 */
+        .mobile-info-setting-row .info-item:nth-child(3) {
+          max-width: 28vw !important;
+        }
+
+        .reservation-time-text {
+          font-size: 14px !important;
+          line-height: 1.1 !important;
+        }
+
+        .reservation-phone {
+          font-size: 11px !important;
+          line-height: 1.1 !important;
+          color: #666 !important;
+        }
+
+        .reservation-name-wrap {
+          min-width: 0 !important;
+          max-width: calc(100vw - 190px) !important;
+        }
+
+        .reservation-name-text {
+          font-size: 14px !important;
+          line-height: 1.1 !important;
+          white-space: nowrap !important;
+          overflow: hidden !important;
+          text-overflow: ellipsis !important;
+        }
+
+        /* 모바일 일간 카드: 인원/좌석/메뉴 한 줄 압축 */
+        .info-grid {
+          display: flex !important;
+          flex-wrap: nowrap !important;
+          gap: 4px !important;
+          margin-bottom: 4px !important;
+          align-items: center !important;
         }
 
         .info-item {
-          padding: 6px 8px !important;
+          display: inline-flex !important;
+          align-items: center !important;
+          justify-content: center !important;
+
+          width: auto !important;
+          flex: 0 0 auto !important;
+
+          padding: 3px 6px !important;
+          min-height: 0 !important;
+          min-width: 0 !important;
+          border-radius: 6px !important;
+        }
+
+        .info-item:nth-child(3) {
+          max-width: 42vw !important;
         }
 
         .info-label {
-          font-size: 12px;
+          display: none !important;
         }
 
         .info-value {
-          font-size: 14px;
+          font-size: 12px !important;
+          line-height: 1.1 !important;
+          white-space: nowrap !important;
+          overflow: hidden !important;
+          text-overflow: ellipsis !important;
+          max-width: 100% !important;
         }
 
-        /* 모바일 일간 카드: 메모 압축 */
+        /* 모바일 일간 카드: 메모 한 줄 압축 */
         .memo {
-          font-size: 13px !important;
-          padding: 6px 8px !important;
-          margin-top: 4px !important;
-          margin-bottom: 6px !important;
+          font-size: 12px !important;
+          padding: 3px 6px !important;
+          margin-top: 3px !important;
+          margin-bottom: 4px !important;
+          border-radius: 6px !important;
+
+          line-height: 1.15 !important;
+          white-space: nowrap !important;
+          overflow: hidden !important;
+          text-overflow: ellipsis !important;
+        }
+
+        .memo .memo-label {
+          font-size: 12px !important;
+          margin-right: 3px !important;
         }
 
         /* 모바일 카드 하단 액션 */
@@ -2513,6 +2838,90 @@
       /* TV모드에서는 예약관리 헤더 숨김 */
       body.tv-mode-body header {
         display: none !important;
+      }
+
+      /* ===== 일간 예약카드 PC/모바일 오른쪽 정렬 보정 ===== */
+
+      /* PC/모바일 공통: 카드 헤더가 가로폭을 전부 쓰게 함 */
+      .day-card-pc-head,
+      .day-card-mobile-head {
+        width: 100% !important;
+      }
+
+      /* PC: 왼쪽 정보 / 오른쪽 기본·전체 + 아이콘을 양끝 정렬 */
+      .day-card-pc-head > div {
+        width: 100% !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: space-between !important;
+      }
+
+      .day-card-pc-head > div > div:first-child {
+        flex: 1 1 auto !important;
+        min-width: 0 !important;
+      }
+
+      .day-card-pc-head > div > div:nth-child(2) {
+        margin-left: auto !important;
+        flex: 0 0 auto !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: flex-end !important;
+      }
+
+      .day-card-pc-head .setting-checks {
+        flex-direction: row !important;
+        justify-content: flex-end !important;
+      }
+
+      .day-card-pc-head .reservation-icon-actions {
+        justify-self: end !important;
+        margin-left: 0 !important;
+      }
+
+      /* 모바일: 첫 줄 오른쪽 끝에 문자/전화/수정/삭제 */
+      @media (max-width: 768px) {
+        .day-card-mobile-head .reservation-card-head {
+          width: 100% !important;
+          display: grid !important;
+          grid-template-columns: minmax(0, 1fr) auto !important;
+          column-gap: 4px !important;
+          row-gap: 2px !important;
+          align-items: start !important;
+        }
+
+        .day-card-mobile-head .reservation-card-main {
+          display: contents !important;
+        }
+
+        .day-card-mobile-head .reservation-card-first-line {
+          grid-column: 1 !important;
+          grid-row: 1 !important;
+          min-width: 0 !important;
+        }
+
+        .day-card-mobile-head .reservation-icon-actions {
+          grid-column: 2 !important;
+          grid-row: 1 !important;
+          justify-self: end !important;
+          align-self: start !important;
+          margin-left: 0 !important;
+        }
+
+        .day-card-mobile-head .reservation-card-second-line {
+          grid-column: 1 / -1 !important;
+          grid-row: 2 !important;
+          width: 100% !important;
+          display: flex !important;
+          align-items: center !important;
+          justify-content: space-between !important;
+        }
+
+        .day-card-mobile-head .reservation-card-second-line .setting-checks {
+          margin-left: auto !important;
+          flex: 0 0 auto !important;
+          justify-content: flex-end !important;
+        }
       }
 
       #import-preview-modal {
@@ -4297,6 +4706,48 @@
         renderImportPreview();
         openImportPreviewModal();
       }
+
+      function extractFirstLineMemo(firstLine) {
+        const memoList = [];
+        const line = String(firstLine || "");
+
+        const matches = [...line.matchAll(/\(([^)]*)\)/g)];
+
+        matches.forEach((match) => {
+          let value = String(match[1] || "").replace(/\s+/g, " ").trim();
+
+          if (!value) return;
+
+          // 단순 좌석 표시는 메모 제외
+          if (/^(룸|홀)$/.test(value)) return;
+
+          // 네이버만 단독으로 있으면 메모 제외
+          if (/^네이버$/.test(value)) return;
+
+          // 네이버-룸 / 네이버-홀은 메모 제외
+          // 네이버-단독룸은 "단독룸"만 메모로 저장
+          if (/^네이버-/.test(value)) {
+            value = value.replace(/^네이버-/, "").trim();
+
+            if (/^(룸|홀)$/.test(value)) return;
+          }
+
+          // 메뉴 관련 괄호는 메모 제외
+          if (/^메뉴\s*전화$/.test(value)) return;
+          if (/^메뉴\s*다시\s*전화$/.test(value)) return;
+          if (/회정식/.test(value)) return;
+          if (/[A-Z가-힣]\s*코스/.test(value)) return;
+
+          // 좌석/테이블 관련 괄호는 메모 제외
+          if (/^예약\s*[1-5]/.test(value)) return;
+          if (/^테이블\s*[\d,\s]+$/.test(value)) return;
+
+          memoList.push(value);
+        });
+
+        return memoList;
+      }
+      
       function parseReservationBlock(block, date) {
         const lines = block
           .split("\n")
@@ -4322,13 +4773,17 @@
         });
         const name = extractName(phoneLine);
 
-          const memoLines = lines.filter((line, index) => {
-          if (!line) return false;
+            const firstLineMemoLines = extractFirstLineMemo(lines[0] || "");
 
-          const clean = line.replace(/\s+/g, " ").trim();
+            const memoLines = [
+              ...firstLineMemoLines,
+              ...lines.filter((line, index) => {
+                if (!line) return false;
 
-          // 첫 줄은 시간/인원/메뉴가 같이 들어가는 예약 기본 정보 줄이라 메모에서 제외
-          if (index === 0) return false;
+                const clean = line.replace(/\s+/g, " ").trim();
+
+                // 첫 줄은 시간/인원/메뉴가 같이 들어가는 예약 기본 정보 줄이라 메모에서 제외
+                if (index === 0) return false;
           if (/^\d{1,2}:\d{2}$/.test(clean)) return false;
 
           // 전화번호 있는 줄 제외
@@ -4356,7 +4811,8 @@
           if (name && clean === name.replace(/\s+/g, " ").trim()) return false;
 
           return true;
-        });
+        }),
+        ].filter((value, index, arr) => arr.indexOf(value) === index);
 
         return {
           date,
@@ -4427,22 +4883,29 @@
 
       function extractTable(text) {
         const tables = new Set();
+        const lines = String(text || "").split(/\n+/);
 
-        // (테이블 10,19)
-        const tableMatch = text.match(/테이블\s*([\d,\s]+)/);
-        if (tableMatch) {
-          tableMatch[1]
-            .split(",")
-            .map((v) => v.trim())
-            .filter(Boolean)
-            .forEach((v) => tables.add(v));
-        }
+        lines.forEach((line) => {
+          // (테이블 10,19) / (테이블 6,7,8)
+          const tableMatch = line.match(/테이블\s*([0-9][0-9,\s]*)/);
+          if (tableMatch) {
+            tableMatch[1]
+              .split(/[,\s]+/)
+              .map((v) => v.trim())
+              .filter((v) => /^\d{1,3}$/.test(v))
+              .forEach((v) => tables.add(v));
+          }
 
-        // (예약 5실 62)
-        const roomTableMatch = text.match(/예약\s*[1-5]실\s+(\d{2,3})(?!:)\b/);
-        if (roomTableMatch) {
-          tables.add(roomTableMatch[1]);
-        }
+          // (예약 2실 33,34) / (예약 5실 64) / 예약4실 51
+          const roomTableMatch = line.match(/예약\s*[1-5]실\s*([0-9][0-9,\s]*)/);
+          if (roomTableMatch) {
+            roomTableMatch[1]
+              .split(/[,\s]+/)
+              .map((v) => v.trim())
+              .filter((v) => /^\d{1,3}$/.test(v))
+              .forEach((v) => tables.add(v));
+          }
+        });
 
         return Array.from(tables).join(", ");
       }
@@ -5447,13 +5910,44 @@
         return hour * 60 + minute;
       }
 
+      let tvDateOffset = 0; // -1 어제, 0 오늘, 1 내일
+
+      function getTVTargetDateString() {
+        const baseDate = parseLocalDate(getTodayString());
+        baseDate.setDate(baseDate.getDate() + tvDateOffset);
+
+        const y = baseDate.getFullYear();
+        const m = String(baseDate.getMonth() + 1).padStart(2, "0");
+        const d = String(baseDate.getDate()).padStart(2, "0");
+
+        return `${y}-${m}-${d}`;
+      }
+
+      function getTVReservationTitleText() {
+        if (tvDateOffset === -1) return "어제 예약 ";
+        if (tvDateOffset === 1) return "내일 예약 ";
+        return "오늘 예약 ";
+      }
+
+      function changeTVDateOffset(amount) {
+        const nextOffset = tvDateOffset + amount;
+
+        if (nextOffset < -1 || nextOffset > 1) return;
+
+        tvDateOffset = nextOffset;
+        renderTVView();
+      }
+
+      window.changeTVDateOffset = changeTVDateOffset;
+
         function renderTVView() {
         loadTVSettingsForCurrentScreen();
         applyAllTVSettings();
 
         document.body.classList.add("tv-mode-body");
 
-        const today = getTodayString();
+        const tvTargetDate = getTVTargetDateString();
+        const tvTitleText = getTVReservationTitleText();
         const monthView = document.getElementById("month-view");
         const weekView = document.getElementById("week-view");
         const dayHeader = document.getElementById("day-view-header");
@@ -5481,7 +5975,7 @@
         list.style.display = "block";
 
         const todayReservations = reservations
-          .filter((r) => (r.date || "") === today)
+          .filter((r) => (r.date || "") === tvTargetDate)
           .sort((a, b) =>
             String(a.time || "").localeCompare(String(b.time || "")),
           );
@@ -5560,7 +6054,27 @@ return `
   >
     ⚙
   </button>
-  오늘 예약(${formatTVDate(today)})
+  <button
+  class="tv-date-nav-btn"
+  onclick="window.changeTVDateOffset(-1)"
+  type="button"
+  ${tvDateOffset <= -1 ? "disabled" : ""}
+>
+  ◀
+</button>
+
+<span class="tv-title-text">
+  ${tvTitleText}(${formatTVDate(tvTargetDate)})
+</span>
+
+<button
+  class="tv-date-nav-btn"
+  onclick="window.changeTVDateOffset(1)"
+  type="button"
+  ${tvDateOffset >= 1 ? "disabled" : ""}
+>
+  ▶
+</button>
 </div>
 
 <div
@@ -5769,7 +6283,7 @@ return `
               </table>
             `
                 : `
-              <div class="tv-empty">오늘 예약이 없습니다</div>
+              <div class="tv-empty">${tvTitleText}이 없습니다</div>
             `
             }
 
@@ -6764,130 +7278,223 @@ ${modalSeatPickMode ? `
             style="cursor:pointer;"
           >
             <div class="reservation-top">
-              <div style="display:flex; align-items:center; justify-content:space-between; width:100%; gap:8px;">
 
-                <div style="display:flex; align-items:center; flex-wrap:wrap; gap:8px; min-width:0;">
-                  <span
-                    class="status-badge badge-${getDisplayStatus(r.status)}"
-                    onclick="event.stopPropagation(); toggleStatus(${realIndex})"
-                    style="cursor:pointer; font-size:11px; padding:3px 7px;"
-                  >
-                    ${getDisplayStatus(r.status)}
-                  </span>
+  <!-- PC용: 예전처럼 한 줄 구조 -->
+  <div class="day-card-pc-head">
+    <div style="display:flex; align-items:center; justify-content:space-between; width:100%; gap:8px;">
 
-                  <span style="font-size:16px; font-weight:700; color:#1f2d3d;">
-                    ${escapeHtml(r.time || "")}
-                  </span>
+      <div style="display:flex; align-items:center; flex-wrap:wrap; gap:8px; min-width:0;">
+        <span
+          class="status-badge badge-${getDisplayStatus(r.status)}"
+          onclick="event.stopPropagation(); toggleStatus(${realIndex})"
+          style="cursor:pointer; font-size:11px; padding:3px 7px;"
+        >
+          ${getDisplayStatus(r.status)}
+        </span>
 
-                  <input
-  type="checkbox"
-  class="name-display-check"
-  ${r.nameDisplayMode ? "checked" : ""}
-  onclick="event.stopPropagation();"
-  onchange="toggleNameDisplayMode(${realIndex}, this.checked, this)"
-  title="예약자명 님 표시"
-/>
+        <span style="font-size:16px; font-weight:700; color:#1f2d3d;">
+          ${escapeHtml(r.time || "")}
+        </span>
 
-<span style="font-size:18px; font-weight:700; color:#1f2d3d;">
-  ${escapeHtml(getReservationDisplayName(r))}
-</span>
+        <input
+          type="checkbox"
+          class="name-display-check"
+          ${r.nameDisplayMode ? "checked" : ""}
+          onclick="event.stopPropagation();"
+          onchange="toggleNameDisplayMode(${realIndex}, this.checked, this)"
+          title="예약자명 님 표시"
+        />
 
-                  <span style="font-size:13px; color:#666;">
-                    ${escapeHtml(r.phone || "")}
-                  </span>
+        <span class="reservation-name-wrap">
+          <span class="reservation-name-text">
+            ${escapeHtml(getReservationDisplayName(r))}
+          </span>
+          ${
+            r.isNaver
+              ? `<span class="naver-mini-badge" title="네이버 예약">N</span>`
+              : ""
+          }
+        </span>
 
-                  ${
-                    r.isNaver
-                      ? `
-                    <span style="background:#03c75a; color:white; font-size:11px; font-weight:bold; padding:4px 8px; border-radius:999px;">
-                      네이버
-                    </span>
-                  `
-                      : ""
-                  }
-                </div>
+        <span style="font-size:13px; color:#666;">
+          ${escapeHtml(r.phone || "")}
+        </span>
+      </div>
 
-                <div style="display:flex; align-items:center; gap:18px; flex:none;">
+      <div style="display:flex; align-items:center; gap:18px; flex:none;">
 
-                  <div class="setting-checks" onclick="event.stopPropagation();">
-                    <label>
-                      <input
-                        type="checkbox"
-                        ${r.basicSetting ? "checked" : ""}
-                        onchange="toggleSettingStatus(${realIndex}, 'basicSetting', this.checked)"
-                      />
-                      기본세팅
-                    </label>
+        <div class="setting-checks" onclick="event.stopPropagation();">
+          <label>
+            <input
+              type="checkbox"
+              ${r.basicSetting ? "checked" : ""}
+              onchange="toggleSettingStatus(${realIndex}, 'basicSetting', this.checked)"
+            />
+            기본
+          </label>
 
-                    <label>
-                      <input
-                        type="checkbox"
-                        ${r.fullSetting ? "checked" : ""}
-                        onchange="toggleSettingStatus(${realIndex}, 'fullSetting', this.checked)"
-                      />
-                      전체세팅
-                    </label>
-                  </div>
+          <label>
+            <input
+              type="checkbox"
+              ${r.fullSetting ? "checked" : ""}
+              onchange="toggleSettingStatus(${realIndex}, 'fullSetting', this.checked)"
+            />
+            전체
+          </label>
+        </div>
 
-                  <div style="display:flex; flex-direction:column; align-items:flex-end; gap:2px; width:56px;">
-                    <div style="display:grid; grid-template-columns:26px 26px; gap:4px; justify-content:end;">
-                      <button
-                        onclick="event.stopPropagation(); editReservation(${realIndex})"
-                        style="border:none; background:transparent; cursor:pointer; font-size:16px; padding:2px 4px;"
-                        title="수정"
-                      >
-                        ✏️
-                      </button>
+        <div class="reservation-icon-actions" onclick="event.stopPropagation();">
+          <button
+            onclick="event.stopPropagation(); editReservation(${realIndex})"
+            title="수정"
+          >
+            ✏️
+          </button>
 
-                      <button
-                        onclick="event.stopPropagation(); deleteReservation(${realIndex})"
-                        style="border:none; background:transparent; cursor:pointer; font-size:16px; padding:2px 4px;"
-                        title="삭제"
-                      >
-                        ✕
-                      </button>
-                    </div>
+          <button
+            onclick="event.stopPropagation(); deleteReservation(${realIndex})"
+            title="삭제"
+          >
+            ✕
+          </button>
 
-                    <div style="display:grid; grid-template-columns:26px 26px; gap:4px; justify-content:end;">
-                      <button
-                        onclick="event.stopPropagation(); openSmsTemplatePopup(${realIndex})"
-                        style="border:none; background:transparent; cursor:pointer; font-size:16px; padding:2px 4px;"
-                        title="문자"
-                      >
-                        💬
-                      </button>
+          <button
+            onclick="event.stopPropagation(); openSmsTemplatePopup(${realIndex})"
+            title="문자"
+          >
+            💬
+          </button>
 
-                      <button
-                        onclick="event.stopPropagation(); callReservationCustomer(${realIndex})"
-                        style="border:none; background:transparent; cursor:pointer; font-size:16px; padding:2px 4px;"
-                        title="전화"
-                      >
-                        📞
-                      </button>
-                    </div>
-                  </div>
+          <button
+            onclick="event.stopPropagation(); callReservationCustomer(${realIndex})"
+            title="전화"
+          >
+            📞
+          </button>
+        </div>
 
-                </div>
+      </div>
+    </div>
+  </div>
 
-              </div>
-            </div>
+  <!-- 모바일용: 압축 2줄 구조 -->
+  <div class="day-card-mobile-head">
+    <div class="reservation-card-head">
 
+      <div class="reservation-card-main">
+
+        <div class="reservation-card-first-line">
+          <span
+            class="status-badge badge-${getDisplayStatus(r.status)}"
+            onclick="event.stopPropagation(); toggleStatus(${realIndex})"
+            style="cursor:pointer; font-size:11px; padding:3px 7px;"
+          >
+            ${getDisplayStatus(r.status)}
+          </span>
+
+          <span class="reservation-time-text">
+            ${escapeHtml(r.time || "")}
+          </span>
+
+          <input
+            type="checkbox"
+            class="name-display-check"
+            ${r.nameDisplayMode ? "checked" : ""}
+            onclick="event.stopPropagation();"
+            onchange="toggleNameDisplayMode(${realIndex}, this.checked, this)"
+            title="예약자명 님 표시"
+          />
+
+          <span class="reservation-name-wrap">
+            <span class="reservation-name-text">
+              ${escapeHtml(getReservationDisplayName(r))}
+            </span>
+            ${
+              r.isNaver
+                ? `<span class="naver-mini-badge" title="네이버 예약">N</span>`
+                : ""
+            }
+          </span>
+        </div>
+
+      </div>
+
+      <div class="reservation-icon-actions" onclick="event.stopPropagation();">
+  <button
+    onclick="event.stopPropagation(); openSmsTemplatePopup(${realIndex})"
+    title="문자"
+  >
+    💬
+  </button>
+
+  <button
+    onclick="event.stopPropagation(); callReservationCustomer(${realIndex})"
+    title="전화"
+  >
+    📞
+  </button>
+
+  <button
+    onclick="event.stopPropagation(); editReservation(${realIndex})"
+    title="수정"
+  >
+    ✏️
+  </button>
+
+  <button
+    onclick="event.stopPropagation(); deleteReservation(${realIndex})"
+    title="삭제"
+  >
+    ✕
+  </button>
+</div>
+
+    </div>
+  </div>
+
+</div>
+
+    
+          <div class="mobile-info-setting-row">
             <div class="info-grid" style="display:flex; gap:14px; align-items:center; flex-wrap:wrap;">
-              <div class="info-item" style="display:flex; align-items:center; gap:6px; padding:4px 8px;">
+              <div class="info-item" style="display:flex; align-items:center; gap:8px; padding:8px 12px;">
                 <div class="info-label" style="margin-bottom:0;">인원</div>
                 <div class="info-value">${escapeHtml(getPeopleDisplayText(r))}</div>
               </div>
 
-              <div class="info-item" style="display:flex; align-items:center; gap:6px; padding:4px 8px;">
+              <div class="info-item" style="display:flex; align-items:center; gap:8px; padding:8px 12px;">
                 <div class="info-label" style="margin-bottom:0;">좌석</div>
                 <div class="info-value">${getSeatDisplayHtml(r, "card")}</div>
               </div>
 
-              <div class="info-item" style="display:flex; align-items:center; gap:6px; padding:4px 8px;">
+              <div class="info-item" style="display:flex; align-items:center; gap:8px; padding:8px 12px;">
                 <div class="info-label" style="margin-bottom:0;">메뉴</div>
                 <div class="info-value">${escapeHtml(getMenuDisplayText(r.menu) || "-")}</div>
               </div>
             </div>
+
+            <div class="mobile-setting-bottom-row" onclick="event.stopPropagation();">
+              <div class="setting-checks">
+                <label>
+                  <input
+                    type="checkbox"
+                    ${r.basicSetting ? "checked" : ""}
+                    onchange="toggleSettingStatus(${realIndex}, 'basicSetting', this.checked)"
+                  />
+                  기본
+                </label>
+
+                <label>
+                  <input
+                    type="checkbox"
+                    ${r.fullSetting ? "checked" : ""}
+                    onchange="toggleSettingStatus(${realIndex}, 'fullSetting', this.checked)"
+                  />
+                  전체
+                </label>
+              </div>
+            </div>
+          </div>
 
             ${
               r.memo
@@ -6899,6 +7506,7 @@ ${modalSeatPickMode ? `
                 : ""
             }
 
+            
           </div>
         `;
           })
