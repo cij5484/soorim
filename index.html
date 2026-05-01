@@ -137,7 +137,6 @@
         grid-template-columns: repeat(4, 1fr);
       }
 
-      
       .search-dim {
         opacity: 0.35;
       }
@@ -159,8 +158,7 @@
       .month-title-custom:hover {
         background: #eaf3ff;
       }
-                    
-     
+
       /* ====== 기본 스타일 ====== */
       * {
         box-sizing: border-box;
@@ -229,17 +227,17 @@
         background: #fff1f2;
         border: 1px solid #fecdd3;
       }
-      
+
       /* 상태별 카드 왼쪽 색깔 (한눈에 구분) */
       .reservation.status-예약 {
         background: #f5faff;
       }
-      
+
       .reservation.status-도착 {
         background: #f5f5f5;
         opacity: 0.75;
       }
-      
+
       .reservation-top {
         display: flex;
         justify-content: space-between;
@@ -299,7 +297,6 @@
         flex: none;
       }
 
-      
       .reservation .time {
         font-size: 14px;
         color: #555;
@@ -323,7 +320,7 @@
       .badge-도착 {
         background: #757575;
       }
-           
+
       /* 예약 상세 정보 그리드 */
       .info-grid {
         display: grid;
@@ -360,7 +357,7 @@
         color: #5c4400;
         margin-bottom: 7px;
       }
-      
+
       .memo .memo-label {
         font-weight: bold;
         margin-right: 6px;
@@ -401,7 +398,7 @@
         border-radius: 12px;
         font-size: 16px;
       }
-      
+
       .month-grid {
         display: grid;
         grid-template-columns: repeat(7, 1fr);
@@ -450,7 +447,6 @@
         color: #374151;
       }
 
-      
       /* 인원 입력줄 기본값: PC */
       .people-row {
         display: flex;
@@ -702,7 +698,6 @@
         cursor: pointer;
       }
 
-     
       .week-list {
         display: flex;
         flex-direction: column;
@@ -770,8 +765,7 @@
         min-width: 0;
         flex: 1;
       }
-     
-      
+
       .week-card-empty {
         font-size: 14px;
         color: #9ca3af;
@@ -807,14 +801,13 @@
       .week-nav-right {
         justify-self: end;
       }
-     
+
       .week-range-text {
         font-size: 20px;
         font-weight: bold;
         color: #1f2d3d;
       }
 
-    
       .view-tab-btn {
         background: #dbeafe;
         color: #1f2d3d;
@@ -826,7 +819,7 @@
         cursor: pointer;
         transition: all 0.15s ease;
       }
-     
+
       .view-tab-btn:hover {
         background: #bfdbfe;
       }
@@ -1100,7 +1093,7 @@
         color: #111827;
         z-index: 2;
       }
-     
+
       .room-inner-map {
         width: 100%;
         height: 100%;
@@ -1365,7 +1358,8 @@
         display: grid;
         grid-template-columns: 39% 61%;
         gap: 10px;
-        font-family: "휴먼옛체", "Malgun Gothic", "Apple SD Gothic Neo", sans-serif;
+        font-family:
+          "휴먼옛체", "Malgun Gothic", "Apple SD Gothic Neo", sans-serif;
       }
 
       .tv-photo-panel,
@@ -1871,7 +1865,6 @@
           padding: 3px 5px;
         }
 
-        
         /* 모바일 월간 제목 */
         .month-title-custom {
           white-space: nowrap;
@@ -1899,7 +1892,6 @@
           padding: 0 10px;
         }
 
-        
         /* ===== 모바일 주간 카드 ===== */
 
         .week-card {
@@ -1940,7 +1932,6 @@
           flex: none !important;
         }
 
-                
         /* 예약 카드 */
         .reservation {
           padding: 7px 8px !important;
@@ -2398,7 +2389,7 @@
         font-size: 16px;
         flex: none;
       }
-     
+
       @media (max-width: 768px) {
         /* ===== 모바일 표시 텍스트 / 아이콘 ===== */
 
@@ -2419,7 +2410,6 @@
           display: inline;
           font-size: 18px;
         }
-   
 
         /* 룸 테이블 미리보기 */
         #room-table-preview {
@@ -3175,7 +3165,7 @@
           </div>
         </div>
 
-        <label style="display: flex; align-items: center;">
+        <label style="display: flex; align-items: center">
           좌석
           <button
             type="button"
@@ -3457,7 +3447,11 @@
           <button class="btn-cancel" onclick="closeImportPreviewModal()">
             취소
           </button>
-          <button id="confirm-import-btn" class="btn-save" onclick="confirmImport()">
+          <button
+            id="confirm-import-btn"
+            class="btn-save"
+            onclick="confirmImport()"
+          >
             예약 추가
           </button>
         </div>
@@ -3787,7 +3781,9 @@
         const defaults = getTVDefaultSettings();
 
         try {
-          const saved = JSON.parse(localStorage.getItem(keys.columnWidths) || "null");
+          const saved = JSON.parse(
+            localStorage.getItem(keys.columnWidths) || "null",
+          );
 
           return {
             time: Number(saved?.time) || defaults.columnWidths.time,
@@ -3950,13 +3946,21 @@
           Number(targetSettings.rowPadding) || defaults.rowPadding;
 
         tvColumnWidths = {
-          time: Number(targetSettings.columnWidths?.time) || defaults.columnWidths.time,
-          name: Number(targetSettings.columnWidths?.name) || defaults.columnWidths.name,
+          time:
+            Number(targetSettings.columnWidths?.time) ||
+            defaults.columnWidths.time,
+          name:
+            Number(targetSettings.columnWidths?.name) ||
+            defaults.columnWidths.name,
           people:
             Number(targetSettings.columnWidths?.people) ||
             defaults.columnWidths.people,
-          seat: Number(targetSettings.columnWidths?.seat) || defaults.columnWidths.seat,
-          menu: Number(targetSettings.columnWidths?.menu) || defaults.columnWidths.menu,
+          seat:
+            Number(targetSettings.columnWidths?.seat) ||
+            defaults.columnWidths.seat,
+          menu:
+            Number(targetSettings.columnWidths?.menu) ||
+            defaults.columnWidths.menu,
         };
 
         saveCurrentTVSettingsToStorage();
@@ -4346,25 +4350,27 @@
         closeSearchModal();
       }
 
-          function renderImportPreview() {
-          const list = document.getElementById("import-preview-list");
-          const title = document.getElementById("import-preview-title");
-          const confirmBtn = document.getElementById("confirm-import-btn");
+      function renderImportPreview() {
+        const list = document.getElementById("import-preview-list");
+        const title = document.getElementById("import-preview-title");
+        const confirmBtn = document.getElementById("confirm-import-btn");
 
-          const count = importPreviewList.length;
+        const count = importPreviewList.length;
 
-          if (title) {
-            title.textContent = count
-              ? `불러오기 미리보기 (${count}건)`
-              : "불러오기 미리보기";
-          }
+        if (title) {
+          title.textContent = count
+            ? `불러오기 미리보기 (${count}건)`
+            : "불러오기 미리보기";
+        }
 
-          if (confirmBtn) {
-            confirmBtn.textContent = count ? `${count}건 예약 추가` : "추가할 예약 없음";
-            confirmBtn.disabled = count === 0;
-          }
+        if (confirmBtn) {
+          confirmBtn.textContent = count
+            ? `${count}건 예약 추가`
+            : "추가할 예약 없음";
+          confirmBtn.disabled = count === 0;
+        }
 
-          if (!importPreviewList.length) {
+        if (!importPreviewList.length) {
           list.innerHTML =
             '<div style="padding:20px; background:#f8fafc; border-radius:8px;">미리보기 데이터가 없습니다.</div>';
           return;
@@ -4714,7 +4720,9 @@
         const matches = [...line.matchAll(/\(([^)]*)\)/g)];
 
         matches.forEach((match) => {
-          let value = String(match[1] || "").replace(/\s+/g, " ").trim();
+          let value = String(match[1] || "")
+            .replace(/\s+/g, " ")
+            .trim();
 
           if (!value) return;
 
@@ -4747,7 +4755,7 @@
 
         return memoList;
       }
-      
+
       function parseReservationBlock(block, date) {
         const lines = block
           .split("\n")
@@ -4773,45 +4781,46 @@
         });
         const name = extractName(phoneLine);
 
-            const firstLineMemoLines = extractFirstLineMemo(lines[0] || "");
+        const firstLineMemoLines = extractFirstLineMemo(lines[0] || "");
 
-            const memoLines = [
-              ...firstLineMemoLines,
-              ...lines.filter((line, index) => {
-                if (!line) return false;
+        const memoLines = [
+          ...firstLineMemoLines,
+          ...lines.filter((line, index) => {
+            if (!line) return false;
 
-                const clean = line.replace(/\s+/g, " ").trim();
+            const clean = line.replace(/\s+/g, " ").trim();
 
-                // 첫 줄은 시간/인원/메뉴가 같이 들어가는 예약 기본 정보 줄이라 메모에서 제외
-                if (index === 0) return false;
-          if (/^\d{1,2}:\d{2}$/.test(clean)) return false;
+            // 첫 줄은 시간/인원/메뉴가 같이 들어가는 예약 기본 정보 줄이라 메모에서 제외
+            if (index === 0) return false;
+            if (/^\d{1,2}:\d{2}$/.test(clean)) return false;
 
-          // 전화번호 있는 줄 제외
-          if (/01[0-9][-\s]?\d{3,4}[-\s]?\d{4}/.test(clean)) return false;
+            // 전화번호 있는 줄 제외
+            if (/01[0-9][-\s]?\d{3,4}[-\s]?\d{4}/.test(clean)) return false;
 
-          // 인원 줄 제외: 3명, 5인, 성인2 아이1, 10~20명 등
-          if (/^\d+\s*(?:명|인)$/.test(clean)) return false;
-          if (/^\d+\s*~\s*\d+\s*(?:명|인)?$/.test(clean)) return false;
-          if (/(성인|어른|아이|아동|유아)\s*\d+/.test(clean)) return false;
+            // 인원 줄 제외: 3명, 5인, 성인2 아이1, 10~20명 등
+            if (/^\d+\s*(?:명|인)$/.test(clean)) return false;
+            if (/^\d+\s*~\s*\d+\s*(?:명|인)?$/.test(clean)) return false;
+            if (/(성인|어른|아이|아동|유아)\s*\d+/.test(clean)) return false;
 
-          // 메뉴 줄 제외
-          if (/메뉴전화/.test(clean)) return false;
-          if (/메뉴\s*다시\s*전화/.test(clean)) return false;
-          if (/회정식/.test(clean)) return false;
-          if (/[A-Z가-힣]\s*코스/.test(clean)) return false;
+            // 메뉴 줄 제외
+            if (/메뉴전화/.test(clean)) return false;
+            if (/메뉴\s*다시\s*전화/.test(clean)) return false;
+            if (/회정식/.test(clean)) return false;
+            if (/[A-Z가-힣]\s*코스/.test(clean)) return false;
 
-          // 네이버/좌석/룸/테이블 줄 제외
-          if (/\(네이버(?:-[^)]+)?\)/.test(clean)) return false;
-          if (/\(룸\)|\(홀\)|\(네이버-룸\)|\(네이버-홀\)/.test(clean))
-            return false;
-          if (/예약\s*[1-5]/.test(clean)) return false;
-          if (/테이블\s*[\d,\s]+/.test(clean)) return false;
+            // 네이버/좌석/룸/테이블 줄 제외
+            if (/\(네이버(?:-[^)]+)?\)/.test(clean)) return false;
+            if (/\(룸\)|\(홀\)|\(네이버-룸\)|\(네이버-홀\)/.test(clean))
+              return false;
+            if (/예약\s*[1-5]/.test(clean)) return false;
+            if (/테이블\s*[\d,\s]+/.test(clean)) return false;
 
-          // 이름만 남은 줄이면 제외
-          if (name && clean === name.replace(/\s+/g, " ").trim()) return false;
+            // 이름만 남은 줄이면 제외
+            if (name && clean === name.replace(/\s+/g, " ").trim())
+              return false;
 
-          return true;
-        }),
+            return true;
+          }),
         ].filter((value, index, arr) => arr.indexOf(value) === index);
 
         return {
@@ -4897,7 +4906,9 @@
           }
 
           // (예약 2실 33,34) / (예약 5실 64) / 예약4실 51
-          const roomTableMatch = line.match(/예약\s*[1-5]실\s*([0-9][0-9,\s]*)/);
+          const roomTableMatch = line.match(
+            /예약\s*[1-5]실\s*([0-9][0-9,\s]*)/,
+          );
           if (roomTableMatch) {
             roomTableMatch[1]
               .split(/[,\s]+/)
@@ -5616,9 +5627,9 @@
               const menuLabel = r.menu ? ` / ${escapeHtml(r.menu)}` : "";
               const seatDisplay = getSeatDisplayText(r);
               const seatLabel =
-              seatDisplay && seatDisplay !== "-"
-                ? ` / ${getSeatDisplayHtml(r, "card")}`
-                : "";
+                seatDisplay && seatDisplay !== "-"
+                  ? ` / ${getSeatDisplayHtml(r, "card")}`
+                  : "";
 
               return `
             <div class="${classes}">
@@ -5843,7 +5854,6 @@
             .map((v) => v.replace(/번$/g, ""))
             .join(", ");
         }
-       
 
         function formatRoomText(value) {
           return String(value || "")
@@ -5940,7 +5950,7 @@
 
       window.changeTVDateOffset = changeTVDateOffset;
 
-        function renderTVView() {
+      function renderTVView() {
         loadTVSettingsForCurrentScreen();
         applyAllTVSettings();
 
@@ -5980,35 +5990,35 @@
             String(a.time || "").localeCompare(String(b.time || "")),
           );
 
-            const rowsHtml = todayReservations
-            .map((r, index) => {
+        const rowsHtml = todayReservations
+          .map((r, index) => {
             const menu = getMenuDisplayText(r.menu);
-const menuHtml = menu
-  ? `<span class="tv-menu">${escapeHtml(menu)}</span>`
-  : `<span class="tv-menu tv-menu-empty"></span>`;
+            const menuHtml = menu
+              ? `<span class="tv-menu">${escapeHtml(menu)}</span>`
+              : `<span class="tv-menu tv-menu-empty"></span>`;
 
-const breakTimeMinutes = 14 * 60 + 30;
-const currentMinutes = getReservationTimeMinutes(r.time);
+            const breakTimeMinutes = 14 * 60 + 30;
+            const currentMinutes = getReservationTimeMinutes(r.time);
 
-const previousReservation = todayReservations[index - 1];
-const previousMinutes = previousReservation
-  ? getReservationTimeMinutes(previousReservation.time)
-  : null;
+            const previousReservation = todayReservations[index - 1];
+            const previousMinutes = previousReservation
+              ? getReservationTimeMinutes(previousReservation.time)
+              : null;
 
-const isFirstAfterBreak =
-  index > 0 &&
-  previousMinutes !== null &&
-  previousMinutes <= breakTimeMinutes &&
-  currentMinutes > breakTimeMinutes;
+            const isFirstAfterBreak =
+              index > 0 &&
+              previousMinutes !== null &&
+              previousMinutes <= breakTimeMinutes &&
+              currentMinutes > breakTimeMinutes;
 
-const rowClasses = [
-  getDisplayStatus(r.status) === "도착" ? "tv-status-exit" : "",
-  isFirstAfterBreak ? "tv-after-break" : "",
-]
-  .filter(Boolean)
-  .join(" ");
+            const rowClasses = [
+              getDisplayStatus(r.status) === "도착" ? "tv-status-exit" : "",
+              isFirstAfterBreak ? "tv-after-break" : "",
+            ]
+              .filter(Boolean)
+              .join(" ");
 
-return `
+            return `
           <tr class="${rowClasses}">
             <td>${escapeHtml(formatTVTime(r.time || ""))}</td>
             <td>${escapeHtml(getReservationDisplayName(r))}</td>
@@ -6293,7 +6303,6 @@ return `
           </div>
         </div>
       `;
-        
       }
 
       // ====== 화면 그리기 ======
@@ -6655,7 +6664,9 @@ ${getModalSeatPickGuideHtml()}
 
         // 선택된 룸들이 모두 4개 테이블 전체 선택인 경우
         // 예: 1실 21,22,23,24 / 1실+2실 전체 등
-        const allSelectedRoomsAreFull = selectedRooms.every((room) => room.hasAll);
+        const allSelectedRoomsAreFull = selectedRooms.every(
+          (room) => room.hasAll,
+        );
 
         if (allSelectedRoomsAreFull) {
           return {
@@ -6679,7 +6690,9 @@ ${getModalSeatPickGuideHtml()}
         if (!selectedTables.length) return;
 
         const normalizedSeatPick = normalizeModalSeatPickTables(selectedTables);
-        const firstSeatInfo = getSeatInfoByTableNumber(Number(selectedTables[0]));
+        const firstSeatInfo = getSeatInfoByTableNumber(
+          Number(selectedTables[0]),
+        );
         const isRoom = firstSeatInfo.seat === "룸";
 
         document.getElementById("input-seat").value = firstSeatInfo.seat;
@@ -6695,8 +6708,9 @@ ${getModalSeatPickGuideHtml()}
             : Array.from(
                 new Set(
                   selectedTables
-                    .map((tableNumber) =>
-                      getSeatInfoByTableNumber(Number(tableNumber)).room,
+                    .map(
+                      (tableNumber) =>
+                        getSeatInfoByTableNumber(Number(tableNumber)).room,
                     )
                     .filter(Boolean),
                 ),
@@ -6711,7 +6725,8 @@ ${getModalSeatPickGuideHtml()}
           syncAllCheckbox();
         }
 
-        document.getElementById("input-table").value = normalizedSeatPick.tableValue;
+        document.getElementById("input-table").value =
+          normalizedSeatPick.tableValue;
 
         updateRoomTablePreview();
 
@@ -6738,13 +6753,13 @@ ${getModalSeatPickGuideHtml()}
         render();
       }
 
-          function openTableReservation(tableNumber) {
-          if (modalSeatPickMode) {
-            toggleModalSeatPickTable(tableNumber);
-            return;
-          }
+      function openTableReservation(tableNumber) {
+        if (modalSeatPickMode) {
+          toggleModalSeatPickTable(tableNumber);
+          return;
+        }
 
-          const tableReservations = getReservationsByTable(tableNumber);
+        const tableReservations = getReservationsByTable(tableNumber);
 
         if (moveMode) {
           if (!movingReservation) {
@@ -7087,7 +7102,9 @@ ${getModalSeatPickGuideHtml()}
 >
   이동
 </button>
-${modalSeatPickMode ? `
+${
+  modalSeatPickMode
+    ? `
   <button
     class="seat-map-pick-done-btn"
     onclick="finishModalSeatPick()"
@@ -7100,7 +7117,9 @@ ${modalSeatPickMode ? `
   >
     취소
   </button>
-` : ""}
+`
+    : ""
+}
 </div>
 
             <div class="room-map">
@@ -7190,7 +7209,9 @@ ${modalSeatPickMode ? `
 >
   이동
 </button>
-${modalSeatPickMode ? `
+${
+  modalSeatPickMode
+    ? `
   <button
     class="seat-map-pick-done-btn"
     onclick="finishModalSeatPick()"
@@ -7203,7 +7224,9 @@ ${modalSeatPickMode ? `
   >
     취소
   </button>
-` : ""}
+`
+    : ""
+}
 </div>
 
           ${renderHallTableBox(19)}
@@ -7826,7 +7849,10 @@ ${modalSeatPickMode ? `
 
         const previewList = targets
           .slice(0, 8)
-          .map((r) => `- ${r.time || "-"} ${r.name || "이름없음"} / ${getPeopleDisplayText(r)}`)
+          .map(
+            (r) =>
+              `- ${r.time || "-"} ${r.name || "이름없음"} / ${getPeopleDisplayText(r)}`,
+          )
           .join("\n");
 
         const moreText =
@@ -7912,7 +7938,7 @@ ${modalSeatPickMode ? `
       window.deleteSelectedDateReservations = deleteSelectedDateReservations;
 
       // ====== 예약 추가 ======
-        function openModal() {
+      function openModal() {
         if (!requireLogin()) return;
         abandonModalSeatPick();
         closeAllModals();
@@ -8353,7 +8379,7 @@ ${modalSeatPickMode ? `
           alert("세팅 변경 중 오류가 발생했습니다.");
         }
       }
-      
+
       async function toggleNameDisplayMode(index, checked, checkboxEl) {
         if (!requireLogin()) {
           if (checkboxEl) checkboxEl.checked = !checked;
