@@ -347,6 +347,35 @@
         background: #757575;
       }
 
+      /* ====== 일간 카드 TV 노출 배지 ====== */
+      .tv-display-badge {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+
+        min-width: 30px;
+        height: 21px;
+        padding: 0 7px;
+
+        border-radius: 999px;
+        border: 1px solid #86efac;
+        background: #dcfce7;
+        color: #166534;
+
+        font-size: 11px;
+        font-weight: 900;
+        line-height: 1;
+        cursor: pointer;
+        user-select: none;
+      }
+
+      .tv-display-badge.off {
+        border-color: #d1d5db;
+        background: #e5e7eb;
+        color: #6b7280;
+        text-decoration: line-through;
+      }
+
       /* 예약 상세 정보 그리드 */
       .info-grid {
         display: grid;
@@ -2248,6 +2277,13 @@
         /* 기본/전체가 들어오므로 메뉴칸은 조금 더 짧게 */
         .mobile-info-setting-row .info-item:nth-child(3) {
           max-width: 28vw !important;
+        }
+
+        .tv-display-badge {
+          min-width: 27px !important;
+          height: 19px !important;
+          padding: 0 6px !important;
+          font-size: 10px !important;
         }
 
         .reservation-time-text {
@@ -4199,7 +4235,7 @@
       let editingReservationId = null;
       let importPreviewList = [];
       let editingPreviewIndex = null;
-      let currentView = localStorage.getItem("currentView") || "month";
+      let currentView = "day";
       let selectedDate =
         localStorage.getItem("selectedDate") || getTodayString();
       let searchKeyword = "";
@@ -5039,6 +5075,7 @@ ${String(r.memo || "").trim() ? `<span style="margin-left:6px; background:#fff3c
           isNaver,
           memo: memoLines.join(" / "),
           status: "예약",
+          tvHidden: false,
         };
       }
       function extractTime(text) {
@@ -6280,10 +6317,10 @@ ${String(r.memo || "").trim() ? `<span style="margin-left:6px; background:#fff3c
         list.style.display = "block";
 
         const todayReservations = reservations
-          .filter((r) => (r.date || "") === tvTargetDate)
-          .sort((a, b) =>
-            String(a.time || "").localeCompare(String(b.time || "")),
-          );
+        .filter((r) => (r.date || "") === tvTargetDate && r.tvHidden !== true)
+        .sort((a, b) =>
+          String(a.time || "").localeCompare(String(b.time || "")),
+        );
 
         const rowsHtml = todayReservations
           .map((r, index) => {
@@ -7633,6 +7670,14 @@ ${
           ${getDisplayStatus(r.status)}
         </span>
 
+        <span
+          class="tv-display-badge ${r.tvHidden ? "off" : "on"}"
+          onclick="event.stopPropagation(); toggleTVDisplay(${realIndex})"
+          title="${r.tvHidden ? "TV 화면 제외됨" : "TV 화면 노출됨"}"
+        >
+          TV
+        </span>
+
         <span style="font-size:16px; font-weight:700; color:#1f2d3d;">
           ${escapeHtml(r.time || "")}
         </span>
@@ -7731,6 +7776,14 @@ ${
             style="cursor:pointer; font-size:11px; padding:3px 7px;"
           >
             ${getDisplayStatus(r.status)}
+          </span>
+
+          <span
+            class="tv-display-badge ${r.tvHidden ? "off" : "on"}"
+            onclick="event.stopPropagation(); toggleTVDisplay(${realIndex})"
+            title="${r.tvHidden ? "TV 화면 제외됨" : "TV 화면 노출됨"}"
+          >
+            TV
           </span>
 
           <span class="reservation-time-text">
@@ -8592,6 +8645,7 @@ ${
           nameDisplayMode: editingReservation
             ? !!editingReservation.nameDisplayMode
             : false,
+          tvHidden: editingReservation ? !!editingReservation.tvHidden : false,
         };
 
         // 예약 중복 체크
@@ -8785,6 +8839,33 @@ ${
           if (checkboxEl) checkboxEl.checked = !checked;
 
           alert("예약자명 표시 변경 중 오류가 발생했습니다.");
+        }
+      }
+
+      async function toggleTVDisplay(index) {
+        if (!requireLogin()) return;
+
+        const r = reservations[index];
+        if (!r || !r.id) return;
+
+        const nextHidden = !Boolean(r.tvHidden);
+
+        try {
+          await setDoc(
+            doc(db, "reservations", r.id),
+            { tvHidden: nextHidden },
+            { merge: true },
+          );
+
+          reservations[index] = {
+            ...r,
+            tvHidden: nextHidden,
+          };
+
+          refreshCurrentScreen();
+        } catch (error) {
+          console.error("TV 노출 변경 오류:", error);
+          alert("TV 노출 변경 중 오류가 발생했습니다.");
         }
       }
 
@@ -9054,6 +9135,7 @@ ${
       window.toggleStatus = toggleStatus;
       window.toggleSettingStatus = toggleSettingStatus;
       window.toggleNameDisplayMode = toggleNameDisplayMode;
+      window.toggleTVDisplay = toggleTVDisplay;
       window.callReservationCustomer = callReservationCustomer;
       window.smsReservationCustomer = smsReservationCustomer;
       window.openSmsTemplatePopup = openSmsTemplatePopup;
