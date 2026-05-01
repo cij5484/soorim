@@ -4768,8 +4768,10 @@
         const isNaver = /\(네이버(?:-[^)]+)?\)|네이버/.test(block);
 
         const seat = extractSeat(block);
-        const room = extractRoom(block);
+        let room = extractRoom(block);
         const table = extractTable(block);
+
+        room = normalizeRoomForSave(seat, room, table);
         const phone = extractPhone(block);
         const phoneLine = extractPhoneLine(lines);
         const peopleInfo = extractPeople(block);
@@ -8028,6 +8030,33 @@ ${
         updateRoomTablePreview();
       }
 
+      function inferRoomFromTableNumbers(tableText) {
+        const rooms = new Set();
+
+        String(tableText || "")
+          .split(/[,\s]+/)
+          .map((v) => Number(String(v).trim()))
+          .filter(Boolean)
+          .forEach((num) => {
+            if (num >= 21 && num <= 24) rooms.add("1실");
+            if (num >= 31 && num <= 34) rooms.add("2실");
+            if (num >= 41 && num <= 44) rooms.add("3실");
+            if (num >= 51 && num <= 54) rooms.add("4실");
+            if (num >= 61 && num <= 64) rooms.add("5실");
+          });
+
+        return Array.from(rooms).join(", ");
+      }
+
+      function normalizeRoomForSave(seat, room, table) {
+        if (seat !== "룸") return "";
+
+        const cleanRoom = String(room || "").trim();
+        if (cleanRoom) return cleanRoom;
+
+        return inferRoomFromTableNumbers(table);
+      }
+
       function isSameRoom(r1, r2) {
         const rooms1 = (r1.room || "")
           .split(",")
@@ -8085,8 +8114,37 @@ ${
         const editingReservation = editingReservationId
           ? reservations.find((r) => r.id === editingReservationId)
           : null;
-        if (editingPreviewIndex !== null) {
-          const reservationData = {
+            if (editingPreviewIndex !== null) {
+            const previewSeat = document.getElementById("input-seat").value || "";
+
+            const selectedPreviewRooms = Array.from(
+              document.querySelectorAll("#room-checkboxes input.room-check:checked"),
+            ).map((cb) => cb.value);
+
+            const previewRoomFromChecks =
+              previewSeat === "룸"
+                ? selectedPreviewRooms.length === 5
+                  ? "전체"
+                  : selectedPreviewRooms.join(", ")
+                : "";
+
+            let previewTable = document.getElementById("input-table").value.trim();
+
+            const checkedPreviewTableValues = Array.from(
+              document.querySelectorAll(".table-check:checked"),
+            ).map((cb) => cb.value);
+
+            if (previewSeat === "룸" && checkedPreviewTableValues.length > 0) {
+              previewTable = checkedPreviewTableValues.join(", ");
+            }
+
+            const previewRoom = normalizeRoomForSave(
+              previewSeat,
+              previewRoomFromChecks,
+              previewTable,
+            );
+
+            const reservationData = {
             date: document.getElementById("input-date").value,
             time:
               document.getElementById("input-hour").value +
@@ -8102,10 +8160,11 @@ ${
             people:
               (Number(document.getElementById("input-adult").value) || 0) +
               (Number(document.getElementById("input-child").value) || 0),
-            table: document.getElementById("input-table").value.trim(),
-            menu: document.getElementById("input-menu").value.trim(),
-            memo: document.getElementById("input-memo").value.trim(),
-            seat: document.getElementById("input-seat").value || "", // 추가
+              table: previewTable,
+              room: previewRoom,
+              menu: document.getElementById("input-menu").value.trim(),
+              memo: document.getElementById("input-memo").value.trim(),
+              seat: previewSeat,
           };
 
           // ====== 문자 전송용 인원 텍스트 계산 ======
@@ -8166,7 +8225,7 @@ ${
           ),
         ).map((cb) => cb.value);
 
-        const room =
+        let room =
           seat === "룸"
             ? selectedRooms.length === 5
               ? "전체"
@@ -8181,6 +8240,8 @@ ${
         if (seat === "룸" && checkedTableValues.length > 0) {
           table = checkedTableValues.join(", ");
         }
+
+        room = normalizeRoomForSave(seat, room, table);
 
         const menu = document.getElementById("input-menu").value.trim(); // 메뉴 그대로
         const memo = document.getElementById("input-memo").value.trim();
