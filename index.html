@@ -2164,6 +2164,268 @@
         }
       }
 
+      /* ====== TV 취소 예약 알림 ====== */
+      .tv-cancel-layer {
+        position: absolute;
+        left: 16px;
+        bottom: 16px;
+        z-index: 30;
+
+        width: min(92%, 420px);
+        max-height: 42%;
+
+        padding: 10px 12px;
+        border: 2px solid #ef4444;
+        border-radius: 12px;
+
+        background: rgba(255, 255, 255, 0.94);
+        color: #111827;
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.22);
+
+        overflow-y: auto;
+      }
+
+      .tv-cancel-layer-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 8px;
+
+        margin-bottom: 7px;
+        padding-bottom: 6px;
+        border-bottom: 1px solid #fecaca;
+      }
+
+      .tv-cancel-layer-title {
+        font-size: 17px;
+        font-weight: 900;
+        color: #b91c1c;
+      }
+
+      .tv-cancel-clear-btn {
+        border: none;
+        border-radius: 999px;
+        background: #fee2e2;
+        color: #b91c1c;
+        padding: 5px 9px;
+        font-size: 12px;
+        font-weight: 900;
+        cursor: pointer;
+      }
+
+      .tv-cancel-clear-btn:hover {
+        background: #fecaca;
+      }
+
+      .tv-cancel-item {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) auto;
+        align-items: center;
+        gap: 8px;
+
+        padding: 6px 0;
+        border-bottom: 1px dashed #fecaca;
+
+        font-size: 13px;
+        line-height: 1.2;
+      }
+
+      .tv-cancel-item:last-child {
+        border-bottom: none;
+      }
+
+      .tv-cancel-one-line {
+        min-width: 0;
+
+        display: flex;
+        align-items: center;
+        gap: 7px;
+
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+
+      .tv-cancel-main {
+        flex: none;
+
+        font-weight: 900;
+        color: #111827;
+      }
+
+      .tv-cancel-sub {
+        min-width: 0;
+
+        color: #374151;
+        font-weight: 700;
+
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+
+      .tv-cancel-actions {
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        flex: none;
+      }
+
+      .tv-cancel-icon-btn {
+        width: 25px;
+        height: 25px;
+
+        border: none;
+        border-radius: 6px;
+
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+
+        font-size: 15px;
+        font-weight: 900;
+        line-height: 1;
+
+        cursor: pointer;
+      }
+
+      .tv-cancel-restore-btn {
+        background: #dcfce7;
+        color: #166534;
+        border: 1px solid #86efac;
+      }
+
+      .tv-cancel-restore-btn:hover {
+        background: #bbf7d0;
+      }
+
+      .tv-cancel-delete-btn {
+        background: #ef4444;
+        color: white;
+      }
+
+      .tv-cancel-delete-btn:hover {
+        background: #dc2626;
+      }
+
+      .tv-cancel-mobile-btn {
+        display: none;
+      }
+
+      .tv-cancel-modal-bg {
+        display: none;
+        position: fixed;
+        inset: 0;
+        z-index: 99998;
+
+        background: rgba(0, 0, 0, 0.35);
+        align-items: center;
+        justify-content: center;
+        padding: 16px;
+      }
+
+      .tv-cancel-modal-bg.show {
+        display: flex;
+      }
+
+      .tv-cancel-modal {
+        width: min(92vw, 420px);
+        max-height: 78vh;
+        overflow-y: auto;
+
+        background: white;
+        border: 3px solid #ef4444;
+        border-radius: 14px;
+        padding: 14px;
+
+        color: #111827;
+        box-shadow: 0 12px 40px rgba(0, 0, 0, 0.3);
+        font-family: "Malgun Gothic", "Apple SD Gothic Neo", sans-serif;
+      }
+
+      .tv-cancel-modal-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 8px;
+
+        margin-bottom: 10px;
+        padding-bottom: 8px;
+        border-bottom: 1px solid #fecaca;
+      }
+
+      .tv-cancel-modal-title {
+        font-size: 20px;
+        font-weight: 900;
+        color: #b91c1c;
+      }
+
+      .tv-cancel-modal-close {
+        width: 34px;
+        height: 34px;
+        border: none;
+        border-radius: 8px;
+        background: #e5e7eb;
+        color: #111;
+        font-size: 24px;
+        cursor: pointer;
+      }
+
+      .tv-cancel-modal-actions {
+        display: flex;
+        justify-content: flex-end;
+        margin-top: 12px;
+      }
+
+      @media (max-width: 768px) {
+        body.tv-mode-body .tv-cancel-mobile-btn {
+          position: absolute;
+          right: 4px;
+          top: 50%;
+          transform: translateY(-50%);
+
+          display: inline-flex !important;
+          align-items: center;
+          justify-content: center;
+
+          height: 26px;
+          padding: 0 8px;
+          border: 1px solid #ef4444;
+          border-radius: 999px;
+
+          background: #fee2e2;
+          color: #b91c1c;
+
+          font-size: 12px;
+          font-weight: 900;
+          line-height: 1;
+          cursor: pointer;
+        }
+
+        body.tv-mode-body .tv-title-text {
+          max-width: calc(100vw - 104px);
+        }
+
+        body.tv-mode-body .tv-cancel-item {
+          font-size: 13px;
+        }
+
+        body.tv-mode-body .tv-cancel-one-line {
+          gap: 5px;
+        }
+
+        body.tv-mode-body .tv-cancel-icon-btn {
+          width: 28px;
+          height: 28px;
+          font-size: 16px;
+        }
+
+        body.tv-mode-body .tv-cancel-clear-btn {
+          height: 32px;
+          padding: 0 12px;
+          font-size: 13px;
+        }
+      }
+
       .tv-table .time-col {
         width: var(--tv-col-time, 13%);
       }
@@ -7844,8 +8106,9 @@ ${String(r.memo || "").trim() ? `<span style="margin-left:6px; background:#fff3c
 
       function updateTVReservationNotices(previousReservations, nextReservations) {
         cleanupExpiredTVReservationNotices();
+        cleanupExpiredTVCanceledReservations();
 
-        // 앱 첫 로딩 때 기존 예약들을 전부 신규로 표시하지 않기 위한 기준선
+        // 앱 첫 로딩 때 기존 예약들을 전부 신규/취소로 표시하지 않기 위한 기준선
         if (!tvReservationNoticeBaselineReady) {
           tvReservationNoticeBaselineReady = true;
           scheduleTVReservationNoticeCleanup();
@@ -7853,18 +8116,23 @@ ${String(r.memo || "").trim() ? `<span style="margin-left:6px; background:#fff3c
         }
 
         const previousMap = new Map();
+        const nextMap = new Map();
 
         previousReservations.forEach((r) => {
-          previousMap.set(getTVNoticeReservationKey(r), getTVNoticeSnapshot(r));
+          previousMap.set(getTVNoticeReservationKey(r), r);
+        });
+
+        nextReservations.forEach((r) => {
+          nextMap.set(getTVNoticeReservationKey(r), r);
         });
 
         nextReservations.forEach((r) => {
           const key = getTVNoticeReservationKey(r);
-          const previousSnapshot = previousMap.get(key);
+          const previousReservation = previousMap.get(key);
           const nextSnapshot = getTVNoticeSnapshot(r);
 
           // 새 예약
-          if (!previousSnapshot) {
+          if (!previousReservation) {
             setTVReservationNotice(key, {
               type: "new",
               fields: [],
@@ -7873,6 +8141,7 @@ ${String(r.memo || "").trim() ? `<span style="margin-left:6px; background:#fff3c
           }
 
           // 기존 예약 변경
+          const previousSnapshot = getTVNoticeSnapshot(previousReservation);
           const changedFields = getTVChangedFields(previousSnapshot, nextSnapshot);
 
           if (changedFields.length) {
@@ -7880,6 +8149,15 @@ ${String(r.memo || "").trim() ? `<span style="margin-left:6px; background:#fff3c
               type: "updated",
               fields: changedFields,
             });
+          }
+        });
+
+        // 삭제된 예약 감지
+        previousReservations.forEach((r) => {
+          const key = getTVNoticeReservationKey(r);
+
+          if (!nextMap.has(key)) {
+            addTVCanceledReservation(r);
           }
         });
       }
@@ -7915,6 +8193,334 @@ ${String(r.memo || "").trim() ? `<span style="margin-left:6px; background:#fff3c
           </span>
         `;
       }
+
+      const TV_CANCELED_RESERVATIONS_STORAGE_KEY =
+        "soorim-tv-canceled-reservations-v1";
+
+      let tvCanceledReservationMap = loadTVCanceledReservationsFromStorage();
+
+      function loadTVCanceledReservationsFromStorage() {
+        try {
+          const raw = localStorage.getItem(TV_CANCELED_RESERVATIONS_STORAGE_KEY);
+          if (!raw) return {};
+
+          const parsed = JSON.parse(raw);
+          return parsed && typeof parsed === "object" ? parsed : {};
+        } catch (error) {
+          console.warn("취소 예약 알림 불러오기 실패:", error);
+          return {};
+        }
+      }
+
+      function saveTVCanceledReservationsToStorage() {
+        try {
+          localStorage.setItem(
+            TV_CANCELED_RESERVATIONS_STORAGE_KEY,
+            JSON.stringify(tvCanceledReservationMap),
+          );
+        } catch (error) {
+          console.warn("취소 예약 알림 저장 실패:", error);
+        }
+      }
+
+      function cleanupExpiredTVCanceledReservations() {
+        const todayString = getTodayString();
+        let changed = false;
+
+        Object.keys(tvCanceledReservationMap).forEach((key) => {
+          const item = tvCanceledReservationMap[key];
+
+          // 예약 날짜가 오늘보다 이전이면 자동 삭제
+          if (!item?.date || String(item.date) < todayString) {
+            delete tvCanceledReservationMap[key];
+            changed = true;
+          }
+        });
+
+        if (changed) {
+          saveTVCanceledReservationsToStorage();
+        }
+      }
+
+      function getTVCanceledReservationSnapshot(r) {
+        const snapshot = getTVNoticeSnapshot(r);
+
+        const reservationData = {
+          ...r,
+        };
+
+        const originalId = reservationData.id || "";
+        delete reservationData.id;
+
+        return {
+          key: getTVNoticeReservationKey(r),
+          originalId,
+          date: snapshot.date,
+          time: snapshot.time,
+          name: snapshot.name,
+          people: snapshot.people,
+          seat: snapshot.seat,
+          menu: snapshot.menu,
+          deletedAt: Date.now(),
+
+          // 되돌리기용 원본 예약 데이터
+          reservationData,
+        };
+      }
+
+      function addTVCanceledReservation(r) {
+        if (!r) return;
+
+        const item = getTVCanceledReservationSnapshot(r);
+
+        if (!item.key || !item.date) return;
+
+        // 이미 같은 취소 알림이 있으면 중복 추가하지 않음
+        tvCanceledReservationMap[item.key] = item;
+
+        cleanupExpiredTVCanceledReservations();
+        saveTVCanceledReservationsToStorage();
+      }
+
+      function getTVCanceledReservationsForDate(dateString) {
+        cleanupExpiredTVCanceledReservations();
+
+        return Object.values(tvCanceledReservationMap)
+          .filter((item) => String(item.date || "") === String(dateString || ""))
+          .sort((a, b) => {
+            const timeCompare = String(a.time || "").localeCompare(
+              String(b.time || ""),
+            );
+
+            if (timeCompare !== 0) return timeCompare;
+
+            return String(a.name || "").localeCompare(String(b.name || ""));
+          });
+      }
+
+      function clearTVCanceledReservationsForDate(dateString) {
+        Object.keys(tvCanceledReservationMap).forEach((key) => {
+          const item = tvCanceledReservationMap[key];
+
+          if (String(item?.date || "") === String(dateString || "")) {
+            delete tvCanceledReservationMap[key];
+          }
+        });
+
+        saveTVCanceledReservationsToStorage();
+
+        if (document.body.classList.contains("tv-mode-body")) {
+          renderTVView();
+        }
+      }
+
+      function deleteTVCanceledReservation(encodedKey) {
+        const key = decodeURIComponent(encodedKey || "");
+
+        if (!key || !tvCanceledReservationMap[key]) return;
+
+        delete tvCanceledReservationMap[key];
+        saveTVCanceledReservationsToStorage();
+
+        if (document.body.classList.contains("tv-mode-body")) {
+          renderTVView();
+        }
+      }
+
+      async function restoreTVCanceledReservation(encodedKey) {
+        const key = decodeURIComponent(encodedKey || "");
+        const item = tvCanceledReservationMap[key];
+
+        if (!item) {
+          alert("되돌릴 취소 예약을 찾을 수 없습니다.");
+          return;
+        }
+
+        if (!item.reservationData) {
+          alert("이 취소 알림은 이전 형식이라 되돌리기를 할 수 없습니다.");
+          return;
+        }
+
+        if (!requireLogin()) return;
+
+        const ok = confirm(
+          `아래 취소 예약을 다시 예약 현황으로 되돌릴까요?\n\n` +
+            `${item.time || "-"} ${item.name || "이름없음"}\n` +
+            `${item.people || "-"} / ${item.seat || "-"}${item.menu ? " / " + item.menu : ""}`,
+        );
+
+        if (!ok) return;
+
+        try {
+          const restoreData = {
+            ...item.reservationData,
+          };
+
+          delete restoreData.id;
+
+          if (item.originalId) {
+            await setDoc(doc(db, "reservations", item.originalId), restoreData);
+          } else {
+            await addDoc(reservationsCollection, restoreData);
+          }
+
+          delete tvCanceledReservationMap[key];
+          saveTVCanceledReservationsToStorage();
+
+          if (document.body.classList.contains("tv-mode-body")) {
+            renderTVView();
+          }
+        } catch (error) {
+          console.error("취소 예약 되돌리기 오류:", error);
+          alert("예약 되돌리기 중 오류가 발생했습니다.");
+        }
+      }
+
+      function renderTVCanceledReservationItem(item) {
+        const encodedKey = encodeURIComponent(item.key || "");
+        const menuText = item.menu ? ` / ${item.menu}` : "";
+
+        return `
+          <div class="tv-cancel-item">
+            <div class="tv-cancel-one-line">
+              <span class="tv-cancel-main">
+                ${escapeHtml(item.time || "")}
+                ${escapeHtml(item.name || "")}
+              </span>
+
+              <span class="tv-cancel-sub">
+                ${escapeHtml(item.people || "")}
+                /
+                ${escapeHtml(item.seat || "")}
+                ${escapeHtml(menuText)}
+              </span>
+            </div>
+
+            <div class="tv-cancel-actions">
+              <button
+                class="tv-cancel-icon-btn tv-cancel-restore-btn"
+                onclick="window.restoreTVCanceledReservation('${encodedKey}')"
+                title="예약 되돌리기"
+                type="button"
+              >
+                ↻
+              </button>
+
+              <button
+                class="tv-cancel-icon-btn tv-cancel-delete-btn"
+                onclick="window.deleteTVCanceledReservation('${encodedKey}')"
+                title="취소 알림 삭제"
+                type="button"
+              >
+                ×
+              </button>
+            </div>
+          </div>
+        `;
+      }
+
+      function renderTVCanceledLayer(canceledReservations, dateString) {
+        if (!canceledReservations.length) return "";
+
+        return `
+          <div class="tv-cancel-layer">
+            <div class="tv-cancel-layer-header">
+              <div class="tv-cancel-layer-title">
+                취소된 예약 ${canceledReservations.length}건
+              </div>
+
+              <button
+                class="tv-cancel-clear-btn"
+                onclick="window.clearTVCanceledReservationsForDate('${dateString}')"
+                type="button"
+              >
+                비우기
+              </button>
+            </div>
+
+            ${canceledReservations.map(renderTVCanceledReservationItem).join("")}
+          </div>
+        `;
+      }
+
+      function renderTVCancelMobileButton(canceledReservations) {
+        if (!canceledReservations.length) return "";
+
+        return `
+          <button
+            class="tv-cancel-mobile-btn"
+            onclick="window.openTVCanceledModal()"
+            type="button"
+          >
+            취소 ${canceledReservations.length}
+          </button>
+        `;
+      }
+
+      function renderTVCanceledModal(canceledReservations, dateString) {
+        return `
+          <div
+            class="tv-cancel-modal-bg"
+            id="tv-cancel-modal"
+            onclick="if (event.target === this) window.closeTVCanceledModal()"
+          >
+            <div class="tv-cancel-modal">
+              <div class="tv-cancel-modal-header">
+                <div class="tv-cancel-modal-title">
+                  취소된 예약 ${canceledReservations.length}건
+                </div>
+
+                <button
+                  class="tv-cancel-modal-close"
+                  onclick="window.closeTVCanceledModal()"
+                  type="button"
+                >
+                  ×
+                </button>
+              </div>
+
+              ${
+                canceledReservations.length
+                  ? canceledReservations.map(renderTVCanceledReservationItem).join("")
+                  : `<div class="tv-cancel-item">취소된 예약이 없습니다.</div>`
+              }
+
+              ${
+                canceledReservations.length
+                  ? `
+                    <div class="tv-cancel-modal-actions">
+                      <button
+                        class="tv-cancel-clear-btn"
+                        onclick="window.clearTVCanceledReservationsForDate('${dateString}')"
+                        type="button"
+                      >
+                        취소 목록 비우기
+                      </button>
+                    </div>
+                  `
+                  : ""
+              }
+            </div>
+          </div>
+        `;
+      }
+
+      function openTVCanceledModal() {
+        const modal = document.getElementById("tv-cancel-modal");
+        if (modal) modal.classList.add("show");
+      }
+
+      function closeTVCanceledModal() {
+        const modal = document.getElementById("tv-cancel-modal");
+        if (modal) modal.classList.remove("show");
+      }
+
+      window.openTVCanceledModal = openTVCanceledModal;
+      window.closeTVCanceledModal = closeTVCanceledModal;
+      window.clearTVCanceledReservationsForDate =
+        clearTVCanceledReservationsForDate;
+      window.deleteTVCanceledReservation = deleteTVCanceledReservation;
+      window.restoreTVCanceledReservation = restoreTVCanceledReservation;
 
       function renderTVView() {
         loadTVSettingsForCurrentScreen();
@@ -7956,6 +8562,8 @@ ${String(r.memo || "").trim() ? `<span style="margin-left:6px; background:#fff3c
           String(a.time || "").localeCompare(String(b.time || "")),
         );
 
+        const canceledReservations = getTVCanceledReservationsForDate(tvTargetDate);
+        
         const rowsHtml = todayReservations
           .map((r, index) => {
             const menu = getMenuDisplayText(r.menu);
@@ -8033,6 +8641,8 @@ ${String(r.memo || "").trim() ? `<span style="margin-left:6px; background:#fff3c
   </div>
 </div>
 
+${renderTVCanceledLayer(canceledReservations, tvTargetDate)}
+
   <img class="tv-main-photo" src="tv-main.jpg" alt="수림횟집 음식 사진">
             <div class="tv-sub-photos">
               <img src="tv-sub1.jpg" alt="수림횟집 음식 사진">
@@ -8061,6 +8671,8 @@ ${String(r.memo || "").trim() ? `<span style="margin-left:6px; background:#fff3c
 <span class="tv-title-text">
   ${tvTitleText}(${formatTVDate(tvTargetDate)})
 </span>
+
+${renderTVCancelMobileButton(canceledReservations)}
 
 <button
   class="tv-date-nav-btn"
@@ -8276,6 +8888,8 @@ ${String(r.memo || "").trim() ? `<span style="margin-left:6px; background:#fff3c
     
   </div>
 </div>
+
+${renderTVCanceledModal(canceledReservations, tvTargetDate)}
 
             ${
               todayReservations.length
