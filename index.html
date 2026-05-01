@@ -652,6 +652,7 @@
       }
 
       .calendar-cell {
+        position: relative;
         background: white;
         border-radius: 12px;
         min-height: 120px;
@@ -659,6 +660,30 @@
         box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
         cursor: pointer;
         border: 2px solid transparent;
+      }
+
+      .calendar-today-badge {
+        position: absolute;
+        top: 7px;
+        right: 7px;
+
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+
+        height: 22px;
+        padding: 0 8px;
+        border-radius: 999px;
+
+        background: #dcfce7;
+        border: 1px solid #86efac;
+        color: #166534;
+
+        font-size: 11px;
+        font-weight: 900;
+        line-height: 1;
+
+        pointer-events: none;
       }
 
       .calendar-cell:hover {
@@ -943,12 +968,41 @@
       }
 
       .week-card {
+        position: relative;
         background: white;
         border-radius: 14px;
         padding: 16px;
         box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
         border: 2px solid transparent;
         cursor: pointer;
+      }
+
+      .week-today-badge {
+        position: absolute;
+        top: 10px;
+        right: 12px;
+
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+
+        height: 22px;
+        padding: 0 8px;
+        border-radius: 999px;
+
+        background: #dcfce7;
+        border: 1px solid #86efac;
+        color: #166534;
+
+        font-size: 11px;
+        font-weight: 900;
+        line-height: 1;
+
+        pointer-events: none;
+      }
+
+      .week-card.today-week-card .week-card-header {
+        padding-right: 52px;
       }
 
       .week-card:hover {
@@ -1227,7 +1281,7 @@
       .hall-map {
         display: grid;
         grid-template-columns: repeat(26, 1fr);
-        grid-template-rows: repeat(16, 34px);
+        grid-template-rows: repeat(16, 40px);
         gap: 8px;
         width: 100%;
         overflow-x: auto;
@@ -1335,10 +1389,33 @@
       .room-inner-map {
         width: 100%;
         height: 100%;
-        padding: 34px 14px 12px;
+        padding: 12px 14px 12px;
         display: grid;
-        grid-template-columns: 1fr 1fr 60px 1fr 1fr;
-        gap: 10px;
+        grid-template-columns: 34px 1fr 1fr 18px 1fr 1fr;
+        gap: 8px;
+        align-items: start;
+      }
+
+      .room-side-label {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+
+        width: 30px;
+        height: 20px;
+        margin-top: 2px;
+
+        font-size: 11px;
+        font-weight: 900;
+        color: #374151;
+        line-height: 1;
+
+        background: #e5e7eb;
+        border: 1px solid #cbd5e1;
+        border-radius: 999px;
+
+        justify-self: start;
+        align-self: start;
       }
 
       .room-table-box {
@@ -1384,12 +1461,14 @@
       }
 
       .room-table-box.has-reservation {
-        background: #fee2e2;
-        border-color: #ef4444;
+        background: #f3f4f6;
+        border-color: #9ca3af;
+        overflow: hidden;
       }
 
-      .room-table-box.has-reservation .room-table-slot {
-        color: #991b1b;
+      .room-table-slot.slot-filled {
+        background: var(--seat-slot-bg, #fee2e2);
+        color: #111827;
       }
 
       .table-select-popup {
@@ -1478,12 +1557,14 @@
       }
 
       .table-box.has-reservation {
-        background: #fee2e2;
-        border-color: #ef4444;
+        background: #f3f4f6;
+        border-color: #9ca3af;
+        overflow: hidden;
       }
 
-      .table-box.has-reservation .table-slot {
-        color: #991b1b;
+      .table-slot.slot-filled {
+        background: var(--seat-slot-bg, #fee2e2);
+        color: #111827;
       }
 
       /* 상단 */
@@ -2211,6 +2292,14 @@
           border-radius: 9px;
         }
 
+        .calendar-today-badge {
+          top: 4px !important;
+          right: 4px !important;
+          height: 17px !important;
+          padding: 0 5px !important;
+          font-size: 9px !important;
+        }
+
         .calendar-date {
           font-size: 13px;
           margin-bottom: 6px;
@@ -2263,6 +2352,18 @@
         .week-card {
           padding: 12px;
           border-radius: 12px;
+        }
+
+        .week-today-badge {
+          top: 8px !important;
+          right: 8px !important;
+          height: 18px !important;
+          padding: 0 6px !important;
+          font-size: 9px !important;
+        }
+
+        .week-card.today-week-card .week-card-header {
+          padding-right: 42px !important;
         }
 
         .week-card-header {
@@ -3244,10 +3345,28 @@
 
         /* 룸 내부 테이블 폭 조정 */
         .room-inner-map {
-          grid-template-columns: 1fr 1fr 42px 1fr 1fr !important;
-          gap: 6px !important;
-          padding-left: 8px !important;
-          padding-right: 8px !important;
+          grid-template-columns: 24px 1fr 1fr 14px 1fr 1fr !important;
+          gap: 5px !important;
+          padding: 8px 6px !important;
+          align-items: start !important;
+        }
+
+        .room-side-label {
+          display: inline-flex !important;
+          align-items: center !important;
+          justify-content: center !important;
+
+          width: 22px !important;
+          height: 16px !important;
+          margin-top: 1px !important;
+
+          font-size: 9px !important;
+          font-weight: 900 !important;
+          line-height: 1 !important;
+
+          border-radius: 999px !important;
+          justify-self: start !important;
+          align-self: start !important;
         }
 
         .table-box,
@@ -4638,8 +4757,8 @@
         render();
 
         // 주간보기에서 선택 날짜로 자동 스크롤된 뒤
-        // 다시 일간 탭을 누르면 화면 맨 위부터 보이게 한다.
-        if (view === "day") {
+        // 월간/일간 탭으로 이동하면 화면 맨 위부터 보이게 한다.
+        if (view === "month" || view === "day") {
           setTimeout(() => {
             window.scrollTo({
               top: 0,
@@ -6357,6 +6476,7 @@ ${String(r.memo || "").trim() ? `<span style="margin-left:6px; background:#fff3c
 
         const startDay = monthStart.getDay(); // 0=일
         const daysInMonth = monthEnd.getDate();
+        const todayString = formatDateString(new Date());
 
         const weekdayNames = ["일", "월", "화", "수", "목", "금", "토"];
 
@@ -6440,6 +6560,7 @@ ${String(r.memo || "").trim() ? `<span style="margin-left:6px; background:#fff3c
             onclick="openDayView('${dateString}')"
           >
             <div class="calendar-date">${day}</div>
+            ${dateString === todayString ? `<span class="calendar-today-badge">오늘</span>` : ""}
 
             <div class="calendar-summary">
   ${roomFullHtml}
@@ -6476,6 +6597,7 @@ ${String(r.memo || "").trim() ? `<span style="margin-left:6px; background:#fff3c
 
         const weekDates = getWeekDates(selectedDate);
         const weekNames = ["월", "화", "수", "목", "금", "토", "일"];
+        const todayString = getTodayString();
 
         let html = `
           <div class="week-nav-header">
@@ -6559,7 +6681,8 @@ ${String(r.memo || "").trim() ? `<span style="margin-left:6px; background:#fff3c
             .join("");
 
           html += `
-          <div class="week-card ${dateString === selectedDate ? "selected-date" : ""}" onclick="openDayView('${dateString}')">
+          <div class="week-card ${dateString === selectedDate ? "selected-date" : ""} ${dateString === todayString ? "today-week-card" : ""}" onclick="openDayView('${dateString}')">
+            ${dateString === todayString ? `<span class="week-today-badge">오늘</span>` : ""}
             <div class="week-card-header">
               <div class="week-card-date">${dateString} (${weekNames[index]})</div>
               <div class="week-card-summary">
@@ -6590,6 +6713,9 @@ ${String(r.memo || "").trim() ? `<span style="margin-left:6px; background:#fff3c
 
         // 주간보기로 들어왔을 때 선택된 날짜 카드가 바로 보이도록 자동 스크롤
         setTimeout(() => {
+          // 이미 월간/일간으로 이동했다면 주간 자동 스크롤을 실행하지 않는다.
+          if (currentView !== "week") return;
+
           const selectedWeekCard = weekView.querySelector(".week-card.selected-date");
 
           if (!selectedWeekCard) return;
@@ -7419,6 +7545,89 @@ ${getModalSeatPickGuideHtml()}
           .slice(0, 2);
       }
 
+      function getReservationColorKey(r) {
+        return String(
+          r?.id ||
+            `${r?.date || ""}-${r?.time || ""}-${r?.name || ""}-${r?.phone || ""}-${r?.table || ""}-${r?.room || ""}`,
+        );
+      }
+
+      function getSeatMapReservationColors() {
+        return [
+          { bg: "#dbeafe" }, // 파랑
+          { bg: "#dcfce7" }, // 초록
+          { bg: "#fef3c7" }, // 노랑
+          { bg: "#fce7f3" }, // 분홍
+          { bg: "#ede9fe" }, // 보라
+          { bg: "#cffafe" }, // 청록
+          { bg: "#ffedd5" }, // 주황
+          { bg: "#e0f2fe" }, // 하늘
+          { bg: "#ecfccb" }, // 연두
+          { bg: "#fee2e2" }, // 빨강
+
+          { bg: "#f3e8ff" }, // 연보라
+          { bg: "#ccfbf1" }, // 민트
+          { bg: "#fef9c3" }, // 연노랑
+          { bg: "#fae8ff" }, // 자주
+          { bg: "#e0e7ff" }, // 남보라
+          { bg: "#d1fae5" }, // 진연두
+          { bg: "#fffbeb" }, // 아이보리
+          { bg: "#f1f5f9" }, // 회청
+          { bg: "#ffe4e6" }, // 장미
+          { bg: "#e7e5e4" }, // 베이지
+
+          { bg: "#bfdbfe" }, // 진연파랑
+          { bg: "#bbf7d0" }, // 진연초록
+          { bg: "#fde68a" }, // 진연노랑
+          { bg: "#fecdd3" }, // 진연분홍
+        ];
+      }
+
+      function getReservationColorIndex(r) {
+        const colors = getSeatMapReservationColors();
+        const targetKey = getReservationColorKey(r);
+
+        const dayReservations = reservations
+          .filter((item) => String(item.date || "") === String(r?.date || selectedDate || ""))
+          .slice()
+          .sort((a, b) => {
+            const timeCompare = String(a.time || "").localeCompare(String(b.time || ""));
+            if (timeCompare !== 0) return timeCompare;
+
+            const nameCompare = String(a.name || "").localeCompare(String(b.name || ""));
+            if (nameCompare !== 0) return nameCompare;
+
+            return getReservationColorKey(a).localeCompare(getReservationColorKey(b));
+          });
+
+        const uniqueKeys = [];
+
+        dayReservations.forEach((item) => {
+          const key = getReservationColorKey(item);
+
+          if (!uniqueKeys.includes(key)) {
+            uniqueKeys.push(key);
+          }
+        });
+
+        const index = uniqueKeys.indexOf(targetKey);
+
+        if (index >= 0) {
+          return index % colors.length;
+        }
+
+        return 0;
+      }
+
+      function getReservationSlotColorStyle(r) {
+        if (!r) return "";
+
+        const colors = getSeatMapReservationColors();
+        const color = colors[getReservationColorIndex(r)];
+
+        return `style="--seat-slot-bg:${color.bg};"`;
+      }
+
       function getTableSlotText(r) {
         if (!r) return "";
 
@@ -7444,27 +7653,49 @@ ${getModalSeatPickGuideHtml()}
         return `
         <div class="table-box ${hasReservation ? "has-reservation" : ""} ${movingFromTable === tableNumber ? "move-selected" : ""} ${modalSeatPickSelectedTables.includes(String(tableNumber)) ? "modal-seat-selected" : ""} t${tableNumber}" onclick="openTableReservation(${tableNumber})" style="cursor:pointer;">
           <div class="table-reservation-slots">
-            <div class="table-slot">${getTableSlotText(tableReservations[0])}</div>
-<div class="table-slot">${getTableSlotText(tableReservations[1])}</div>
+            <div
+              class="table-slot ${tableReservations[0] ? "slot-filled" : ""}"
+              ${getReservationSlotColorStyle(tableReservations[0])}
+            >
+              ${getTableSlotText(tableReservations[0])}
+            </div>
+
+            <div
+              class="table-slot ${tableReservations[1] ? "slot-filled" : ""}"
+              ${getReservationSlotColorStyle(tableReservations[1])}
+            >
+              ${getTableSlotText(tableReservations[1])}
+            </div>
           </div>
           <div class="table-mini-number">${tableNumber}</div>
         </div>
       `;
       }
 
-      function renderRoomTableBox(tableNumber) {
+        function renderRoomTableBox(tableNumber) {
         const tableReservations = getReservationsByTable(tableNumber);
         const hasReservation = tableReservations.length > 0;
 
         return `
-        <div class="room-table-box ${hasReservation ? "has-reservation" : ""} ${movingFromTable === tableNumber ? "move-selected" : ""} ${modalSeatPickSelectedTables.includes(String(tableNumber)) ? "modal-seat-selected" : ""}" onclick="openTableReservation(${tableNumber})" style="cursor:pointer;">
-          <div class="room-table-slots">
-           <div class="room-table-slot">${getTableSlotText(tableReservations[0])}</div>
-<div class="room-table-slot">${getTableSlotText(tableReservations[1])}</div>
+          <div class="room-table-box ${hasReservation ? "has-reservation" : ""} ${movingFromTable === tableNumber ? "move-selected" : ""} ${modalSeatPickSelectedTables.includes(String(tableNumber)) ? "modal-seat-selected" : ""}" onclick="openTableReservation(${tableNumber})" style="cursor:pointer;">
+            <div class="room-table-slots">
+              <div
+                class="room-table-slot ${tableReservations[0] ? "slot-filled" : ""}"
+                ${getReservationSlotColorStyle(tableReservations[0])}
+              >
+                ${getTableSlotText(tableReservations[0])}
+              </div>
+
+              <div
+                class="room-table-slot ${tableReservations[1] ? "slot-filled" : ""}"
+                ${getReservationSlotColorStyle(tableReservations[1])}
+              >
+                ${getTableSlotText(tableReservations[1])}
+              </div>
+            </div>
+            <div class="room-table-mini-number">${tableNumber}</div>
           </div>
-          <div class="room-table-mini-number">${tableNumber}</div>
-        </div>
-      `;
+        `;
       }
 
       function startModalSeatPick() {
@@ -8090,8 +8321,8 @@ ${
             <div class="room-map">
 
   <div class="room-box">
-    <div class="room-mini-number">1실</div>
     <div class="room-inner-map">
+      <div class="room-side-label">1실</div>
       ${renderRoomTableBox(21)}
       ${renderRoomTableBox(22)}
       <div class="room-gap"></div>
@@ -8101,8 +8332,8 @@ ${
   </div>
 
   <div class="room-box">
-    <div class="room-mini-number">2실</div>
     <div class="room-inner-map">
+      <div class="room-side-label">2실</div>
       ${renderRoomTableBox(31)}
       ${renderRoomTableBox(32)}
       <div class="room-gap"></div>
@@ -8112,8 +8343,8 @@ ${
   </div>
 
   <div class="room-box">
-    <div class="room-mini-number">3실</div>
     <div class="room-inner-map">
+      <div class="room-side-label">3실</div>
       ${renderRoomTableBox(41)}
       ${renderRoomTableBox(42)}
       <div class="room-gap"></div>
@@ -8123,8 +8354,8 @@ ${
   </div>
 
   <div class="room-box">
-    <div class="room-mini-number">4실</div>
     <div class="room-inner-map">
+      <div class="room-side-label">4실</div>
       ${renderRoomTableBox(51)}
       ${renderRoomTableBox(52)}
       <div class="room-gap"></div>
@@ -8134,8 +8365,8 @@ ${
   </div>
 
   <div class="room-box">
-    <div class="room-mini-number">5실</div>
     <div class="room-inner-map">
+      <div class="room-side-label">5실</div>
       ${renderRoomTableBox(61)}
       ${renderRoomTableBox(62)}
       <div class="room-gap"></div>
@@ -8616,6 +8847,7 @@ ${
 
         const date = parseLocalDate(dateString);
         const weekNames = ["일", "월", "화", "수", "목", "금", "토"];
+        const todayString = getTodayString();
 
         const y = date.getFullYear();
         const m = date.getMonth() + 1;
