@@ -1,7 +1,8 @@
-{
-  "name": "수림TV",
-  "short_name": "수림TV",
-  "start_url": "/soorim/?tv=1",
+  {
+    "id": "/soorim/tv-app",
+    "name": "수림TV",
+    "short_name": "수림TV",
+    "start_url": "/soorim/?tv=1",
   "scope": "/soorim/",
   "display": "standalone",
   "background_color": "#f3f3f3",
