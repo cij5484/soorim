@@ -5,7 +5,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>횟집 예약관리</title>
 
-    <link rel="manifest" href="manifest.json" />
+    <link id="app-manifest" rel="manifest" href="manifest.json" />
+
+    <script>
+      if (new URLSearchParams(window.location.search).get("tv") === "1") {
+        document
+          .getElementById("app-manifest")
+          .setAttribute("href", "manifest-tv.json");
+      }
+    </script>
 
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="default" />
@@ -1572,6 +1580,103 @@
         text-align: right;
       }
 
+      /* ====== TV모드 모바일: 예약표만 표시 ====== */
+      @media (max-width: 768px) {
+        body.tv-mode-body {
+          background: #f3f3f3 !important;
+          overflow: hidden !important;
+        }
+
+        body.tv-mode-body main {
+          width: 100% !important;
+          max-width: none !important;
+          margin: 0 !important;
+          padding: 0 !important;
+        }
+
+        body.tv-mode-body #reservation-list {
+          width: 100vw !important;
+          height: 100dvh !important;
+        }
+
+        body.tv-mode-body .tv-wrap {
+          width: 100vw !important;
+          height: 100dvh !important;
+          padding: 6px !important;
+          display: block !important;
+          background: #f3f3f3 !important;
+        }
+
+        body.tv-mode-body .tv-photo-panel {
+          display: none !important;
+        }
+
+        body.tv-mode-body .tv-reservation-panel {
+          width: 100% !important;
+          height: calc(100dvh - 12px) !important;
+          border: 3px solid #111 !important;
+          padding: 0 5px 6px !important;
+          background: white !important;
+        }
+
+        body.tv-mode-body .tv-title {
+          font-size: 26px !important;
+          margin: 6px 0 8px !important;
+          line-height: 1.1 !important;
+        }
+
+        body.tv-mode-body .tv-settings-btn {
+          left: 4px !important;
+          width: 30px !important;
+          height: 26px !important;
+          font-size: 15px !important;
+        }
+
+        body.tv-mode-body .tv-table th {
+          font-size: 15px !important;
+          padding: 6px 3px !important;
+        }
+
+        body.tv-mode-body .tv-table td {
+          font-size: var(--tv-reservation-font-size, 18px);
+          padding: var(--tv-row-padding-y, 6px) 3px !important;
+          line-height: 1.2 !important;
+        }
+
+        body.tv-mode-body .tv-seat {
+          padding-left: 4px !important;
+        }
+
+        body.tv-mode-body .tv-footer {
+          font-size: 14px !important;
+          padding: 6px 4px 0 !important;
+        }
+
+        body.tv-mode-body .tv-empty {
+          font-size: 24px !important;
+        }
+
+        body.tv-mode-body .tv-settings-modal {
+          width: 92vw !important;
+          max-width: 360px !important;
+        }
+
+        body.tv-mode-body .tv-setting-label {
+          font-size: 17px !important;
+        }
+
+        body.tv-mode-body .tv-setting-btn {
+          width: 48px !important;
+          height: 34px !important;
+          font-size: 15px !important;
+        }
+
+        body.tv-mode-body .tv-preset-btn {
+          width: 62px !important;
+          font-size: 13px !important;
+        }
+      }
+
       @media (max-width: 768px) {
         body {
           font-size: 14px;
@@ -2405,6 +2510,11 @@
         }
       }
 
+      /* TV모드에서는 예약관리 헤더 숨김 */
+      body.tv-mode-body header {
+        display: none !important;
+      }
+
       #import-preview-modal {
         z-index: 2000 !important;
       }
@@ -3202,10 +3312,119 @@
 
       // ====== 데이터 (브라우저에 저장) ======
       let reservations = [];
-      let tvReservationFontSize =
-        Number(localStorage.getItem("tvReservationFontSize")) || 24;
-      let tvReservationRowPadding =
-        Number(localStorage.getItem("tvReservationRowPadding")) || 8;
+
+      const TV_DESKTOP_DEFAULT_SETTINGS = {
+        fontSize: 24,
+        rowPadding: 8,
+        columnWidths: {
+          time: 13,
+          name: 30,
+          people: 18,
+          seat: 21,
+          menu: 20,
+        },
+      };
+
+      const TV_MOBILE_DEFAULT_SETTINGS = {
+        fontSize: 18,
+        rowPadding: 6,
+        columnWidths: {
+          time: 13,
+          name: 30,
+          people: 18,
+          seat: 21,
+          menu: 20,
+        },
+      };
+
+      function isTVMobileScreen() {
+        return window.matchMedia("(max-width: 768px)").matches;
+      }
+
+      function getTVDefaultSettings() {
+        const base = isTVMobileScreen()
+          ? TV_MOBILE_DEFAULT_SETTINGS
+          : TV_DESKTOP_DEFAULT_SETTINGS;
+
+        return {
+          fontSize: base.fontSize,
+          rowPadding: base.rowPadding,
+          columnWidths: {
+            ...base.columnWidths,
+          },
+        };
+      }
+
+      function getTVStorageKeys() {
+        if (isTVMobileScreen()) {
+          return {
+            fontSize: "tvMobileReservationFontSize",
+            rowPadding: "tvMobileReservationRowPadding",
+            columnWidths: "tvMobileColumnWidths",
+            preset: "tvMobileSavedSettingsPreset",
+          };
+        }
+
+        return {
+          fontSize: "tvReservationFontSize",
+          rowPadding: "tvReservationRowPadding",
+          columnWidths: "tvColumnWidths",
+          preset: "tvSavedSettingsPreset",
+        };
+      }
+
+      function readTVColumnWidths() {
+        const keys = getTVStorageKeys();
+        const defaults = getTVDefaultSettings();
+
+        try {
+          const saved = JSON.parse(localStorage.getItem(keys.columnWidths) || "null");
+
+          return {
+            time: Number(saved?.time) || defaults.columnWidths.time,
+            name: Number(saved?.name) || defaults.columnWidths.name,
+            people: Number(saved?.people) || defaults.columnWidths.people,
+            seat: Number(saved?.seat) || defaults.columnWidths.seat,
+            menu: Number(saved?.menu) || defaults.columnWidths.menu,
+          };
+        } catch (error) {
+          return {
+            ...defaults.columnWidths,
+          };
+        }
+      }
+
+      let tvReservationFontSize;
+      let tvReservationRowPadding;
+      let tvColumnWidths;
+
+      function loadTVSettingsForCurrentScreen() {
+        const keys = getTVStorageKeys();
+        const defaults = getTVDefaultSettings();
+
+        tvReservationFontSize =
+          Number(localStorage.getItem(keys.fontSize)) || defaults.fontSize;
+
+        tvReservationRowPadding =
+          Number(localStorage.getItem(keys.rowPadding)) || defaults.rowPadding;
+
+        tvColumnWidths = readTVColumnWidths();
+      }
+
+      function saveCurrentTVSettingsToStorage() {
+        const keys = getTVStorageKeys();
+
+        localStorage.setItem(keys.fontSize, String(tvReservationFontSize));
+        localStorage.setItem(keys.rowPadding, String(tvReservationRowPadding));
+        localStorage.setItem(keys.columnWidths, JSON.stringify(tvColumnWidths));
+      }
+
+      function applyTVReservationFontSize() {
+        document.documentElement.style.setProperty(
+          "--tv-reservation-font-size",
+          `${tvReservationFontSize}px`,
+        );
+      }
 
       function applyTVReservationRowHeight() {
         document.documentElement.style.setProperty(
@@ -3213,24 +3432,6 @@
           `${tvReservationRowPadding}px`,
         );
       }
-
-      function changeTVReservationRowHeight(amount) {
-        tvReservationRowPadding = Math.max(
-          2,
-          Math.min(24, tvReservationRowPadding + amount),
-        );
-
-        localStorage.setItem(
-          "tvReservationRowPadding",
-          String(tvReservationRowPadding),
-        );
-
-        applyTVReservationRowHeight();
-      }
-      let tvColumnWidths = JSON.parse(
-        localStorage.getItem("tvColumnWidths") ||
-          '{"time":13,"name":30,"people":18,"seat":21,"menu":20}',
-      );
 
       function applyTVColumnWidths() {
         document.documentElement.style.setProperty(
@@ -3255,6 +3456,32 @@
         );
       }
 
+      function applyAllTVSettings() {
+        applyTVReservationFontSize();
+        applyTVReservationRowHeight();
+        applyTVColumnWidths();
+      }
+
+      function changeTVReservationFontSize(amount) {
+        tvReservationFontSize = Math.max(
+          12,
+          Math.min(40, tvReservationFontSize + amount),
+        );
+
+        saveCurrentTVSettingsToStorage();
+        applyTVReservationFontSize();
+      }
+
+      function changeTVReservationRowHeight(amount) {
+        tvReservationRowPadding = Math.max(
+          2,
+          Math.min(24, tvReservationRowPadding + amount),
+        );
+
+        saveCurrentTVSettingsToStorage();
+        applyTVReservationRowHeight();
+      }
+
       function changeTVColumnWidth(column, amount) {
         const pairMap = {
           time: "name",
@@ -3272,29 +3499,24 @@
         const currentWidth = Number(tvColumnWidths[column] || 0);
         const neighborWidth = Number(tvColumnWidths[neighbor] || 0);
 
-        // 선택한 칸을 키울 때: 옆 칸이 너무 작아지면 중단
         if (amount > 0 && neighborWidth <= minWidth) return;
-
-        // 선택한 칸을 줄일 때: 선택한 칸이 너무 작아지면 중단
         if (amount < 0 && currentWidth <= minWidth) return;
 
         tvColumnWidths[column] = currentWidth + amount;
         tvColumnWidths[neighbor] = neighborWidth - amount;
 
-        localStorage.setItem("tvColumnWidths", JSON.stringify(tvColumnWidths));
+        saveCurrentTVSettingsToStorage();
         applyTVColumnWidths();
       }
 
       function resetTVColumnWidths() {
+        const defaults = getTVDefaultSettings();
+
         tvColumnWidths = {
-          time: 13,
-          name: 30,
-          people: 18,
-          seat: 21,
-          menu: 20,
+          ...defaults.columnWidths,
         };
 
-        localStorage.setItem("tvColumnWidths", JSON.stringify(tvColumnWidths));
+        saveCurrentTVSettingsToStorage();
         applyTVColumnWidths();
       }
 
@@ -3309,43 +3531,39 @@
       }
 
       function applyTVSettings(settings) {
-        if (!settings) return;
+        const defaults = getTVDefaultSettings();
+        const targetSettings = settings || defaults;
 
-        tvReservationFontSize = Number(settings.fontSize) || 24;
-        tvReservationRowPadding = Number(settings.rowPadding) || 8;
+        tvReservationFontSize =
+          Number(targetSettings.fontSize) || defaults.fontSize;
+
+        tvReservationRowPadding =
+          Number(targetSettings.rowPadding) || defaults.rowPadding;
 
         tvColumnWidths = {
-          time: Number(settings.columnWidths?.time) || 13,
-          name: Number(settings.columnWidths?.name) || 30,
-          people: Number(settings.columnWidths?.people) || 18,
-          seat: Number(settings.columnWidths?.seat) || 21,
-          menu: Number(settings.columnWidths?.menu) || 20,
+          time: Number(targetSettings.columnWidths?.time) || defaults.columnWidths.time,
+          name: Number(targetSettings.columnWidths?.name) || defaults.columnWidths.name,
+          people:
+            Number(targetSettings.columnWidths?.people) ||
+            defaults.columnWidths.people,
+          seat: Number(targetSettings.columnWidths?.seat) || defaults.columnWidths.seat,
+          menu: Number(targetSettings.columnWidths?.menu) || defaults.columnWidths.menu,
         };
 
-        localStorage.setItem("tvReservationFontSize", String(tvReservationFontSize));
-        localStorage.setItem(
-          "tvReservationRowPadding",
-          String(tvReservationRowPadding),
-        );
-        localStorage.setItem("tvColumnWidths", JSON.stringify(tvColumnWidths));
-
-        applyTVReservationFontSize();
-        applyTVReservationRowHeight();
-        applyTVColumnWidths();
+        saveCurrentTVSettingsToStorage();
+        applyAllTVSettings();
       }
 
       function saveTVSettingsPreset() {
+        const keys = getTVStorageKeys();
         const currentSettings = getCurrentTVSettings();
 
-        localStorage.setItem(
-          "tvSavedSettingsPreset",
-          JSON.stringify(currentSettings),
-        );
-       
+        localStorage.setItem(keys.preset, JSON.stringify(currentSettings));
       }
 
       function resetTVSettingsToSaved() {
-        const savedText = localStorage.getItem("tvSavedSettingsPreset");
+        const keys = getTVStorageKeys();
+        const savedText = localStorage.getItem(keys.preset);
 
         if (savedText) {
           try {
@@ -3357,52 +3575,17 @@
           }
         }
 
-        applyTVSettings({
-          fontSize: 24,
-          rowPadding: 8,
-          columnWidths: {
-            time: 13,
-            name: 30,
-            people: 18,
-            seat: 21,
-            menu: 20,
-          },
-        });
-
+        applyTVSettings(getTVDefaultSettings());
       }
 
       function resetTVSettingsDefault() {
-        applyTVSettings({
-          fontSize: 24,
-          rowPadding: 8,
-          columnWidths: {
-            time: 13,
-            name: 30,
-            people: 18,
-            seat: 21,
-            menu: 20,
-          },
-        });
-      }
-
-      function applyTVReservationFontSize() {
-        document.documentElement.style.setProperty(
-          "--tv-reservation-font-size",
-          `${tvReservationFontSize}px`,
-        );
-      }
-
-      function changeTVReservationFontSize(amount) {
-        tvReservationFontSize = Math.max(
-          16,
-          Math.min(36, tvReservationFontSize + amount),
-        );
-
-        localStorage.setItem("tvReservationFontSize", String(tvReservationFontSize));
-        applyTVReservationFontSize();
+        applyTVSettings(getTVDefaultSettings());
       }
 
       function openTVSettingsModal() {
+        loadTVSettingsForCurrentScreen();
+        applyAllTVSettings();
+
         const modal = document.getElementById("tv-settings-modal");
         if (modal) modal.classList.add("show");
       }
@@ -3411,6 +3594,10 @@
         const modal = document.getElementById("tv-settings-modal");
         if (modal) modal.classList.remove("show");
       }
+
+      loadTVSettingsForCurrentScreen();
+      applyAllTVSettings();
+
       window.changeTVReservationFontSize = changeTVReservationFontSize;
       window.changeTVReservationRowHeight = changeTVReservationRowHeight;
       window.changeTVColumnWidth = changeTVColumnWidth;
@@ -3420,10 +3607,6 @@
       window.resetTVSettingsDefault = resetTVSettingsDefault;
       window.openTVSettingsModal = openTVSettingsModal;
       window.closeTVSettingsModal = closeTVSettingsModal;
-
-      applyTVReservationFontSize();
-      applyTVReservationRowHeight();
-      applyTVColumnWidths();
       let editingIndex = null;
       let editingReservationId = null;
       let importPreviewList = [];
@@ -5264,7 +5447,10 @@
         return hour * 60 + minute;
       }
 
-      function renderTVView() {
+        function renderTVView() {
+        loadTVSettingsForCurrentScreen();
+        applyAllTVSettings();
+
         document.body.classList.add("tv-mode-body");
 
         const today = getTodayString();
