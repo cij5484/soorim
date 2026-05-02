@@ -1518,13 +1518,22 @@
         background: #dcfce7; /* 연한 초록 */
         color: #166534; /* 진한 초록 글자 */
         border: 1px solid #86efac;
-        height: 32px;
-        padding: 0 10px;
-        border-radius: 6px;
+
+        width: 38px;
+        height: 36px;
+        padding: 0;
+        margin-left: 7px;
+
+        border-radius: 8px;
         cursor: pointer;
-        font-size: 13px;
-        font-weight: 700;
+        font-size: 15px;
+        font-weight: 900;
+        line-height: 1;
         white-space: nowrap;
+
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
       }
 
       .map-btn:hover {
@@ -1604,6 +1613,8 @@
 
       .seat-map-move-btn {
         margin-top: auto;
+        /* 테이블맵 이동버튼 위치 조절 */
+        margin-bottom: 200px;
         height: 42px;
         border: none;
         border-radius: 10px;
@@ -1612,6 +1623,11 @@
         font-size: 14px;
         font-weight: 900;
         cursor: pointer;
+      }
+
+      /* 예약 추가/수정 중 테이블 선택 버튼 간격 */
+      .seat-map-pick-done-btn {
+        margin-top: 34px;
       }
 
       .seat-map-move-btn.active {
@@ -9498,7 +9514,7 @@ ${renderTVCanceledModal(canceledReservations, tvTargetDate)}
   <button onclick="moveDate(-1)" class="nav-arrow-btn">←</button>
   <button onclick="goToToday()" class="nav-jump-btn">오늘</button>
   <button onclick="moveDate(1)" class="nav-arrow-btn">→</button>
-  <button onclick="toggleSeatMap()" class="map-btn">맵</button>
+  <button onclick="toggleSeatMap()" class="map-btn">M</button>
 </div>
 
           <div style="
