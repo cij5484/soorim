@@ -304,6 +304,175 @@
         background: #1d4ed8;
       }
 
+      /* ====== 주간 예약 상세 모달 ====== */
+      .week-reservation-modal {
+        max-width: 760px !important;
+      }
+
+      .week-reservation-modal-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+
+        margin-bottom: 12px;
+      }
+
+      .week-reservation-modal-title {
+        margin: 0;
+        font-size: 19px;
+        font-weight: 900;
+        color: #1f2d3d;
+      }
+
+      .week-reservation-modal-close {
+        width: 34px;
+        height: 34px;
+
+        border: none;
+        border-radius: 8px;
+        background: #e5e7eb;
+        color: #111827;
+
+        font-size: 24px;
+        font-weight: 900;
+        line-height: 1;
+        cursor: pointer;
+      }
+
+      .week-reservation-modal-body .search-result-card {
+        margin-bottom: 0 !important;
+      }
+
+      .week-detail-actions {
+        width: 100% !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: flex-end !important;
+        gap: 6px !important;
+        margin-top: 8px !important;
+      }
+
+      /* 주간 상세 모달 하단 수정/닫기 버튼을 카드 오른쪽 끝까지 보정 */
+      .week-detail-card .search-result-actions.week-detail-actions {
+        width: calc(100% + 76px) !important;
+        margin-right: -76px !important;
+        justify-content: flex-end !important;
+      }
+
+      @media (max-width: 768px) {
+        .week-detail-card .search-result-actions.week-detail-actions {
+          width: calc(100% + 64px) !important;
+          margin-right: -64px !important;
+        }
+      }
+
+      .week-card-date {
+        cursor: pointer;
+      }
+
+      .week-card-date:hover {
+        color: #1f4e79;
+        text-decoration: underline;
+      }
+
+      .week-card-item {
+        cursor: pointer;
+      }
+
+      .week-card-item:hover {
+        background: #eef6ff;
+      }
+
+      /* ====== 주간 상세 모달 카드 보정 ====== */
+      .week-detail-card {
+        position: relative;
+        padding-right: 76px !important;
+      }
+
+      .week-detail-card .reservation-top {
+        display: block;
+        margin-bottom: 6px;
+      }
+
+      .week-detail-card .search-result-pc-line {
+        display: flex;
+        align-items: center;
+        justify-content: flex-start !important;
+        flex-wrap: wrap;
+        gap: 5px;
+        width: 100%;
+        min-width: 0;
+      }
+
+      .week-detail-card .week-detail-card-actions {
+        position: absolute;
+        top: 12px;
+        right: 12px;
+
+        display: inline-flex;
+        align-items: center;
+        justify-content: flex-end;
+        gap: 5px;
+
+        z-index: 5;
+      }
+
+      .week-detail-card .week-detail-card-actions button {
+        width: 26px;
+        height: 24px;
+        padding: 0;
+        border: none;
+        background: transparent;
+        cursor: pointer;
+        font-size: 16px;
+        line-height: 1;
+
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      @media (max-width: 768px) {
+        #week-reservation-modal.modal-bg.show {
+          display: flex !important;
+          align-items: center !important;
+          justify-content: center !important;
+          padding: 14px !important;
+        }
+
+        #week-reservation-modal .week-reservation-modal {
+          width: 94vw !important;
+          max-height: 82vh !important;
+          overflow-y: auto !important;
+        }
+
+        .week-detail-card {
+          padding-right: 64px !important;
+        }
+
+        .week-detail-card .reservation-card-head {
+          align-items: flex-start !important;
+          gap: 6px !important;
+        }
+
+        .week-detail-card .reservation-card-main {
+          min-width: 0 !important;
+        }
+
+        .week-detail-card .week-detail-card-actions {
+          top: 10px !important;
+          right: 10px !important;
+          gap: 4px !important;
+        }
+
+        .week-detail-card .week-detail-card-actions button {
+          width: 24px !important;
+          height: 24px !important;
+          font-size: 14px !important;
+        }
+      }
+
       /* ====== 불러오기 미리보기 상태 배지 ====== */
       .import-preview-status-badge {
         display: inline-flex;
@@ -892,6 +1061,10 @@
       }
 
       .seat-map-pick-done-btn {
+        margin-top: 100px;
+      }
+
+      .seat-map-pick-done-btn {
         background: #2563eb;
         color: white;
       }
@@ -1406,6 +1579,8 @@
         align-items: stretch;
         height: 100%;
       }
+
+      
 
       .seat-map-tab-btn {
         height: 42px;
@@ -4656,6 +4831,26 @@
       </div>
     </div>
 
+    <div class="modal-bg" id="week-reservation-modal">
+      <div class="modal week-reservation-modal">
+        <div class="week-reservation-modal-header">
+          <h2 id="week-reservation-modal-title" class="week-reservation-modal-title">
+            예약 상세
+          </h2>
+
+          <button
+            class="week-reservation-modal-close"
+            onclick="closeWeekReservationModal()"
+            type="button"
+          >
+            ×
+          </button>
+        </div>
+
+        <div id="week-reservation-modal-body" class="week-reservation-modal-body"></div>
+      </div>
+    </div>
+
     <div id="table-select-popup" class="table-select-popup hidden">
       <div class="table-select-card">
         <div class="table-select-title"></div>
@@ -5795,12 +5990,25 @@
         saveViewState();
         syncSelectedDateUI();
         render();
+
+        // 주간에서 날짜 클릭으로 일간 이동할 때,
+        // 주간 자동 스크롤 위치가 남지 않도록 화면 맨 위로 올린다.
+        setTimeout(() => {
+          window.scrollTo({
+            top: 0,
+            left: 0,
+            behavior: "auto",
+          });
+
+          document.documentElement.scrollTop = 0;
+          document.body.scrollTop = 0;
+        }, 0);
       }
 
-      function renderSearchResultReservationCard(r, realIndex) {
+      function renderSearchResultReservationCard(r, realIndex, mode = "search") {
         return `
           <div
-            class="reservation search-result-card status-${getDisplayStatus(r.status)} ${isReservationUnconfirmed(r) ? "reservation-unconfirmed" : ""}"
+            class="reservation search-result-card ${mode === "week" ? "week-detail-card" : ""} status-${getDisplayStatus(r.status)} ${isReservationUnconfirmed(r) ? "reservation-unconfirmed" : ""}"
           >
             <div class="reservation-top">
 
@@ -5887,6 +6095,30 @@
 
             </div>
 
+            ${
+              mode === "week"
+                ? `
+                  <span class="week-detail-card-actions" onclick="event.stopPropagation();">
+                    <button
+                      onclick="smsReservationCustomer(${realIndex})"
+                      type="button"
+                      title="문자"
+                    >
+                      💬
+                    </button>
+
+                    <button
+                      onclick="callReservationCustomer(${realIndex})"
+                      type="button"
+                      title="전화"
+                    >
+                      📞
+                    </button>
+                  </span>
+                `
+                : ""
+            }
+
             <div class="search-result-mobile-info-row">
               <div class="info-grid" style="display:flex; gap:4px; align-items:center; flex-wrap:nowrap;">
                 <div class="info-item mobile-summary-info-item">
@@ -5913,27 +6145,52 @@
                 : ""
             }
 
-            <div class="search-result-actions" onclick="event.stopPropagation();">
-              <span class="search-result-date-text">
-                ${escapeHtml(r.date || "")}
-              </span>
+            ${
+  mode === "week"
+    ? `
+      <div class="search-result-actions week-detail-actions" onclick="event.stopPropagation();">
+        <button
+          class="search-result-action-btn edit-now"
+          onclick="editReservationFromWeekModal(${realIndex})"
+          type="button"
+        >
+          수정
+        </button>
 
-              <button
-                class="search-result-action-btn go-date"
-                onclick="goToReservationFromSearch(${realIndex})"
-                type="button"
-              >
-                해당 날짜 보기
-              </button>
+        <button
+          class="search-result-action-btn go-date"
+          style="background:#6b7280;"
+          onclick="closeWeekReservationModal()"
+          type="button"
+        >
+          닫기
+        </button>
+      </div>
+    `
+    : `
+      <div class="search-result-actions" onclick="event.stopPropagation();">
+        <span class="search-result-date-text">
+          ${escapeHtml(r.date || "")}
+        </span>
 
-              <button
-                class="search-result-action-btn edit-now"
-                onclick="editReservationFromSearch(${realIndex})"
-                type="button"
-              >
-                바로 수정
-              </button>
-            </div>
+        <button
+          class="search-result-action-btn go-date"
+          onclick="goToReservationFromSearch(${realIndex})"
+          type="button"
+        >
+          해당 날짜 보기
+        </button>
+
+        <button
+          class="search-result-action-btn edit-now"
+          onclick="editReservationFromSearch(${realIndex})"
+          type="button"
+        >
+          바로 수정
+        </button>
+      </div>
+    `
+}
           </div>
         `;
       }
@@ -5967,6 +6224,59 @@
             return renderSearchResultReservationCard(r, realIndex);
           })
           .join("");
+      }
+
+      let weekReservationModalIndex = null;
+
+      function openWeekReservationModal(index) {
+        const realIndex = Number(index);
+
+        if (!Number.isInteger(realIndex) || realIndex < 0) return;
+
+        const r = reservations[realIndex];
+        if (!r) return;
+
+        weekReservationModalIndex = realIndex;
+
+        const modal = document.getElementById("week-reservation-modal");
+        const title = document.getElementById("week-reservation-modal-title");
+        const body = document.getElementById("week-reservation-modal-body");
+
+        if (!modal || !title || !body) return;
+
+        title.textContent = `${r.date || ""} ${r.time || ""} ${r.name || "이름없음"}`;
+
+        body.innerHTML = renderSearchResultReservationCard(r, realIndex, "week");
+
+        modal.classList.add("show");
+      }
+
+      function closeWeekReservationModal() {
+        weekReservationModalIndex = null;
+
+        const modal = document.getElementById("week-reservation-modal");
+        if (modal) modal.classList.remove("show");
+      }
+
+      function editReservationFromWeekModal(index) {
+        const realIndex = Number(index);
+        const r = reservations[realIndex];
+
+        closeWeekReservationModal();
+
+        // 주간 화면에서 바로 테이블맵을 열면 화면 상태가 꼬일 수 있으므로
+        // 수정 대상 예약 날짜의 일간 화면으로 먼저 이동한 뒤 수정 모달을 연다.
+        if (r && r.date) {
+          selectedDate = r.date;
+          currentView = "day";
+          saveViewState();
+          syncSelectedDateUI();
+          render();
+        }
+
+        setTimeout(() => {
+          editReservation(realIndex);
+        }, 0);
       }
 
       let appLoadingHidden = false;
@@ -6049,6 +6359,7 @@
         closeImportModal();
         closeImportPreviewModal();
         closeSearchModal();
+        closeWeekReservationModal();
       }
 
       function renderImportPreview() {
@@ -7705,9 +8016,17 @@ ${String(r.memo || "").trim() ? `<span style="margin-left:6px; background:#fff3c
                 seatDisplay && seatDisplay !== "-"
                   ? ` / ${getSeatDisplayHtml(r, "card")}`
                   : "";
+              const realIndex = reservations.findIndex((item) => {
+                if (item.id && r.id) return item.id === r.id;
+                return item === r;
+              });
 
               return `
-            <div class="${classes}">
+            <div
+              class="${classes}"
+              onclick="event.stopPropagation(); openWeekReservationModal(${realIndex})"
+              title="예약 상세 보기"
+            >
               <div class="week-card-main">
                 ${escapeHtml(r.time || "")}
                 ${escapeHtml(r.name || "이름없음")}
@@ -7721,10 +8040,15 @@ ${String(r.memo || "").trim() ? `<span style="margin-left:6px; background:#fff3c
             .join("");
 
           html += `
-          <div class="week-card ${dateString === selectedDate ? "selected-date" : ""} ${dateString === todayString ? "today-week-card" : ""}" onclick="openDayView('${dateString}')">
+          <div class="week-card ${dateString === selectedDate ? "selected-date" : ""} ${dateString === todayString ? "today-week-card" : ""}">
             ${dateString === todayString ? `<span class="week-today-badge">오늘</span>` : ""}
             <div class="week-card-header">
-              <div class="week-card-date">${dateString} (${weekNames[index]})</div>
+              <div
+  class="week-card-date"
+  onclick="event.stopPropagation(); openDayView('${dateString}')"
+>
+  ${dateString} (${weekNames[index]})
+</div>
               <div class="week-card-summary">
                 예약 ${dayReservations.length}건
                 ${totalPeople ? ` / 총 ${totalPeople}명` : ""}
@@ -9338,6 +9662,7 @@ ${getModalSeatPickGuideHtml()}
 
       function startModalSeatPick() {
         modalSeatPickMode = true;
+        moveMode = false;
 
         const currentTables = String(
           document.getElementById("input-table")?.value || "",
@@ -9350,6 +9675,7 @@ ${getModalSeatPickGuideHtml()}
 
         const modal = document.getElementById("modal");
         const importPreviewModal = document.getElementById("import-preview-modal");
+        const weekReservationModal = document.getElementById("week-reservation-modal");
         const mapView = document.getElementById("seat-map-view");
         const list = document.getElementById("reservation-list");
 
@@ -9359,6 +9685,12 @@ ${getModalSeatPickGuideHtml()}
         // 미리보기 모달도 잠시 숨겨서 테이블맵 선택을 방해하지 않게 한다.
         if (importPreviewModal) {
           importPreviewModal.classList.remove("show");
+        }
+
+        // 주간 상세 모달에서 수정 후 테이블맵을 여는 경우에도
+        // 상세 모달이 뒤에서 클릭을 막지 않도록 닫아둔다.
+        if (weekReservationModal) {
+          weekReservationModal.classList.remove("show");
         }
 
         isSeatMapVisible = true;
@@ -9373,6 +9705,17 @@ ${getModalSeatPickGuideHtml()}
 
         renderDayViewHeader();
         renderSeatMapContent();
+
+        setTimeout(() => {
+          window.scrollTo({
+            top: 0,
+            left: 0,
+            behavior: "auto",
+          });
+
+          document.documentElement.scrollTop = 0;
+          document.body.scrollTop = 0;
+        }, 0);
       }
 
       function toggleModalSeatPickTable(tableNumber) {
@@ -9930,12 +10273,18 @@ ${getModalSeatPickGuideHtml()}
     룸
   </button>
 
-  <button 
-  class="seat-map-move-btn ${moveMode ? "active" : ""}" 
-  onclick="toggleMoveMode()"
->
-  이동
-</button>
+  ${
+    !modalSeatPickMode
+      ? `
+        <button 
+          class="seat-map-move-btn ${moveMode ? "active" : ""}" 
+          onclick="toggleMoveMode()"
+        >
+          이동
+        </button>
+      `
+      : ""
+  }
 ${
   modalSeatPickMode
     ? `
@@ -10037,12 +10386,18 @@ ${
     룸
   </button>
 
-  <button 
-  class="seat-map-move-btn ${moveMode ? "active" : ""}" 
-  onclick="toggleMoveMode()"
->
-  이동
-</button>
+  ${
+    !modalSeatPickMode
+      ? `
+        <button 
+          class="seat-map-move-btn ${moveMode ? "active" : ""}" 
+          onclick="toggleMoveMode()"
+        >
+          이동
+        </button>
+      `
+      : ""
+  }
 ${
   modalSeatPickMode
     ? `
@@ -10201,6 +10556,7 @@ ${
           <span class="pc-day-summary-label">메뉴</span>
           <span class="pc-day-summary-value">${escapeHtml(getMenuDisplayText(r.menu) || "-")}</span>
         </span>
+        
       </div>
 
       <div class="day-card-pc-right" onclick="event.stopPropagation();">
@@ -11628,6 +11984,14 @@ ${
           }
         });
 
+      document
+      .getElementById("week-reservation-modal")
+      .addEventListener("click", function (e) {
+        if (e.target === this) {
+          closeWeekReservationModal();
+        }
+      });
+
       window.setView = setView;
       window.openDayView = openDayView;
       window.openImportModal = openImportModal;
@@ -11645,6 +12009,9 @@ ${
       window.editPreviewItem = editPreviewItem;
       window.goToReservationFromSearch = goToReservationFromSearch;
       window.editReservationFromSearch = editReservationFromSearch;
+      window.openWeekReservationModal = openWeekReservationModal;
+      window.closeWeekReservationModal = closeWeekReservationModal;
+      window.editReservationFromWeekModal = editReservationFromWeekModal;
       window.editReservation = editReservation;
       window.deleteReservation = deleteReservation;
       window.changeStatus = changeStatus;
