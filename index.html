@@ -1063,10 +1063,7 @@
         cursor: pointer;
       }
 
-      .seat-map-pick-done-btn {
-        margin-top: 100px;
-      }
-
+      
       .seat-map-pick-done-btn {
         background: #2563eb;
         color: white;
@@ -4087,6 +4084,20 @@
       @media (max-width: 768px) {
         /* ===== 모바일 테이블맵 정리 ===== */
 
+        /* 모바일 테이블맵: 화면 높이에 맞춰 세로만 유동 조절 */
+        body:has(#seat-map-view[style*="block"]) {
+          overflow: hidden !important;
+        }
+
+        body:has(#seat-map-view[style*="block"]) #reservation-list {
+          overflow: hidden !important;
+        }
+
+        /* 숫자를 줄이면 테이블맵이 더 커지고, 숫자를 키우면 더 작아집니다 */
+        :root {
+          --mobile-seat-map-height: calc(100dvh - 170px);
+        }
+
         /* 테이블맵 화면 폭 */
         body:has(#seat-map-view[style*="block"]) main {
           max-width: none !important;
@@ -4105,9 +4116,16 @@
         /* 홀맵: 왼쪽 버튼 공간은 작게, 테이블 공간은 넓게 */
         .hall-map {
           grid-template-columns: 35px repeat(23, minmax(0, 1fr)) !important;
+
+          /* 세로 높이만 화면에 맞춰 유동 조절 */
+          grid-template-rows: repeat(12, minmax(0, 1fr)) !important;
+          height: var(--mobile-seat-map-height) !important;
+          min-height: 0 !important;
+          max-height: var(--mobile-seat-map-height) !important;
+
           gap: 6px !important;
           width: 100% !important;
-          overflow-x: hidden !important;
+          overflow: hidden !important;
         }
 
         /* 홀/룸/이동 버튼 */
@@ -4168,6 +4186,17 @@
           grid-column: 2 / 25 !important;
           width: 100% !important;
           min-width: 0 !important;
+
+          /* 세로 높이만 화면에 맞춰 유동 조절 */
+          height: var(--mobile-seat-map-height) !important;
+          min-height: 0 !important;
+          max-height: var(--mobile-seat-map-height) !important;
+
+          overflow: hidden !important;
+        }
+
+        .room-box {
+          min-height: 0 !important;
         }
 
         /* 룸 내부 테이블 폭 조정 */
