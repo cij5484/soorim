@@ -8415,10 +8415,6 @@ ${String(r.memo || "").trim() ? `<span style="margin-left:6px; background:#fff3c
           fields.push("time");
         }
 
-        if (previousSnapshot.name !== nextSnapshot.name) {
-          fields.push("name");
-        }
-
         if (previousSnapshot.people !== nextSnapshot.people) {
           fields.push("people");
         }
@@ -9010,7 +9006,7 @@ ${String(r.memo || "").trim() ? `<span style="margin-left:6px; background:#fff3c
   </td>
 
   <td>
-    ${wrapTVNoticeContent(escapeHtml(getReservationDisplayName(r)), r, "name")}
+    ${escapeHtml(getReservationDisplayName(r))}
   </td>
 
   <td>
