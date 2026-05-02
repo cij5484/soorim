@@ -2440,7 +2440,10 @@
         }
 
         body.tv-mode-body .tv-title-text {
-          max-width: calc(100vw - 104px);
+          max-width: calc(100vw - 132px);
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
         }
 
         body.tv-mode-body .tv-cancel-item {
@@ -2709,7 +2712,30 @@
         }
 
         body.tv-mode-body .tv-date-nav-btn {
-          display: none !important;
+          display: inline-flex !important;
+          align-items: center !important;
+          justify-content: center !important;
+
+          width: 22px !important;
+          height: 22px !important;
+          min-width: 22px !important;
+
+          margin: 0 3px !important;
+          padding: 0 !important;
+
+          border: 1px solid #111 !important;
+          border-radius: 6px !important;
+          background: #f3f4f6 !important;
+          color: #111 !important;
+
+          font-size: 13px !important;
+          font-weight: 900 !important;
+          line-height: 1 !important;
+          vertical-align: middle !important;
+        }
+
+        body.tv-mode-body .tv-date-nav-btn:disabled {
+          opacity: 0.25 !important;
         }
 
         body.tv-mode-body .tv-table th {
