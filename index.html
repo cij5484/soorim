@@ -8459,6 +8459,7 @@ ${String(r.memo || "").trim() ? `<span style="margin-left:6px; background:#fff3c
       }
 
       window.changeTVDateOffset = changeTVDateOffset;
+      window.toggleTVRowStatus = toggleTVRowStatus;
 
       const TV_RESERVATION_NOTICE_DURATION = 5 * 60 * 1000; // 5분
 
@@ -9007,6 +9008,22 @@ ${String(r.memo || "").trim() ? `<span style="margin-left:6px; background:#fff3c
               }
             }
 
+      function isMobileTVRowStatusToggleAllowed() {
+        if (!document.body.classList.contains("tv-mode-body")) return false;
+
+        // 모바일 TV 화면에서만 작동
+        return window.matchMedia("(max-width: 768px)").matches;
+      }
+
+      function toggleTVRowStatus(index) {
+        if (!isMobileTVRowStatusToggleAllowed()) return;
+
+        const realIndex = Number(index);
+        if (!Number.isInteger(realIndex) || realIndex < 0) return;
+
+        toggleStatus(realIndex);
+      }
+
       function renderTVView() {
         loadTVSettingsForCurrentScreen();
         applyAllTVSettings();
@@ -9071,9 +9088,14 @@ ${String(r.memo || "").trim() ? `<span style="margin-left:6px; background:#fff3c
               previousMinutes <= breakTimeMinutes &&
               currentMinutes > breakTimeMinutes;
 
-            const tvNoticeType = getTVReservationNoticeType(r);
+              const tvNoticeType = getTVReservationNoticeType(r);
 
-            const rowClasses = [
+              const realIndex = reservations.findIndex((item) => {
+                if (item.id && r.id) return item.id === r.id;
+                return item === r;
+              });
+
+              const rowClasses = [
               getDisplayStatus(r.status) === "도착" ? "tv-status-exit" : "",
               isFirstAfterBreak ? "tv-after-break" : "",
               tvNoticeType === "new" ? "tv-new-reservation-row" : "",
@@ -9082,7 +9104,10 @@ ${String(r.memo || "").trim() ? `<span style="margin-left:6px; background:#fff3c
               .join(" ");
 
             return `
-          <tr class="${rowClasses}">
+          <tr
+            class="${rowClasses}"
+            onclick="window.toggleTVRowStatus(${realIndex})"
+          >
   <td>
     ${wrapTVNoticeContent(escapeHtml(formatTVTime(r.time || "")), r, "time")}
   </td>
