@@ -388,6 +388,23 @@
         pointer-events: none;
       }
 
+      .day-tv-off-count {
+        position: absolute;
+        right: calc(100% + 10px);
+        top: 50%;
+        transform: translateY(-50%);
+
+        min-width: auto;
+        height: 22px;
+        padding: 0 8px;
+
+        font-size: 11px;
+        font-weight: 900;
+        line-height: 1;
+        white-space: nowrap;
+        pointer-events: none;
+      }
+
       /* ====== 기본 스타일 ====== */
       * {
         box-sizing: border-box;
@@ -2802,6 +2819,13 @@
           height: 17px !important;
           padding: 0 5px !important;
           font-size: 9px !important;
+        }
+
+        .day-tv-off-count {
+          right: calc(100% + 7px) !important;
+          height: 19px !important;
+          padding: 0 6px !important;
+          font-size: 10px !important;
         }
 
         .calendar-date {
@@ -8543,11 +8567,25 @@ ${String(r.memo || "").trim() ? `<span style="margin-left:6px; background:#fff3c
       window.deleteTVCanceledReservation = deleteTVCanceledReservation;
       window.restoreTVCanceledReservation = restoreTVCanceledReservation;
 
+            async function lockMobileTVPortraitMode() {
+              if (!window.matchMedia("(max-width: 768px)").matches) return;
+              if (!document.body.classList.contains("tv-mode-body") && !isTVMode) return;
+
+              try {
+                if (screen.orientation && screen.orientation.lock) {
+                  await screen.orientation.lock("portrait");
+                }
+              } catch (error) {
+                console.log("모바일 TV 세로 고정은 이 기기에서 지원되지 않습니다.");
+              }
+            }
+
       function renderTVView() {
         loadTVSettingsForCurrentScreen();
         applyAllTVSettings();
 
         document.body.classList.add("tv-mode-body");
+            lockMobileTVPortraitMode();
 
         const tvTargetDate = getTVTargetDateString();
         const tvTitleText = getTVReservationTitleText();
@@ -8987,9 +9025,13 @@ ${renderTVCanceledModal(canceledReservations, tvTargetDate)}
   const header = document.getElementById("day-view-header");
   if (!header) return;
 
-  const dayReservationCount = reservations.filter(
-    (r) => (r.date || "") === selectedDate
-  ).length;
+                const dayReservationCount = reservations.filter(
+                  (r) => (r.date || "") === selectedDate
+                ).length;
+
+                const dayTVOffCount = reservations.filter(
+                  (r) => (r.date || "") === selectedDate && r.tvHidden === true
+                ).length;
 
   header.style.display = "block";
   header.innerHTML = `
@@ -9031,9 +9073,19 @@ ${renderTVCanceledModal(canceledReservations, tvTargetDate)}
     />
   </div>
 
-  <span class="day-reservation-count">
-    예약 ${dayReservationCount}건
-  </span>
+              ${
+                dayTVOffCount > 0
+                  ? `
+                    <span class="tv-display-badge off day-tv-off-count">
+                      TV ${dayTVOffCount}
+                    </span>
+                  `
+                  : ""
+              }
+
+              <span class="day-reservation-count">
+                예약 ${dayReservationCount}건
+              </span>
 </div>
           </div>
 
