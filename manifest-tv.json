@@ -5,6 +5,7 @@
   "start_url": "/soorim/tv/",
   "scope": "/soorim/tv/",
   "display": "standalone",
+  "orientation": "portrait",
   "background_color": "#000000",
   "theme_color": "#000000"
   "theme_color": "#111111",
