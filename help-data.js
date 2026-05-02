@@ -2,7 +2,7 @@ window.HELP_SECTIONS = [
   {
     id: "add-reservation",
     title: "새예약추가",
-    titleEn: "Add Reservation",
+    titleEn: "Thêm đặt chỗ mới",
     description: "새로운 손님 예약을 등록할 때 사용하는 기능입니다.",
     steps: [
       "화면 위쪽의 + 버튼을 누릅니다.",
@@ -19,12 +19,12 @@ window.HELP_SECTIONS = [
       "직접입력칸에 값이 있으면 그 값이 인원 표시에서 우선 사용됩니다.",
       "저장 전 날짜와 시간을 꼭 확인하세요."
     ],
-    managerNote: "Use this menu when adding a new customer reservation."
+    managerNote: "Dùng khi thêm đặt chỗ mới cho khách."
   },
   {
     id: "edit-reservation",
     title: "예약변경",
-    titleEn: "Edit Reservation",
+    titleEn: "Sửa đặt chỗ",
     description: "이미 등록된 예약 내용을 수정할 때 사용하는 기능입니다.",
     steps: [
       "수정하려는 예약 카드를 누릅니다.",
@@ -36,12 +36,12 @@ window.HELP_SECTIONS = [
       "시간이나 좌석을 바꾸면 다른 예약과 겹치지 않는지 확인해야 합니다.",
       "삭제 버튼은 예약을 완전히 지울 때만 사용하세요."
     ],
-    managerNote: "Use this when changing an existing reservation."
+    managerNote: "Dùng khi cần sửa thông tin đặt chỗ đã có."
   },
   {
     id: "send-message",
     title: "문자보내기",
-    titleEn: "Send Message",
+    titleEn: "Gửi tin nhắn",
     description: "손님에게 예약 확인 문자를 보낼 때 사용하는 기능입니다.",
     steps: [
       "예약 카드의 문자 버튼을 누릅니다.",
@@ -53,12 +53,12 @@ window.HELP_SECTIONS = [
       "문자를 보내기 전 예약시간, 예약인원, 예약메뉴, 예약좌석을 꼭 확인하세요.",
       "메뉴가 정해지지 않은 예약은 메뉴 안내 문구가 추가될 수 있습니다."
     ],
-    managerNote: "Use this button to send a reservation confirmation message."
+    managerNote: "Dùng để gửi tin nhắn xác nhận đặt chỗ cho khách."
   },
   {
     id: "call-customer",
     title: "전화걸기",
-    titleEn: "Call Customer",
+    titleEn: "Gọi cho khách",
     description: "손님에게 바로 전화를 걸 때 사용하는 기능입니다.",
     steps: [
       "예약 카드의 전화 버튼을 누릅니다.",
@@ -69,12 +69,12 @@ window.HELP_SECTIONS = [
       "전화번호가 없는 예약은 전화걸기를 사용할 수 없습니다.",
       "실수로 누르지 않도록 확인창이 뜹니다."
     ],
-    managerNote: "Use this button to call the customer."
+    managerNote: "Dùng để gọi điện trực tiếp cho khách."
   },
   {
     id: "search",
     title: "예약검색",
-    titleEn: "Search Reservation",
+    titleEn: "Tìm đặt chỗ",
     description: "손님 이름, 전화번호, 메뉴, 좌석 등으로 예약을 찾는 기능입니다.",
     steps: [
       "화면 위쪽 검색창을 누릅니다.",
@@ -87,12 +87,12 @@ window.HELP_SECTIONS = [
       "검색어를 너무 짧게 입력하면 결과가 많이 나올 수 있습니다.",
       "전화번호는 일부 숫자만 입력해도 찾을 수 있습니다."
     ],
-    managerNote: "Use search to quickly find a reservation."
+    managerNote: "Dùng để tìm đặt chỗ nhanh bằng tên hoặc số điện thoại."
   },
   {
     id: "view-change",
     title: "월/주/일 보기",
-    titleEn: "Month / Week / Day View",
+    titleEn: "Xem theo tháng / tuần / ngày",
     description: "예약을 월별, 주별, 일별로 나누어 보는 기능입니다.",
     steps: [
       "상단의 월 버튼을 누르면 한 달 예약을 볼 수 있습니다.",
@@ -104,12 +104,12 @@ window.HELP_SECTIONS = [
       "자세한 예약 확인과 수정은 일 보기에서 하는 것이 가장 편합니다.",
       "월 보기는 전체 흐름을 확인할 때 사용하면 좋습니다."
     ],
-    managerNote: "Use these buttons to change the calendar view."
+    managerNote: "Dùng để đổi màn hình xem đặt chỗ theo tháng, tuần hoặc ngày."
   },
   {
     id: "seat-map",
     title: "테이블맵",
-    titleEn: "Seat Map",
+    titleEn: "Sơ đồ bàn",
     description: "홀과 룸의 테이블 예약 상태를 한눈에 확인하는 기능입니다.",
     steps: [
       "일간 화면에서 맵 버튼을 누릅니다.",
@@ -122,6 +122,96 @@ window.HELP_SECTIONS = [
       "테이블 이동 전 다른 예약과 겹치지 않는지 확인하세요.",
       "룸 전체 예약은 해당 룸의 모든 테이블을 사용하는 예약으로 봅니다."
     ],
-    managerNote: "Use the seat map to check table and room reservations."
+    managerNote: "Dùng để kiểm tra bàn ở sảnh và phòng riêng."
+  },
+  {
+    id: "import-reservation",
+    title: "불러오기",
+    titleEn: "Nhập đặt chỗ",
+    description: "전화로 받은 예약을 바탕화면 달력에 먼저 적어두고, 그 내용을 복사해서 예약앱에 한 번에 저장하는 기능입니다. 수림횟집 예약관리에서 가장 중요한 기능 중 하나입니다.",
+    steps: [
+      "손님에게 예약 전화를 받습니다.",
+      "바로 예약앱에 입력하지 않고, 먼저 바탕화면 달력에 예약 내용을 적습니다.",
+      "바탕화면 달력에는 시간, 인원, 예약경로, 메뉴, 이름, 전화번호, 좌석을 순서대로 적는 것이 좋습니다.",
+      "예시: 6:30  어른4 아이1  네이버  A코스4",
+      "다음 줄에 손님 이름과 전화번호를 적습니다. 예시: 홍길동 010-1234-5678",
+      "그 다음 줄에 좌석을 적습니다. 예시: (테이블 19) 또는 (예약 3실)",
+      "예약이 여러 개라면 예약과 예약 사이에 **** 를 넣어 구분합니다.",
+      "바탕화면 달력에 적은 예약 내용을 복사합니다.",
+      "예약앱에서 불러오기 버튼을 누릅니다.",
+      "복사한 내용을 붙여넣고 예약 날짜를 선택합니다.",
+      "분석 버튼을 누릅니다.",
+      "미리보기에서 시간, 이름, 전화번호, 인원, 좌석, 메뉴가 맞는지 확인합니다.",
+      "틀린 내용이 있으면 미리보기에서 수정합니다.",
+      "문제가 없으면 저장 버튼을 누릅니다."
+    ],
+    caution: [
+      "불러오기는 저장 전 미리보기를 꼭 확인해야 합니다.",
+      "시간은 6:30 처럼 적으면 저녁 6시 30분 예약으로 분석됩니다.",
+      "인원이 확정되었으면 어른4 아이1 처럼 적는 것이 좋습니다.",
+      "인원이 아직 정확하지 않으면 10~20명, 35~40명처럼 적습니다.",
+      "메뉴 옆 숫자는 메뉴 수량으로 봅니다. 예시: A코스10",
+      "룸 예약은 (예약 3실), (예약 1,2실)처럼 적습니다.",
+      "홀 테이블 예약은 (테이블 19), (테이블 10,19)처럼 적습니다.",
+      "예약과 예약 사이에 **** 를 넣지 않으면 여러 예약이 섞여서 분석될 수 있습니다.",
+      "충돌 표시가 나오면 같은 시간, 같은 좌석에 이미 예약이 있다는 뜻입니다.",
+      "저장 전 날짜를 잘못 선택하지 않았는지 꼭 확인하세요."
+    ],
+    relatedSectionId: "import-analysis",
+    relatedSectionText: "분석이란?",
+    managerNote: `Khi nhận điện thoại đặt chỗ, hãy ghi vào lịch trước.
+    Sau đó sao chép nội dung đó vào app, bấm phân tích, kiểm tra lại rồi lưu.
+
+    [바탕화면 달력 입력 예시]
+
+    6:30  어른4 아이1  네이버  A코스4
+    홍길동 010-1234-5678
+    (테이블 19)
+    ****
+    7:00  10~20명  B코스10
+    김수림 010-2222-3333
+    (예약 3실)
+    ****
+    7:30  어른6 아이2  메뉴전화
+    박철수 010-4444-5555
+    (예약 1,2실)
+
+    [중요]
+    예약과 예약 사이는 반드시 **** 로 구분합니다.
+    시간은 6:30 처럼 적습니다.
+    홀은 (테이블 19), 룸은 (예약 3실)처럼 적습니다.`
+  },
+  {
+    id: "import-analysis",
+    title: "분석",
+    titleEn: "Phân tích nội dung",
+    description: "분석은 붙여넣은 예약 문자를 앱이 읽어서 날짜, 시간, 이름, 전화번호, 인원, 좌석, 메뉴로 나누어 정리하는 기능입니다.",
+    steps: [
+      "바탕화면 달력에서 예약 내용을 복사합니다.",
+      "예약앱의 불러오기 창에 붙여넣습니다.",
+      "예약 날짜를 선택합니다.",
+      "분석 버튼을 누릅니다.",
+      "앱이 내용을 읽고 예약별로 나누어 미리보기를 만듭니다.",
+      "미리보기에서 시간, 이름, 전화번호, 인원, 좌석, 메뉴를 확인합니다.",
+      "틀린 내용이 있으면 저장 전 미리보기에서 수정합니다.",
+      "문제가 없으면 저장합니다."
+    ],
+    caution: [
+      "분석은 자동으로 도와주는 기능이지만 100% 완벽하지는 않습니다.",
+      "저장 전 미리보기 확인이 가장 중요합니다.",
+      "시간, 날짜, 좌석, 인원은 꼭 다시 확인하세요.",
+      "신규는 새로 추가될 예약입니다.",
+      "수정은 기존 예약을 찾아서 내용이 바뀔 예약입니다.",
+      "변경없음은 기존 예약과 내용이 같아서 저장해도 바뀌지 않는 예약입니다.",
+      "충돌은 같은 시간, 같은 좌석에 이미 예약이 있거나 겹칠 가능성이 있다는 뜻입니다.",
+      "충돌이 나오면 바로 저장하지 말고 예약 내용을 다시 확인해야 합니다."
+    ],
+    managerNote: `Phân tích nghĩa là app tự đọc nội dung đặt chỗ đã dán vào.
+  Sau khi bấm phân tích, phải kiểm tra lại trước khi lưu.
+
+  신규 = đặt chỗ mới
+  수정 = sửa đặt chỗ cũ
+  변경없음 = không thay đổi
+  충돌 = có thể bị trùng giờ hoặc trùng bàn`
   }
 ];
