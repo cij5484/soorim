@@ -8104,11 +8104,7 @@ ${String(r.memo || "").trim() ? `<span style="margin-left:6px; background:#fff3c
           fields.push("menu");
         }
 
-        // 상태 변경은 TV에 별도 칸이 없으므로 이름 칸에 표시
-        if (previousSnapshot.status !== nextSnapshot.status) {
-          fields.push("name");
-        }
-
+        
         return [...new Set(fields)];
       }
 
