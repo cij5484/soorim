@@ -685,6 +685,306 @@
         background: #ffa000;
       }
 
+      /* ====== 헤더 사용법 버튼 ====== */
+      #header-title-wrap {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        min-width: 0;
+      }
+
+      #auth-actions {
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+        gap: 8px;
+      }
+
+      #usage-btn {
+        background: #e5e7eb !important;
+        color: #1f2d3d !important;
+        height: 44px;
+        padding: 0 14px;
+        font-size: 15px;
+        font-weight: 800;
+        border-radius: 8px;
+      }
+
+      #usage-btn:hover {
+        background: #d1d5db !important;
+      }
+
+      #mobile-help-btn {
+        display: none;
+      }
+
+      /* ====== 사용설명서 모달 ====== */
+      .help-modal {
+        max-width: 760px;
+        width: min(760px, calc(100vw - 28px));
+        max-height: 86vh;
+        padding: 0;
+        overflow: hidden;
+      }
+
+      .help-modal-header {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 12px;
+        padding: 16px 18px;
+        border-bottom: 1px solid #e5e7eb;
+        background: #f8fafc;
+      }
+
+      .help-modal-title {
+        margin: 0;
+        font-size: 21px;
+        font-weight: 900;
+        color: #1f2d3d;
+      }
+
+      .help-modal-subtitle {
+        margin: 6px 0 0;
+        font-size: 13px;
+        font-weight: 700;
+        color: #6b7280;
+      }
+
+      .help-modal-close-btn {
+        width: 36px;
+        height: 36px;
+        border: none;
+        border-radius: 8px;
+        background: #e5e7eb;
+        color: #111827;
+        font-size: 26px;
+        font-weight: 900;
+        line-height: 1;
+        cursor: pointer;
+      }
+
+      .help-tab-wrap {
+        display: grid;
+        grid-template-columns: 38px 1fr 38px;
+        align-items: center;
+        gap: 8px;
+        padding: 12px;
+        border-bottom: 1px solid #e5e7eb;
+        background: #ffffff;
+        box-shadow: 0 4px 10px rgba(15, 23, 42, 0.06);
+        position: relative;
+        z-index: 2;
+      }
+
+      .help-tab-scroll {
+        display: flex;
+        gap: 8px;
+        overflow-x: auto;
+        scroll-behavior: smooth;
+        padding-bottom: 2px;
+      }
+
+      .help-tab-scroll::-webkit-scrollbar {
+        display: none;
+      }
+
+      .help-tab-btn {
+        flex: 0 0 auto;
+        height: 38px;
+        padding: 0 14px;
+        border: 1px solid #cbd5e1;
+        border-radius: 999px;
+        background: #f3f4f6;
+        color: #1f2d3d;
+        font-size: 14px;
+        font-weight: 900;
+        cursor: pointer;
+        white-space: nowrap;
+      }
+
+      .help-tab-btn.active {
+        background: #1f4e79;
+        border-color: #1f4e79;
+        color: white;
+      }
+
+      .help-tab-arrow {
+        width: 38px;
+        height: 38px;
+        border: none;
+        border-radius: 999px;
+        background: #dbeafe;
+        color: #1f2d3d;
+        font-size: 15px;
+        font-weight: 900;
+        cursor: pointer;
+      }
+
+      .help-content {
+        padding: 18px;
+        max-height: calc(86vh - 150px);
+        overflow-y: auto;
+        font-size: 15px;
+        line-height: 1.7;
+      }
+
+      .help-content h3 {
+        margin: 0 0 8px;
+        font-size: 22px;
+        font-weight: 900;
+        color: #1f4e79;
+      }
+
+      .help-content .help-en-title {
+        margin-bottom: 14px;
+        font-size: 13px;
+        font-weight: 800;
+        color: #6b7280;
+      }
+
+      .help-content ol,
+      .help-content ul {
+        padding-left: 22px;
+      }
+
+      .help-box {
+        margin-top: 14px;
+        padding: 12px;
+        border-radius: 10px;
+        background: #f8fafc;
+        border: 1px solid #e5e7eb;
+      }
+
+      .help-manager-note {
+        margin-top: 8px;
+        white-space: pre-wrap;
+        word-break: keep-all;
+        line-height: 1.75;
+      }
+
+      .help-related-btn {
+        width: 100%;
+        height: 44px;
+        border: none;
+        border-radius: 10px;
+        background: #1f4e79;
+        color: white;
+        font-size: 15px;
+        font-weight: 900;
+        cursor: pointer;
+      }
+
+      .help-related-btn:hover {
+        background: #163a5a;
+      }
+
+      .help-box.warning {
+        background: #fff7ed;
+        border-color: #fed7aa;
+      }
+
+      body.help-modal-open {
+        overflow: hidden;
+      }
+
+      /* PC 사용설명서 모달 크게 보기 */
+      @media (min-width: 769px) {
+        .help-modal {
+          width: 70vw !important;
+          max-width: calc(100vw - 40px) !important;
+          min-width: 0 !important;
+          max-height: 88vh;
+        }
+
+        .help-modal-title {
+          font-size: 26px;
+        }
+
+        .help-modal-subtitle {
+          font-size: 15px;
+        }
+
+        .help-tab-btn {
+          height: 44px;
+          padding: 0 18px;
+          font-size: 16px;
+        }
+
+        .help-content {
+          padding: 24px 32px;
+          max-height: calc(88vh - 165px);
+          font-size: 17px;
+          line-height: 1.85;
+        }
+
+        .help-content h3 {
+          font-size: 27px;
+        }
+
+        .help-content .help-en-title {
+          font-size: 15px;
+        }
+
+        .help-box {
+          padding: 16px;
+          font-size: 17px;
+        }
+      }
+
+      .help-empty-message {
+        padding: 30px 10px;
+        text-align: center;
+        color: #6b7280;
+        font-weight: 800;
+      }
+
+      @media (max-width: 768px) {
+        .help-modal {
+          width: calc(100vw - 20px);
+          max-height: 88vh;
+        }
+
+        .help-modal-header {
+          padding: 14px;
+        }
+
+        .help-modal-title {
+          font-size: 18px;
+        }
+
+        .help-modal-subtitle {
+          font-size: 12px;
+        }
+
+        .help-tab-wrap {
+          grid-template-columns: 1fr;
+          padding: 10px;
+        }
+
+        .help-tab-arrow {
+          display: none;
+        }
+
+        .help-content {
+          padding: 14px;
+          max-height: calc(88vh - 145px);
+          font-size: 14px;
+        }
+      }
+
+      /* PC 검색창 중앙 정렬 고정 */
+      @media (min-width: 769px) {
+        #search-box {
+          display: flex !important;
+          justify-content: center !important;
+        }
+
+        #search-input {
+          margin: 0 auto !important;
+        }
+      }
+
       main {
         max-width: 1000px;
         margin: 20px auto 32px;
@@ -3817,9 +4117,16 @@
           align-items: center !important;
         }
 
-        header h1 {
+        #header-title-wrap {
           grid-column: 1;
           grid-row: 1;
+          display: flex !important;
+          align-items: center !important;
+          gap: 4px !important;
+          white-space: nowrap;
+        }
+
+        header h1 {
           font-size: 18px;
           white-space: nowrap;
         }
@@ -3831,20 +4138,52 @@
 
         #search-input {
           width: 70% !important;
-          margin: 0 auto;
+          margin: 0 0 0 auto !important;
           height: 30px !important;
           font-size: 12px !important;
           padding: 4px 8px !important;
         }
 
-        #login-btn,
-        #logout-btn {
+        #auth-actions {
           grid-column: 3;
           grid-row: 1;
+          display: flex !important;
+          align-items: center !important;
+          justify-content: flex-end !important;
+          gap: 4px !important;
+        }
+
+        #login-btn,
+        #logout-btn {
           height: 30px !important;
           padding: 0 8px !important;
           font-size: 12px !important;
           white-space: nowrap;
+        }
+
+        #usage-btn {
+          display: none !important;
+        }
+
+        #mobile-help-btn {
+          display: inline-flex !important;
+          align-items: center;
+          justify-content: center;
+
+          width: 22px;
+          height: 22px;
+          min-width: 22px;
+          padding: 0;
+
+          border: 1px solid rgba(255, 255, 255, 0.75);
+          border-radius: 999px;
+          background: rgba(255, 255, 255, 0.18);
+          color: white;
+
+          font-size: 14px;
+          font-weight: 900;
+          line-height: 1;
+          cursor: pointer;
         }
 
         #view-buttons {
@@ -4381,13 +4720,24 @@
       "
     >
       <!-- 왼쪽: 제목 -->
-      <h1
-        style="margin: 0; cursor: pointer;"
-        onclick="location.reload()"
-        title="새로고침"
-      >
-        수림 예약
-      </h1>
+      <div id="header-title-wrap">
+        <h1
+          style="margin: 0; cursor: pointer;"
+          onclick="location.reload()"
+          title="새로고침"
+        >
+          수림 예약
+        </h1>
+
+        <button
+          id="mobile-help-btn"
+          type="button"
+          onclick="openHelpModal()"
+          title="사용법"
+        >
+          ?
+        </button>
+      </div>
 
       <div
         id="view-buttons"
@@ -4432,20 +4782,32 @@
 
       <!-- 오른쪽: 월 주 일 -->
 
-      <button
-        id="login-btn"
-        onclick="showLogin()"
-        style="background: #2563eb; color: white"
-      >
-        로그인
-      </button>
-      <button
-        id="logout-btn"
-        onclick="logout()"
-        style="background: #ef4444; color: white"
-      >
-        로그아웃
-      </button>
+      <div id="auth-actions">
+        <button
+          id="login-btn"
+          onclick="showLogin()"
+          style="background: #2563eb; color: white"
+        >
+          로그인
+        </button>
+
+        <button
+          id="usage-btn"
+          type="button"
+          onclick="openHelpModal()"
+          title="사용법"
+        >
+          사용법
+        </button>
+
+        <button
+          id="logout-btn"
+          onclick="logout()"
+          style="background: #ef4444; color: white"
+        >
+          로그아웃
+        </button>
+      </div>
     </header>
 
     <main>
@@ -4455,6 +4817,59 @@
       <div id="seat-map-view" style="display: none"></div>
       <div id="reservation-list"></div>
     </main>
+
+    <!-- 사용설명서 모달 -->
+    <div class="modal-bg" id="help-modal">
+      <div class="modal help-modal">
+        <div class="help-modal-header">
+          <div>
+            <h2 class="help-modal-title">사용설명서</h2>
+            <p class="help-modal-subtitle">
+              예약 추가, 변경, 문자, 전화, 테이블맵 사용법을 쉽게 확인할 수 있습니다.
+            </p>
+          </div>
+
+          <button
+            type="button"
+            class="help-modal-close-btn"
+            onclick="closeHelpModal()"
+            aria-label="사용설명서 닫기"
+          >
+            ×
+          </button>
+        </div>
+
+        <div class="help-tab-wrap">
+          <button
+            type="button"
+            class="help-tab-arrow help-tab-arrow-left"
+            onclick="moveHelpTabs('left')"
+            aria-label="이전 도움말 메뉴"
+          >
+            ◀
+          </button>
+
+          <div id="help-tab-scroll" class="help-tab-scroll">
+            <!-- help-data.js의 제목 버튼들이 여기에 자동으로 들어갑니다 -->
+          </div>
+
+          <button
+            type="button"
+            class="help-tab-arrow help-tab-arrow-right"
+            onclick="moveHelpTabs('right')"
+            aria-label="다음 도움말 메뉴"
+          >
+            ▶
+          </button>
+        </div>
+
+        <div id="help-content" class="help-content">
+          <div class="help-empty-message">
+            사용설명서를 불러오는 중입니다.
+          </div>
+        </div>
+      </div>
+    </div>
 
     <!-- 예약 추가 모달 -->
     <div class="modal-bg" id="modal">
@@ -4946,6 +5361,8 @@
       </div>
     </div>
 
+    <script src="help-data.js"></script>
+
     <script type="module">
       import { initializeApp } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-app.js";
 
@@ -5018,6 +5435,201 @@
 
       window.login = login;
       window.logout = logout;
+
+      /* ====== 사용설명서 모달 ====== */
+      let currentHelpSectionId = null;
+
+      function getHelpSections() {
+        return Array.isArray(window.HELP_SECTIONS) ? window.HELP_SECTIONS : [];
+      }
+
+      function helpEscapeHtml(value) {
+        return String(value ?? "")
+          .replace(/&/g, "&amp;")
+          .replace(/</g, "&lt;")
+          .replace(/>/g, "&gt;")
+          .replace(/"/g, "&quot;")
+          .replace(/'/g, "&#039;");
+      }
+
+      function renderHelpTabs() {
+        const tabScroll = document.getElementById("help-tab-scroll");
+        if (!tabScroll) return;
+
+        const sections = getHelpSections();
+
+        if (sections.length === 0) {
+          tabScroll.innerHTML = `<button type="button" class="help-tab-btn active">준비중</button>`;
+          return;
+        }
+
+        if (!currentHelpSectionId) {
+          currentHelpSectionId = sections[0].id;
+        }
+
+        tabScroll.innerHTML = sections
+          .map((section) => {
+            const activeClass =
+              section.id === currentHelpSectionId ? " active" : "";
+
+            return `
+              <button
+                type="button"
+                class="help-tab-btn${activeClass}"
+                data-help-id="${helpEscapeHtml(section.id)}"
+              >
+                ${helpEscapeHtml(section.title)}
+              </button>
+            `;
+          })
+          .join("");
+
+        tabScroll.querySelectorAll(".help-tab-btn").forEach((btn) => {
+          btn.addEventListener("click", () => {
+            selectHelpSection(btn.dataset.helpId);
+          });
+        });
+      }
+
+      function renderHelpContent() {
+        const content = document.getElementById("help-content");
+        if (!content) return;
+
+        const sections = getHelpSections();
+
+        if (sections.length === 0) {
+          content.innerHTML = `
+            <div class="help-empty-message">
+              사용설명서 내용을 찾을 수 없습니다.<br>
+              help-data.js 파일을 확인해주세요.
+            </div>
+          `;
+          return;
+        }
+
+        const section =
+          sections.find((item) => item.id === currentHelpSectionId) ||
+          sections[0];
+
+        currentHelpSectionId = section.id;
+
+        const steps = Array.isArray(section.steps) ? section.steps : [];
+        const caution = Array.isArray(section.caution) ? section.caution : [];
+
+        content.innerHTML = `
+          <h3>${helpEscapeHtml(section.title)}</h3>
+          <div class="help-en-title">${helpEscapeHtml(section.titleEn || "")}</div>
+
+          <div class="help-box">
+            ${helpEscapeHtml(section.description || "")}
+          </div>
+
+          <div class="help-box">
+            <strong>사용 방법</strong>
+            <ol>
+              ${steps.map((text) => `<li>${helpEscapeHtml(text)}</li>`).join("")}
+            </ol>
+          </div>
+
+          <div class="help-box warning">
+            <strong>꼭 확인할 점</strong>
+            <ul>
+              ${caution.map((text) => `<li>${helpEscapeHtml(text)}</li>`).join("")}
+            </ul>
+          </div>
+
+          ${
+            section.relatedSectionId
+              ? `
+                <div class="help-box">
+                  <button
+                    type="button"
+                    class="help-related-btn"
+                    onclick="selectHelpSection('${helpEscapeHtml(section.relatedSectionId)}')"
+                  >
+                    ${helpEscapeHtml(section.relatedSectionText || "자세히 보기")}
+                  </button>
+                </div>
+              `
+              : ""
+          }
+
+          <div class="help-box">
+            <strong>베트남어 간단 안내</strong>
+            <div class="help-manager-note">
+              ${helpEscapeHtml(section.managerNote || "")}
+            </div>
+          </div>
+        `;
+      }
+
+      function selectHelpSection(sectionId) {
+        currentHelpSectionId = sectionId;
+        renderHelpTabs();
+        renderHelpContent();
+
+        const content = document.getElementById("help-content");
+        if (content) {
+          content.scrollTop = 0;
+        }
+
+        const activeTab = document.querySelector(".help-tab-btn.active");
+        if (activeTab) {
+          activeTab.scrollIntoView({
+            behavior: "smooth",
+            inline: "center",
+            block: "nearest",
+          });
+        }
+      }
+
+      function openHelpModal() {
+        const modal = document.getElementById("help-modal");
+        if (!modal) return;
+
+        renderHelpTabs();
+        renderHelpContent();
+        modal.classList.add("show");
+        document.body.classList.add("help-modal-open");
+      }
+
+      function closeHelpModal() {
+        const modal = document.getElementById("help-modal");
+        if (modal) modal.classList.remove("show");
+
+        document.body.classList.remove("help-modal-open");
+      }
+
+      function moveHelpTabs(direction) {
+        const tabScroll = document.getElementById("help-tab-scroll");
+        if (!tabScroll) return;
+
+        const moveAmount = 220;
+        tabScroll.scrollBy({
+          left: direction === "left" ? -moveAmount : moveAmount,
+          behavior: "smooth",
+        });
+      }
+
+      window.openHelpModal = openHelpModal;
+      window.closeHelpModal = closeHelpModal;
+      window.moveHelpTabs = moveHelpTabs;
+      window.selectHelpSection = selectHelpSection;
+
+      document.addEventListener("keydown", (event) => {
+        if (event.key === "Escape") {
+          closeHelpModal();
+        }
+      });
+
+      document.addEventListener("click", (event) => {
+        const helpModal = document.getElementById("help-modal");
+        if (!helpModal) return;
+
+        if (event.target === helpModal) {
+          closeHelpModal();
+        }
+      });
 
       async function deleteReservationFromModal() {
         const targetId = editingReservationId || reservations[editingIndex]?.id;
