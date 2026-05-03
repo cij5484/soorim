@@ -476,12 +476,19 @@
         }
       }
 
-      /* ====== 불러오기 미리보기 상태 배지 ====== */
+      /* ====== 불러오기 미리보기 카드 정리 ====== */
+
+      /* 카드를 누르면 수정되므로 수정 버튼은 PC/모바일 모두 사용하지 않음 */
+      #import-preview-modal .preview-edit-btn {
+        display: none !important;
+      }
+
       .import-preview-status-badge {
         display: inline-flex;
         align-items: center;
         justify-content: center;
 
+        flex: none;
         margin-right: 6px;
         padding: 2px 7px;
         border-radius: 999px;
@@ -514,6 +521,216 @@
         background: #fee2e2;
         color: #b91c1c;
         border: 1px solid #fca5a5;
+      }
+
+      .import-preview-status-badge.duplicate {
+        background: #fef3c7;
+        color: #92400e;
+        border: 1px solid #f59e0b;
+      }
+
+      .import-preview-card {
+        position: relative;
+        width: 100%;
+        max-width: 100%;
+        box-sizing: border-box;
+
+        display: block;
+        padding: 10px 52px 10px 12px;
+
+        border: 1px solid #ddd;
+        border-radius: 10px;
+        background: #fafafa;
+
+        cursor: pointer;
+        overflow: hidden;
+      }
+
+      .import-preview-card:hover {
+        background: #f8fafc;
+        border-color: #bfdbfe;
+      }
+
+      .import-preview-main {
+        min-width: 0;
+        max-width: 100%;
+        overflow: hidden;
+      }
+
+      .import-preview-first-line {
+        display: flex;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 4px 0;
+        min-width: 0;
+
+        font-weight: 900;
+        color: #1f2d3d;
+        line-height: 1.45;
+        word-break: keep-all;
+      }
+
+      .import-preview-sub-line {
+        margin-top: 3px;
+        font-size: 13px;
+        color: #666;
+        line-height: 1.45;
+        word-break: keep-all;
+      }
+
+      .import-preview-actions {
+        position: absolute;
+        top: 9px;
+        right: 9px;
+        z-index: 3;
+
+        display: inline-flex !important;
+        align-items: center;
+        justify-content: center;
+      }
+
+      #import-preview-modal .preview-remove-btn {
+        width: 34px !important;
+        height: 30px !important;
+        min-height: 30px !important;
+        padding: 0 !important;
+
+        border: none !important;
+        border-radius: 8px !important;
+        background: #ef4444 !important;
+        color: white !important;
+
+        font-size: 13px !important;
+        font-weight: 900 !important;
+        line-height: 1 !important;
+        cursor: pointer !important;
+
+        display: inline-flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+      }
+
+      #import-preview-modal .preview-remove-btn:hover {
+        background: #dc2626 !important;
+      }
+
+      #import-preview-modal .preview-remove-btn .pc-text {
+        display: inline;
+      }
+
+      #import-preview-modal .preview-remove-btn .mobile-text {
+        display: none;
+      }
+
+      .import-preview-extra {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 5px;
+        margin-top: 6px;
+        padding-right: 4px;
+        max-width: 100%;
+      }
+
+      .import-preview-change-chip {
+        display: inline-flex;
+        align-items: center;
+
+        max-width: 100%;
+        padding: 3px 7px;
+        border-radius: 999px;
+
+        background: #eff6ff;
+        border: 1px solid #93c5fd;
+        color: #1d4ed8;
+
+        font-size: 11px;
+        font-weight: 800;
+        line-height: 1.25;
+        word-break: keep-all;
+      }
+
+      .import-preview-duplicate-note {
+        display: inline-flex;
+        align-items: center;
+
+        max-width: 100%;
+        padding: 3px 7px;
+        border-radius: 999px;
+
+        background: #fff7ed;
+        border: 1px solid #fdba74;
+        color: #9a3412;
+
+        font-size: 11px;
+        font-weight: 900;
+        line-height: 1.25;
+        word-break: keep-all;
+      }
+
+      .import-preview-conflict-note {
+        display: inline-flex;
+        align-items: center;
+
+        max-width: 100%;
+        padding: 3px 7px;
+        border-radius: 999px;
+
+        background: #fef2f2;
+        border: 1px solid #fca5a5;
+        color: #b91c1c;
+
+        font-size: 11px;
+        font-weight: 900;
+        line-height: 1.25;
+        word-break: keep-all;
+      }
+
+      @media (max-width: 768px) {
+        .import-preview-card {
+          padding: 9px 44px 9px 10px;
+        }
+
+        .import-preview-first-line {
+          font-size: 13px;
+          line-height: 1.45;
+        }
+
+        .import-preview-sub-line {
+          font-size: 12px;
+        }
+
+        .import-preview-actions {
+          top: 8px;
+          right: 8px;
+        }
+
+        #import-preview-modal .preview-remove-btn {
+          width: 28px !important;
+          height: 28px !important;
+          min-height: 28px !important;
+          border-radius: 999px !important;
+          font-size: 14px !important;
+        }
+
+        #import-preview-modal .preview-remove-btn .pc-text {
+          display: none !important;
+        }
+
+        #import-preview-modal .preview-remove-btn .mobile-text {
+          display: inline !important;
+        }
+
+        .import-preview-extra {
+          gap: 4px;
+          margin-top: 5px;
+        }
+
+        .import-preview-change-chip,
+        .import-preview-duplicate-note,
+        .import-preview-conflict-note {
+          font-size: 10.5px;
+          line-height: 1.3;
+        }
       }
 
       .month-title-custom {
@@ -720,11 +937,14 @@
 
       /* ====== 사용설명서 모달 ====== */
       .help-modal {
-        max-width: 760px;
         width: min(760px, calc(100vw - 28px));
+        max-width: 760px;
         max-height: 86vh;
         padding: 0;
         overflow: hidden;
+
+        display: flex !important;
+        flex-direction: column !important;
       }
 
       .help-modal-header {
@@ -776,9 +996,21 @@
         overflow-x: auto;
         scroll-behavior: smooth;
         padding-bottom: 10px;
+        cursor: grab;
+        user-select: none;
       }
 
-      .help-category-scroll::-webkit-scrollbar {
+      .help-category-scroll.dragging {
+        cursor: grabbing;
+        scroll-behavior: auto;
+      }
+
+      .help-category-scroll.dragging .help-category-btn {
+        pointer-events: none;
+      }
+
+      .help-category-scroll::-webkit-scrollbar,
+      .help-tab-scroll::-webkit-scrollbar {
         display: none;
       }
 
@@ -822,9 +1054,6 @@
         overflow-x: auto;
         scroll-behavior: smooth;
         padding-bottom: 2px;
-      }
-      
-      .help-tab-scroll {
         cursor: grab;
         user-select: none;
       }
@@ -836,10 +1065,6 @@
 
       .help-tab-scroll.dragging .help-tab-btn {
         pointer-events: none;
-      }
-
-      .help-tab-scroll::-webkit-scrollbar {
-        display: none;
       }
 
       .help-tab-btn {
@@ -875,9 +1100,13 @@
       }
 
       .help-content {
+        flex: 1 1 auto !important;
+        min-height: 0 !important;
+        max-height: none !important;
+        overflow-y: auto !important;
+        overscroll-behavior: contain;
+
         padding: 18px;
-        max-height: calc(86vh - 150px);
-        overflow-y: auto;
         font-size: 15px;
         line-height: 1.7;
       }
@@ -995,23 +1224,6 @@
         word-break: keep-all;
       }
 
-      @media (min-width: 769px) {
-        .help-button-sample {
-          min-width: 72px;
-          height: 38px;
-          font-size: 15px;
-        }
-
-        .help-button-sample.circle {
-          min-width: 38px;
-          width: 38px;
-        }
-
-        .help-button-desc {
-          font-size: 15px;
-        }
-      }
-
       .help-related-btn {
         width: 100%;
         height: 44px;
@@ -1033,11 +1245,18 @@
         border-color: #fed7aa;
       }
 
+      .help-empty-message {
+        padding: 30px 10px;
+        text-align: center;
+        color: #6b7280;
+        font-weight: 800;
+      }
+
       body.help-modal-open {
         overflow: hidden;
       }
 
-      /* PC 사용설명서 모달 크게 보기 */
+      /* PC 사용설명서 모달 */
       @media (min-width: 769px) {
         .help-modal {
           width: 70vw !important;
@@ -1054,12 +1273,6 @@
           font-size: 15px;
         }
 
-        .help-tab-btn {
-          height: 44px;
-          padding: 0 18px;
-          font-size: 16px;
-        }
-
         .help-category-btn {
           height: 46px;
           padding: 0 22px;
@@ -1074,7 +1287,6 @@
 
         .help-content {
           padding: 24px 32px;
-          max-height: calc(88vh - 165px);
           font-size: 17px;
           line-height: 1.85;
         }
@@ -1091,15 +1303,24 @@
           padding: 16px;
           font-size: 17px;
         }
+
+        .help-button-sample {
+          min-width: 72px;
+          height: 38px;
+          font-size: 15px;
+        }
+
+        .help-button-sample.circle {
+          min-width: 38px;
+          width: 38px;
+        }
+
+        .help-button-desc {
+          font-size: 15px;
+        }
       }
 
-      .help-empty-message {
-        padding: 30px 10px;
-        text-align: center;
-        color: #6b7280;
-        font-weight: 800;
-      }
-
+      /* 모바일 사용설명서 모달 */
       @media (max-width: 768px) {
         .help-modal {
           width: calc(100vw - 20px);
@@ -1128,15 +1349,15 @@
           font-size: 13px;
         }
 
+        .help-tab-wrap {
+          grid-template-columns: 1fr;
+          padding: 8px 10px 10px;
+        }
+
         .help-tab-btn {
           height: 32px;
           padding: 0 12px;
           font-size: 12px;
-        }
-
-        .help-tab-wrap {
-          grid-template-columns: 1fr;
-          padding: 8px 10px 10px;
         }
 
         .help-tab-arrow {
@@ -1145,20 +1366,41 @@
 
         .help-content {
           padding: 14px;
-          max-height: calc(88vh - 145px);
           font-size: 14px;
         }
       }
 
-      /* PC 검색창 중앙 정렬 고정 */
+      /* PC 검색창 유동폭 */
       @media (min-width: 769px) {
+        header {
+          gap: 18px;
+        }
+
+        #header-title-wrap {
+          flex: 0 0 auto;
+        }
+
         #search-box {
+          flex: 1 1 auto !important;
+          min-width: 240px !important;
+          max-width: 620px !important;
+          margin: 0 10px !important;
+
           display: flex !important;
           justify-content: center !important;
+          align-items: center !important;
         }
 
         #search-input {
-          margin: 0 auto !important;
+          width: 100% !important;
+          max-width: 100% !important;
+          min-width: 0 !important;
+          margin: 0 !important;
+          box-sizing: border-box !important;
+        }
+
+        #auth-actions {
+          flex: 0 0 auto;
         }
       }
 
@@ -1486,18 +1728,23 @@
       }
 
       .seat-map-select-btn {
-        margin-left: 8px;
-        width: 28px;
-        height: 24px;
+        flex: none;
+        margin-left: 0;
+        width: 44px;
+        height: 40px;
         padding: 0;
         border: 1px solid #86efac;
-        border-radius: 6px;
+        border-radius: 10px;
         background: #dcfce7;
         color: #166534;
-        font-size: 13px;
+        font-size: 16px;
         font-weight: 900;
         cursor: pointer;
         line-height: 1;
+
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
       }
 
       .seat-map-select-btn:hover {
@@ -5210,25 +5457,24 @@
           </div>
         </div>
 
-        <label style="display: flex; align-items: center">
-          좌석
-          <button
-            type="button"
-            class="seat-map-select-btn"
-            onclick="startModalSeatPick()"
-            title="테이블맵에서 좌석 선택"
-          >
-            M
-          </button>
-        </label>
-        <div
-          style="display: flex; gap: 10px; align-items: flex-start; width: 100%"
-        >
-          <select
-            id="input-seat"
-            style="width: 50px; flex: none"
-            onchange="toggleRoomSelect()"
-          >
+        <label>좌석</label>
+            <div
+              style="display: flex; gap: 10px; align-items: flex-start; width: 100%"
+            >
+              <button
+                type="button"
+                class="seat-map-select-btn"
+                onclick="startModalSeatPick()"
+                title="테이블맵에서 좌석 선택"
+              >
+                M
+              </button>
+
+              <select
+                id="input-seat"
+                style="width: 50px; flex: none"
+                onchange="toggleRoomSelect()"
+              >
             <option value="홀">홀</option>
             <option value="룸">룸</option>
           </select>
@@ -5398,10 +5644,11 @@
         <input type="text" id="input-menu" placeholder="A코스 4인" />
 
         <label for="input-memo">메모</label>
-        <textarea
+        <input
+          type="text"
           id="input-memo"
           placeholder="알러지, 기념일, 요청사항 등"
-        ></textarea>
+        />
 
         <div class="modal-actions reservation-modal-actions">
           <button
@@ -5556,8 +5803,7 @@
       </div>
     </div>
 
-    <script src="help-data.js"></script>
-
+    
     <script type="module">
       import { initializeApp } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-app.js";
 
@@ -5621,8 +5867,7 @@
 
       window.showLogin = showLogin;
       window.closeLoginModal = closeLoginModal;
-
-      window.showLogin = showLogin;
+     
 
       function logout() {
         signOut(auth);
@@ -5634,6 +5879,27 @@
       /* ====== 사용설명서 모달 ====== */
       let currentHelpSectionId = null;
       let currentHelpCategory = null;
+      let helpDataLoadingPromise = null;
+
+      function loadHelpDataOnce() {
+        if (Array.isArray(window.HELP_SECTIONS)) {
+          return Promise.resolve();
+        }
+
+        if (helpDataLoadingPromise) {
+          return helpDataLoadingPromise;
+        }
+
+        helpDataLoadingPromise = new Promise((resolve, reject) => {
+          const script = document.createElement("script");
+          script.src = "help-data.js";
+          script.onload = () => resolve();
+          script.onerror = () => reject(new Error("help-data.js 로딩 실패"));
+          document.body.appendChild(script);
+        });
+
+        return helpDataLoadingPromise;
+      }
 
       function getHelpSections() {
         return Array.isArray(window.HELP_SECTIONS) ? window.HELP_SECTIONS : [];
@@ -5719,7 +5985,13 @@
             .join("");
 
           categoryScroll.querySelectorAll(".help-category-btn").forEach((btn) => {
-            btn.addEventListener("click", () => {
+            btn.addEventListener("click", (event) => {
+              if (window.helpTabDidDrag) {
+                event.preventDefault();
+                window.helpTabDidDrag = false;
+                return;
+              }
+
               selectHelpCategory(btn.dataset.helpCategory);
             });
           });
@@ -5899,14 +6171,36 @@
         }
       }
 
-      function openHelpModal() {
+      async function openHelpModal() {
         const modal = document.getElementById("help-modal");
         if (!modal) return;
 
-        renderHelpTabs();
-        renderHelpContent();
         modal.classList.add("show");
         document.body.classList.add("help-modal-open");
+
+        const content = document.getElementById("help-content");
+        if (content) {
+          content.innerHTML = `
+            <div class="help-empty-message">
+              사용설명서를 불러오는 중입니다.
+            </div>
+          `;
+        }
+
+        try {
+          await loadHelpDataOnce();
+          renderHelpTabs();
+          renderHelpContent();
+        } catch (error) {
+          if (content) {
+            content.innerHTML = `
+              <div class="help-empty-message">
+                사용설명서를 불러오지 못했습니다.<br>
+                help-data.js 파일을 확인해주세요.
+              </div>
+            `;
+          }
+        }
       }
 
       function closeHelpModal() {
@@ -5933,109 +6227,78 @@
       window.selectHelpSection = selectHelpSection;
       window.selectHelpCategory = selectHelpCategory;
 
-      /* ====== PC 사용설명서 탭 마우스 드래그 ====== */
-      let helpTabDragStartX = 0;
-      let helpTabDragStartScrollLeft = 0;
-      let isHelpTabMouseDown = false;
-      let isHelpTabDragging = false;
-      const HELP_TAB_DRAG_THRESHOLD = 6;
+      /* ====== PC 사용설명서 메뉴 마우스 드래그 ====== */
+      let helpDragTarget = null;
+      let helpDragStartX = 0;
+      let helpDragStartScrollLeft = 0;
+      let isHelpMouseDown = false;
+      let isHelpDragging = false;
+      const HELP_DRAG_THRESHOLD = 6;
 
       window.helpTabDidDrag = false;
 
-      document.addEventListener("mousedown", (event) => {
+      function getHelpDragScrollElement(target) {
+        const categoryScroll = document.getElementById("help-category-scroll");
         const tabScroll = document.getElementById("help-tab-scroll");
-        if (!tabScroll) return;
-        if (window.innerWidth <= 768) return;
-        if (!tabScroll.contains(event.target)) return;
 
-        isHelpTabMouseDown = true;
-        isHelpTabDragging = false;
+        if (categoryScroll && categoryScroll.contains(target)) {
+          return categoryScroll;
+        }
+
+        if (tabScroll && tabScroll.contains(target)) {
+          return tabScroll;
+        }
+
+        return null;
+      }
+
+      document.addEventListener("mousedown", (event) => {
+        if (window.innerWidth <= 768) return;
+
+        const scrollEl = getHelpDragScrollElement(event.target);
+        if (!scrollEl) return;
+
+        isHelpMouseDown = true;
+        isHelpDragging = false;
         window.helpTabDidDrag = false;
 
-        helpTabDragStartX = event.pageX;
-        helpTabDragStartScrollLeft = tabScroll.scrollLeft;
+        helpDragTarget = scrollEl;
+        helpDragStartX = event.pageX;
+        helpDragStartScrollLeft = scrollEl.scrollLeft;
       });
 
       document.addEventListener("mousemove", (event) => {
-        if (!isHelpTabMouseDown) return;
+        if (!isHelpMouseDown || !helpDragTarget) return;
 
-        const tabScroll = document.getElementById("help-tab-scroll");
-        if (!tabScroll) return;
+        const moveX = event.pageX - helpDragStartX;
 
-        const moveX = event.pageX - helpTabDragStartX;
-
-        if (!isHelpTabDragging && Math.abs(moveX) < HELP_TAB_DRAG_THRESHOLD) {
+        if (!isHelpDragging && Math.abs(moveX) < HELP_DRAG_THRESHOLD) {
           return;
         }
 
-        isHelpTabDragging = true;
+        isHelpDragging = true;
         window.helpTabDidDrag = true;
 
-        tabScroll.classList.add("dragging");
-        tabScroll.scrollLeft = helpTabDragStartScrollLeft - moveX;
+        helpDragTarget.classList.add("dragging");
+        helpDragTarget.scrollLeft = helpDragStartScrollLeft - moveX;
       });
 
-      document.addEventListener("mouseup", () => {
-        const tabScroll = document.getElementById("help-tab-scroll");
-
-        if (tabScroll) {
-          tabScroll.classList.remove("dragging");
+      function endHelpDrag() {
+        if (helpDragTarget) {
+          helpDragTarget.classList.remove("dragging");
         }
 
-        isHelpTabMouseDown = false;
-        isHelpTabDragging = false;
+        helpDragTarget = null;
+        isHelpMouseDown = false;
+        isHelpDragging = false;
 
         setTimeout(() => {
           window.helpTabDidDrag = false;
         }, 0);
-      });
+      }
 
-      document.addEventListener("mouseleave", () => {
-        const tabScroll = document.getElementById("help-tab-scroll");
-
-        if (tabScroll) {
-          tabScroll.classList.remove("dragging");
-        }
-
-        isHelpTabMouseDown = false;
-        isHelpTabDragging = false;
-
-        setTimeout(() => {
-          window.helpTabDidDrag = false;
-        }, 0);
-      });
-
-      document.addEventListener("mousemove", (event) => {
-        if (!isHelpTabDragging) return;
-
-        const tabScroll = document.getElementById("help-tab-scroll");
-        if (!tabScroll) return;
-
-        const moveX = event.pageX - helpTabDragStartX;
-        tabScroll.scrollLeft = helpTabDragStartScrollLeft - moveX;
-      });
-
-      document.addEventListener("mouseup", () => {
-        if (!isHelpTabDragging) return;
-
-        const tabScroll = document.getElementById("help-tab-scroll");
-        if (tabScroll) {
-          tabScroll.classList.remove("dragging");
-        }
-
-        isHelpTabDragging = false;
-      });
-
-      document.addEventListener("mouseleave", () => {
-        if (!isHelpTabDragging) return;
-
-        const tabScroll = document.getElementById("help-tab-scroll");
-        if (tabScroll) {
-          tabScroll.classList.remove("dragging");
-        }
-
-        isHelpTabDragging = false;
-      });
+      document.addEventListener("mouseup", endHelpDrag);
+      document.addEventListener("mouseleave", endHelpDrag);
 
       document.addEventListener("keydown", (event) => {
         if (event.key === "Escape") {
@@ -6111,8 +6374,6 @@
           alert("예약 삭제 중 오류가 발생했습니다.");
         }
       }
-
-      window.deleteReservationFromModal = deleteReservationFromModal;
 
       window.deleteReservationFromModal = deleteReservationFromModal;
 
@@ -7430,6 +7691,7 @@
       }
 
       let appLoadingHidden = false;
+      let unsubscribeReservations = null;
 
       function hideAppLoading() {
         if (appLoadingHidden) return;
@@ -7443,8 +7705,13 @@
       }
 
       function subscribeReservations() {
+        if (unsubscribeReservations) {
+          unsubscribeReservations();
+          unsubscribeReservations = null;
+        }
+        
         // 인덱스 없이도 동작하도록 정렬 없이 가져오고, 클라이언트에서 정렬합니다.
-        onSnapshot(
+          unsubscribeReservations = onSnapshot(
           reservationsCollection,
           (snapshot) => {
             const previousReservations = reservations;
@@ -7519,33 +7786,81 @@
 
         const count = importPreviewList.length;
 
+        const previewStatusCounts = importPreviewList.reduce(
+          (acc, reservation, index) => {
+            const statusInfo = getImportPreviewStatusInfo({
+              ...reservation,
+              __index: index,
+            });
+
+            if (statusInfo.className === "new") acc.newCount++;
+            if (statusInfo.className === "update") acc.updateCount++;
+            if (statusInfo.className === "same") acc.sameCount++;
+            if (statusInfo.className === "duplicate") acc.duplicateCount++;
+            if (statusInfo.className === "conflict") acc.conflictCount++;
+
+            return acc;
+          },
+          {
+            newCount: 0,
+            updateCount: 0,
+            sameCount: 0,
+            duplicateCount: 0,
+            conflictCount: 0,
+          },
+        );
+
+        const saveableCount =
+          previewStatusCounts.newCount + previewStatusCounts.updateCount;
+
+        const warningCount =
+          previewStatusCounts.duplicateCount + previewStatusCounts.conflictCount;
+
         if (title) {
           title.textContent = count
-            ? `불러오기 미리보기 (${count}건)`
+            ? `불러오기 미리보기 (${count}건 / 저장가능 ${saveableCount}건 / 확인필요 ${warningCount}건)`
             : "불러오기 미리보기";
         }
 
         if (confirmBtn) {
-          confirmBtn.textContent = count
-            ? `${count}건 예약 반영`
-            : "반영할 예약 없음";
-          confirmBtn.disabled = count === 0;
+          if (!count) {
+            confirmBtn.textContent = "반영할 예약 없음";
+            confirmBtn.disabled = true;
+          } else if (saveableCount === 0) {
+            confirmBtn.textContent = "저장 가능한 예약 없음";
+            confirmBtn.disabled = true;
+          } else if (warningCount > 0) {
+            confirmBtn.textContent = `저장가능 ${saveableCount}건만 반영`;
+            confirmBtn.disabled = false;
+          } else {
+            confirmBtn.textContent = `${saveableCount}건 예약 반영`;
+            confirmBtn.disabled = false;
+          }
         }
 
-        if (!importPreviewList.length) {
-          list.innerHTML =
-            '<div style="padding:20px; background:#f8fafc; border-radius:8px;">미리보기 데이터가 없습니다.</div>';
+        if (!list) return;
+
+        if (!count) {
+          list.innerHTML = `
+            <div style="padding:20px; color:#777; text-align:center; background:#f8fafc; border-radius:8px;">
+              미리보기할 예약이 없습니다.
+            </div>
+          `;
           return;
         }
 
         const grouped = {};
 
-        importPreviewList.forEach((r, index) => {
-          const dateKey = r.date || "날짜없음";
+        importPreviewList.forEach((reservation, index) => {
+          const dateKey = reservation.date || "날짜없음";
           if (!grouped[dateKey]) {
             grouped[dateKey] = [];
           }
-          grouped[dateKey].push({ ...r, __index: index });
+
+          grouped[dateKey].push({
+            ...reservation,
+            __index: index,
+          });
         });
 
         const sortedDates = Object.keys(grouped).sort();
@@ -7555,67 +7870,74 @@
             const items = grouped[date];
 
             const cardsHtml = items
-              .map(
-                (r) => `
-          <div
-  onclick="editPreviewItem(${r.__index})"
-  style="border:1px solid #ddd; border-radius:10px; padding:10px 12px; background:#fafafa; display:flex; justify-content:space-between; align-items:center; cursor:pointer;"
->
+              .map((r) => {
+                const statusBadge = getImportPreviewBadgeHtml(r);
+                const peopleText = getTVPeopleText(r) || "-";
+                const seatParts = [r.room, r.table].filter(Boolean).join(" / ");
+                const phoneText = r.phone || "-";
+                const menuText = r.menu || "";
+                const memoText = r.memo || "";
+                const naverBadge = r.isNaver
+                  ? `<span class="naver-mini-badge" style="position:static; margin-left:4px; vertical-align:middle;">N</span>`
+                  : "";
 
-            <div style="display:flex; flex-direction:column; gap:4px;">
+                const detailHtml = getImportPreviewDetailHtml(r);
 
-              <div style="font-size:15px; font-weight:600;">
-                ${getImportPreviewBadgeHtml(r)}
-<span style="color:#333; font-weight:600;">${escapeHtml(r.time)}</span>
-<span style="margin-left:8px;">${escapeHtml(r.name)}</span>
-                ${r.seat ? `<span style="margin-left:6px; color:#888;">${escapeHtml(r.seat)}</span>` : ""}
-                ${r.people ? `<span style="margin-left:6px; color:#888;">${escapeHtml(getTVPeopleText(r))}</span>` : ""}
-                ${r.menu ? `<span style="margin-left:6px; color:#888;">${escapeHtml(r.menu)}</span>` : ""}
-                ${r.isNaver ? `<span style="margin-left:6px; background:#03c75a; color:white; font-size:11px; padding:2px 6px; border-radius:6px;">네이버</span>` : ""}
-${String(r.memo || "").trim() ? `<span style="margin-left:6px; background:#fff3cd; color:#92400e; border:1px solid #facc15; font-size:11px; padding:2px 6px; border-radius:6px; font-weight:700;">메모</span>` : ""}
-              </div>
+                return `
+                  <div
+                    class="import-preview-card"
+                    onclick="editPreviewItem(${r.__index})"
+                    title="카드를 누르면 수정할 수 있습니다."
+                  >
+                    <div class="import-preview-main">
+                      <div class="import-preview-first-line">
+                        ${statusBadge}
+                        <span>${escapeHtml(r.time || "-")}</span>
+                        <span>&nbsp;${escapeHtml(r.name || "이름없음")}</span>
+                        ${naverBadge}
+                        <span>&nbsp;${escapeHtml(peopleText)}</span>
+                        ${
+                          menuText
+                            ? `<span>&nbsp;${escapeHtml(menuText)}</span>`
+                            : ""
+                        }
+                      </div>
 
-              <div style="font-size:13px; color:#666;">
-                ${escapeHtml(r.phone || "-")}
-                ${r.room || r.table ? " · " : ""}
-                ${escapeHtml([r.room, r.table].filter(Boolean).join(" / "))}
-              </div>
+                      <div class="import-preview-sub-line">
+                        ${escapeHtml(phoneText)}
+                        ${seatParts ? " · " : ""}
+                        ${escapeHtml(seatParts)}
+                        ${memoText ? ` · 메모: ${escapeHtml(memoText)}` : ""}
+                      </div>
 
-            </div>
+                      ${detailHtml}
+                    </div>
 
-            <div style="display:flex; gap:6px; flex:none;">
-  <button
-    class="preview-edit-btn"
-    onclick="event.stopPropagation(); editPreviewItem(${r.__index})"
-    style="background:#2563eb; color:white; border:none; padding:6px 10px; border-radius:6px; cursor:pointer; font-size:12px;"
-  >
-    수정
-  </button>
-
-  <button
-    class="preview-remove-btn"
-    onclick="event.stopPropagation(); removePreviewItem(${r.__index})"
-    style="background:#e74c3c; color:white; border:none; padding:6px 10px; border-radius:6px; cursor:pointer; font-size:12px;"
-    title="제외"
-  >
-    <span class="pc-text">제외</span>
-    <span class="mobile-text">✕</span>
-  </button>
-</div>
-
-          </div>
-        `,
-              )
+                    <div class="import-preview-actions">
+                      <button
+                        type="button"
+                        class="preview-remove-btn"
+                        onclick="event.stopPropagation(); removePreviewItem(${r.__index})"
+                        title="이 예약 제외"
+                        aria-label="이 예약 제외"
+                      >
+                        <span class="pc-text">제외</span>
+                        <span class="mobile-text">✕</span>
+                      </button>
+                    </div>
+                  </div>
+                `;
+              })
               .join("");
 
             return `
-          <div style="display:flex; flex-direction:column; gap:10px; margin-bottom:18px;">
-            <div style="position:sticky; top:0; background:#eaf3ff; color:#1f4e79; font-size:16px; font-weight:700; padding:10px 12px; border-radius:10px; border:1px solid #bfdbfe;">
-              ${escapeHtml(date)}
-            </div>
-            ${cardsHtml}
-          </div>
-        `;
+              <div style="display:flex; flex-direction:column; gap:8px; margin-bottom:18px;">
+                <div style="position:sticky; top:0; background:#eaf3ff; color:#1f4e79; font-size:16px; font-weight:900; padding:10px 12px; border-radius:10px; border:1px solid #bfdbfe; z-index:1;">
+                  ${escapeHtml(date)}
+                </div>
+                ${cardsHtml}
+              </div>
+            `;
           })
           .join("");
       }
@@ -7806,109 +8128,402 @@ ${String(r.memo || "").trim() ? `<span style="margin-left:6px; background:#fff3c
         return `${r.time || "-"} ${r.name || "이름없음"} (${getTVPeopleText(r)})`;
       }
 
-          function isImportReservationConflictWithExisting(
-            reservationToCheck,
-            matchingExisting = null,
-            baseReservations = reservations,
-          ) {
-            return baseReservations.some((existing) => {
-          if ((existing.date || "") !== (reservationToCheck.date || "")) {
-            return false;
-          }
+      function findImportReservationConflict(
+        reservationToCheck,
+        matchingExisting = null,
+        baseReservations = reservations,
+      ) {
+        return (
+          baseReservations.find((existing) => {
+            if ((existing.date || "") !== (reservationToCheck.date || "")) {
+              return false;
+            }
 
-          // 기존 예약을 수정하는 경우 자기 자신은 충돌 검사에서 제외
-          if (
-            matchingExisting &&
-            existing.id &&
-            matchingExisting.id &&
-            existing.id === matchingExisting.id
-          ) {
-            return false;
-          }
+            // 기존 예약을 수정하는 경우 자기 자신은 충돌 검사에서 제외
+            if (
+              matchingExisting &&
+              existing.id &&
+              matchingExisting.id &&
+              existing.id === matchingExisting.id
+            ) {
+              return false;
+            }
 
-          if (!reservationToCheck.time || !existing.time) {
-            return false;
-          }
+            if (!reservationToCheck.time || !existing.time) {
+              return false;
+            }
 
-          const newTables = splitValues(reservationToCheck.table);
-          const oldTables = splitValues(existing.table);
+            const newTables = splitValues(reservationToCheck.table);
+            const oldTables = splitValues(existing.table);
 
-          const newRooms = splitValues(reservationToCheck.room);
-          const oldRooms = splitValues(existing.room);
+            const newRooms = splitValues(reservationToCheck.room);
+            const oldRooms = splitValues(existing.room);
 
-          const sameTable = newTables.some((t) => oldTables.includes(t));
-          const sameRoom =
-            reservationToCheck.seat === "룸" &&
-            existing.seat === "룸" &&
-            newRooms.some((r) => oldRooms.includes(r));
+            const sameTable = newTables.some((t) => oldTables.includes(t));
+            const sameRoom =
+              reservationToCheck.seat === "룸" &&
+              existing.seat === "룸" &&
+              newRooms.some((r) => oldRooms.includes(r));
 
-          const newRoomFull =
-            reservationToCheck.seat === "룸" && newTables.length === 0;
-          const oldRoomFull = existing.seat === "룸" && oldTables.length === 0;
+            const newRoomFull =
+              reservationToCheck.seat === "룸" && newTables.length === 0;
+            const oldRoomFull = existing.seat === "룸" && oldTables.length === 0;
 
-          // 홀은 같은 테이블이면 충돌
-          if (reservationToCheck.seat !== "룸" || existing.seat !== "룸") {
-            return (
-              sameTable &&
-              isTimeConflict(
-                reservationToCheck.time,
-                existing.time,
-                reservationToCheck.seat,
-                existing.seat,
-              )
+            // 홀은 같은 테이블이면 충돌
+            if (reservationToCheck.seat !== "룸" || existing.seat !== "룸") {
+              return (
+                sameTable &&
+                isTimeConflict(
+                  reservationToCheck.time,
+                  existing.time,
+                  reservationToCheck.seat,
+                  existing.seat,
+                )
+              );
+            }
+
+            // 룸끼리는 같은 룸이 아니면 충돌 아님
+            if (!sameRoom) return false;
+
+            // 같은 룸이어도 둘 다 테이블 지정이면 같은 테이블일 때만 충돌
+            if (!newRoomFull && !oldRoomFull) {
+              return (
+                sameTable &&
+                isTimeConflict(
+                  reservationToCheck.time,
+                  existing.time,
+                  reservationToCheck.seat,
+                  existing.seat,
+                )
+              );
+            }
+
+            // 둘 중 하나가 룸 전체 사용이면 같은 룸에서 충돌
+            return isTimeConflict(
+              reservationToCheck.time,
+              existing.time,
+              reservationToCheck.seat,
+              existing.seat,
             );
-          }
-
-          // 룸끼리는 같은 룸이 아니면 충돌 아님
-          if (!sameRoom) return false;
-
-          // 같은 룸이어도 둘 다 테이블 지정이면 같은 테이블일 때만 충돌
-          if (!newRoomFull && !oldRoomFull) {
-            return (
-              sameTable &&
-              isTimeConflict(
-                reservationToCheck.time,
-                existing.time,
-                reservationToCheck.seat,
-                existing.seat,
-              )
-            );
-          }
-
-          // 둘 중 하나가 룸 전체 사용이면 같은 룸에서 충돌
-          return isTimeConflict(
-            reservationToCheck.time,
-            existing.time,
-            reservationToCheck.seat,
-            existing.seat,
-          );
-        });
+          }) || null
+        );
       }
 
-      function getImportPreviewStatusInfo(newReservation) {
-        const matchingExisting = findMatchingImportedReservation(newReservation);
+      function isImportReservationConflictWithExisting(
+        reservationToCheck,
+        matchingExisting = null,
+        baseReservations = reservations,
+      ) {
+        return Boolean(
+          findImportReservationConflict(
+            reservationToCheck,
+            matchingExisting,
+            baseReservations,
+          ),
+        );
+      }
 
-        const reservationToCheck = matchingExisting
+      function makeImportPreviewReservationForCheck(
+        newReservation,
+        matchingExisting,
+      ) {
+        return matchingExisting
           ? makeImportMergedReservation(newReservation, matchingExisting)
           : {
               ...newReservation,
               status: newReservation.status || "예약",
               basicSetting: false,
               fullSetting: false,
-            nameDisplayMode: true,
-            tvHidden: false,
+              nameDisplayMode: true,
+              tvHidden: false,
             };
+      }
 
-        const hasConflict = isImportReservationConflictWithExisting(
-          reservationToCheck,
+      function getImportPreviewWorkingBaseUntil(currentIndex) {
+        let workingReservations = [...reservations];
+
+        for (let i = 0; i < currentIndex; i++) {
+          const previewReservation = {
+            ...importPreviewList[i],
+            __index: i,
+            status: importPreviewList[i]?.status || "예약",
+          };
+
+          const duplicateInfo = getImportPreviewDuplicateInfo(previewReservation);
+          if (duplicateInfo) continue;
+
+          const matchingExisting = findMatchingImportedReservation(previewReservation);
+          const reservationToCheck = makeImportPreviewReservationForCheck(
+            previewReservation,
+            matchingExisting,
+          );
+
+          const conflictTarget = findImportReservationConflict(
+            reservationToCheck,
+            matchingExisting,
+            workingReservations,
+          );
+
+          if (conflictTarget) continue;
+
+          if (matchingExisting?.id) {
+            workingReservations = workingReservations.map((r) =>
+              r.id === matchingExisting.id ? { ...r, ...reservationToCheck } : r,
+            );
+          } else {
+            workingReservations.push({
+              ...reservationToCheck,
+              id: `__import_preview_${i}`,
+            });
+          }
+        }
+
+        return workingReservations;
+      }
+
+      function getImportConflictSourceLabel(conflictTarget) {
+        return String(conflictTarget?.id || "").startsWith("__import_preview_")
+          ? "이번 불러오기"
+          : "기존 예약";
+      }
+
+      function normalizeImportDuplicateName(value) {
+        return String(value || "")
+          .replace(/^@+/, "")
+          .replace(/\s+/g, "")
+          .trim();
+      }
+
+      function normalizeImportCompareText(value) {
+        if (typeof value === "boolean") return value ? "true" : "false";
+        if (typeof value === "number") return String(value);
+
+        return String(value ?? "")
+          .replace(/\s+/g, " ")
+          .trim();
+      }
+
+      function getImportSeatSummary(r) {
+        const seat = String(r?.seat || "").trim();
+        const room = String(r?.room || "").trim();
+        const table = String(r?.table || "").trim();
+
+        if (seat === "룸") {
+          return `룸${room ? " " + room : ""}${table ? " / " + table : ""}`.trim();
+        }
+
+        if (seat === "홀") {
+          return `홀${table ? " " + table : ""}`.trim();
+        }
+
+        return [seat, room, table].filter(Boolean).join(" / ") || "-";
+      }
+
+      function getImportPreviewDuplicateInfo(newReservation) {
+        const currentIndex = Number.isInteger(newReservation.__index)
+          ? newReservation.__index
+          : importPreviewList.indexOf(newReservation);
+
+        if (currentIndex <= 0) return null;
+
+        const currentDate = String(newReservation.date || "");
+        const currentPhone = normalizeImportPhone(newReservation.phone);
+        const currentName = normalizeImportDuplicateName(newReservation.name);
+
+        for (let i = 0; i < currentIndex; i++) {
+          const other = importPreviewList[i];
+          if (!other) continue;
+
+          if (String(other.date || "") !== currentDate) continue;
+
+          const otherPhone = normalizeImportPhone(other.phone);
+          const otherName = normalizeImportDuplicateName(other.name);
+
+          let reason = "";
+
+          if (
+            currentPhone &&
+            otherPhone &&
+            currentPhone === otherPhone &&
+            currentName &&
+            otherName &&
+            currentName === otherName
+          ) {
+            reason = "같은 이름과 전화번호";
+          } else if (currentPhone && otherPhone && currentPhone === otherPhone) {
+            reason = "같은 전화번호";
+          } else if (currentName && otherName && currentName === otherName) {
+            reason = "같은 이름";
+          }
+
+          if (reason) {
+            return {
+              reason,
+              otherIndex: i,
+              other,
+            };
+          }
+        }
+
+        return null;
+      }
+
+      function getImportPreviewChangeItems(newReservation) {
+        const matchingExisting = findMatchingImportedReservation(newReservation);
+        if (!matchingExisting) return [];
+
+        const nextReservation = makeImportMergedReservation(
+          newReservation,
           matchingExisting,
         );
 
-        if (hasConflict) {
+        const fields = [
+          {
+            label: "시간",
+            before: matchingExisting.time || "-",
+            after: nextReservation.time || "-",
+          },
+          {
+            label: "이름",
+            before: matchingExisting.name || "-",
+            after: nextReservation.name || "-",
+          },
+          {
+            label: "전화",
+            before: matchingExisting.phone || "-",
+            after: nextReservation.phone || "-",
+          },
+          {
+            label: "인원",
+            before: getTVPeopleText(matchingExisting) || "-",
+            after: getTVPeopleText(nextReservation) || "-",
+          },
+          {
+            label: "좌석",
+            before: getImportSeatSummary(matchingExisting),
+            after: getImportSeatSummary(nextReservation),
+          },
+          {
+            label: "메뉴",
+            before: matchingExisting.menu || "-",
+            after: nextReservation.menu || "-",
+          },
+          {
+            label: "메모",
+            before: matchingExisting.memo || "-",
+            after: nextReservation.memo || "-",
+          },
+          {
+            label: "네이버",
+            before: matchingExisting.isNaver ? "네이버" : "일반",
+            after: nextReservation.isNaver ? "네이버" : "일반",
+          },
+        ];
+
+        return fields.filter((item) => {
+          return (
+            normalizeImportCompareText(item.before) !==
+            normalizeImportCompareText(item.after)
+          );
+        });
+      }
+
+      function getImportPreviewDetailHtml(r) {
+        const statusInfo = getImportPreviewStatusInfo(r);
+
+        if (statusInfo.className === "duplicate") {
+          const duplicateInfo = statusInfo.duplicateInfo;
+          const other = duplicateInfo?.other;
+
+          return `
+            <div class="import-preview-extra">
+              <span class="import-preview-duplicate-note">
+                중복의심: ${escapeHtml(duplicateInfo?.reason || "비슷한 예약")} / 먼저 나온 예약 ${escapeHtml(getImportReservationLabel(other || {}))}
+              </span>
+            </div>
+          `;
+        }
+
+        if (statusInfo.className === "conflict") {
+          const conflictTarget = statusInfo.conflictInfo?.target;
+          const sourceLabel = statusInfo.conflictInfo?.sourceLabel || "예약";
+
+          return `
+            <div class="import-preview-extra">
+              <span class="import-preview-conflict-note">
+                충돌: ${escapeHtml(sourceLabel)} ${escapeHtml(getImportReservationLabel(conflictTarget || {}))} / ${escapeHtml(getImportSeatSummary(conflictTarget || {}))} 와 겹칩니다
+              </span>
+            </div>
+          `;
+        }
+
+        if (statusInfo.className !== "update") {
+          return "";
+        }
+
+        const changes = getImportPreviewChangeItems(r);
+        if (!changes.length) return "";
+
+        return `
+          <div class="import-preview-extra">
+            ${changes
+              .map(
+                (item) => `
+                  <span class="import-preview-change-chip">
+                    ${escapeHtml(item.label)}: ${escapeHtml(item.before)} → ${escapeHtml(item.after)}
+                  </span>
+                `,
+              )
+              .join("")}
+          </div>
+        `;
+      }
+
+      function getImportPreviewStatusInfo(newReservation) {
+        const duplicateInfo = getImportPreviewDuplicateInfo(newReservation);
+
+        if (duplicateInfo) {
+          return {
+            label: "중복의심",
+            className: "duplicate",
+            title: `${duplicateInfo.reason} 예약이 이번 불러오기 안에 또 있습니다.`,
+            duplicateInfo,
+          };
+        }
+
+        const matchingExisting = findMatchingImportedReservation(newReservation);
+
+        const reservationToCheck = makeImportPreviewReservationForCheck(
+          newReservation,
+          matchingExisting,
+        );
+
+        const currentIndex = Number.isInteger(newReservation.__index)
+          ? newReservation.__index
+          : importPreviewList.indexOf(newReservation);
+
+        const workingBase =
+          currentIndex >= 0
+            ? getImportPreviewWorkingBaseUntil(currentIndex)
+            : reservations;
+
+        const conflictTarget = findImportReservationConflict(
+          reservationToCheck,
+          matchingExisting,
+          workingBase,
+        );
+
+        if (conflictTarget) {
+          const sourceLabel = getImportConflictSourceLabel(conflictTarget);
+
           return {
             label: "충돌",
             className: "conflict",
-            title: "기존 예약과 시간 또는 좌석이 겹칩니다.",
+            title: `${sourceLabel} ${getImportReservationLabel(conflictTarget)} 예약과 겹칩니다.`,
+            conflictInfo: {
+              target: conflictTarget,
+              sourceLabel,
+            },
           };
         }
 
@@ -7960,22 +8575,37 @@ ${String(r.memo || "").trim() ? `<span style="margin-left:6px; background:#fff3c
         let updatedCount = 0;
         let unchangedCount = 0;
         let skippedCount = 0;
-        let skippedList = [];
 
-        // 불러오기 처리 중 충돌 확인에만 쓰는 임시 배열입니다.
-        // 실제 화면용 reservations에는 직접 push하지 않습니다.
+        const skippedList = [];
+        const remainingPreviewList = [];
+
+        // 충돌 확인용 임시 배열입니다.
+        // 실제 reservations 배열은 Firestore onSnapshot으로 다시 갱신됩니다.
         let importWorkingReservations = [...reservations];
 
-        for (const newReservationRaw of importPreviewList) {
+        for (let importIndex = 0; importIndex < importPreviewList.length; importIndex++) {
+          const newReservationRaw = importPreviewList[importIndex];
+
           const newReservation = {
             ...newReservationRaw,
+            __index: importIndex,
             status: newReservationRaw.status || "예약",
           };
 
-          const savedReservations = reservations;
-          reservations = importWorkingReservations;
+          // 1. 같은 불러오기 안에서 이름/전화번호가 겹치면 자동 저장하지 않음
+          const duplicateInfo = getImportPreviewDuplicateInfo(newReservation);
+
+          if (duplicateInfo) {
+            skippedCount++;
+            skippedList.push(
+              `중복의심 - ${getImportReservationLabel(newReservation)} (${duplicateInfo.reason})`,
+            );
+            remainingPreviewList.push(newReservationRaw);
+            continue;
+          }
+
+          // 2. 기존 앱 예약과 비교해서 수정/변경없음/신규 판단
           const matchingExisting = findMatchingImportedReservation(newReservation);
-          reservations = savedReservations;
 
           const reservationToSave = matchingExisting
             ? makeImportMergedReservation(newReservation, matchingExisting)
@@ -7987,27 +8617,35 @@ ${String(r.memo || "").trim() ? `<span style="margin-left:6px; background:#fff3c
                 tvHidden: false,
               };
 
-          // 충돌 체크
-          // 기존 예약을 수정하는 경우에는 자기 자신은 충돌 검사에서 제외
-          const hasConflict = isImportReservationConflictWithExisting(
+          // 미리보기용 임시 값은 저장하지 않음
+          delete reservationToSave.__index;
+
+          // 3. 충돌 체크
+          // 기존 예약을 수정하는 경우에는 자기 자신은 충돌 검사에서 제외합니다.
+          // 새로 추가되는 예약끼리는 importWorkingReservations를 기준으로 충돌을 확인합니다.
+          const conflictTarget = findImportReservationConflict(
             reservationToSave,
             matchingExisting,
             importWorkingReservations,
           );
 
-          if (hasConflict) {
+          if (conflictTarget) {
             skippedCount++;
-            skippedList.push(`충돌 - ${getImportReservationLabel(newReservation)}`);
+            skippedList.push(
+              `충돌 - ${getImportReservationLabel(newReservation)} / 겹침: ${getImportConflictSourceLabel(conflictTarget)} ${getImportReservationLabel(conflictTarget)}`,
+            );
+            remainingPreviewList.push(newReservationRaw);
             continue;
           }
 
-          // 기존 예약이 있으면 수정
+          // 4. 기존 예약이 있으면 수정
           if (matchingExisting) {
             if (!matchingExisting.id) {
               skippedCount++;
               skippedList.push(
                 `수정불가 - ${getImportReservationLabel(newReservation)}`,
               );
+              remainingPreviewList.push(newReservationRaw);
               continue;
             }
 
@@ -8022,7 +8660,7 @@ ${String(r.memo || "").trim() ? `<span style="margin-left:6px; background:#fff3c
               { merge: true },
             );
 
-            // 같은 불러오기 안에서 뒤 예약 충돌 체크가 정확하도록 임시 배열만 갱신
+            // 뒤 예약의 충돌 체크가 정확하도록 임시 배열만 갱신
             importWorkingReservations = importWorkingReservations.map((r) =>
               r.id === matchingExisting.id ? { ...r, ...reservationToSave } : r,
             );
@@ -8031,10 +8669,10 @@ ${String(r.memo || "").trim() ? `<span style="margin-left:6px; background:#fff3c
             continue;
           }
 
-          // 기존 예약이 없으면 새로 추가
+          // 5. 기존 예약이 없으면 새 예약으로 추가
           const addedDocRef = await addDoc(reservationsCollection, reservationToSave);
 
-          // 같은 불러오기 안에서 뒤 예약 충돌 체크가 정확하도록 임시 배열에만 반영
+          // 뒤 예약의 충돌 체크가 정확하도록 임시 배열에만 추가
           importWorkingReservations.push({
             ...reservationToSave,
             id: addedDocRef.id,
@@ -8043,16 +8681,37 @@ ${String(r.memo || "").trim() ? `<span style="margin-left:6px; background:#fff3c
           addedCount++;
         }
 
-        importPreviewList = [];
-        closeImportPreviewModal();
-        closeImportModal();
+        if (remainingPreviewList.length > 0) {
+          importPreviewList = remainingPreviewList;
+          renderImportPreview();
+
+          const importPreviewModal = document.getElementById("import-preview-modal");
+          if (importPreviewModal) {
+            importPreviewModal.classList.add("show");
+          }
+        } else {
+          importPreviewList = [];
+          closeImportPreviewModal();
+          closeImportModal();
+        }
+
+        const skippedPreviewLimit = 10;
 
         const skippedText = skippedList.length
-          ? `\n\n건너뛴 항목:\n${skippedList.join("\n")}`
+          ? `\n\n건너뛴 항목\n${skippedList
+              .slice(0, skippedPreviewLimit)
+              .map((item, index) => `${index + 1}. ${item}`)
+              .join("\n")}${
+              skippedList.length > skippedPreviewLimit
+                ? `\n...외 ${skippedList.length - skippedPreviewLimit}건 더 있음`
+                : ""
+            }`
           : "";
 
+        const savedTotal = addedCount + updatedCount;
+
         alert(
-          `완료\n추가: ${addedCount}건\n수정: ${updatedCount}건\n변경없음: ${unchangedCount}건\n건너뜀: ${skippedCount}건${skippedText}`,
+          `불러오기 완료\n\n저장됨: ${savedTotal}건\n- 추가: ${addedCount}건\n- 수정: ${updatedCount}건\n- 변경없음: ${unchangedCount}건\n- 건너뜀: ${skippedCount}건${skippedText}`,
         );
       }
 
@@ -8193,12 +8852,13 @@ ${String(r.memo || "").trim() ? `<span style="margin-left:6px; background:#fff3c
         const phoneLine = extractPhoneLine(lines);
         const peopleInfo = extractPeople(block);
         const menu = extractMenu(block, peopleInfo);
-        console.log("파싱확인:", {
-          block,
-          firstLine: lines[0],
-          menu,
-        });
-        const name = extractNameFromBlock(lines, phoneLine);
+        const oldPriceMark = /@\s*\d{1,2}:\d{2}/.test(block);
+
+        let name = extractNameFromBlock(lines, phoneLine);
+
+        if (oldPriceMark && name && !name.startsWith("@")) {
+          name = "@" + name;
+        }
 
         const firstLineMemoLines = extractFirstLineMemo(
           lines.find((line) => /\d{1,2}:\d{2}/.test(line)) || lines[0] || "",
@@ -8230,15 +8890,25 @@ ${String(r.memo || "").trim() ? `<span style="margin-left:6px; background:#fff3c
             if (/회정식/.test(clean)) return false;
             if (/[A-Z가-힣]\s*코스/.test(clean)) return false;
 
-            // 네이버/좌석/룸/테이블 줄 제외
-            if (/\(네이버(?:-[^)]+)?\)/.test(clean)) return false;
-            if (/\(룸\)|\(홀\)|\(네이버-룸\)|\(네이버-홀\)/.test(clean))
-              return false;
-            if (/예약\s*[1-5]/.test(clean)) return false;
-            if (/테이블\s*[\d,\s]+/.test(clean)) return false;
-            if (/^룸\s*[1-5](?:[.,\s]*[1-5])*\s*실$/.test(clean)) return false;
-            if (/^[1-5](?:[.,\s]*[1-5])*\s*실$/.test(clean)) return false;
-            if (/^홀\s*[\d,\s]+$/.test(clean)) return false;
+              // 네이버/좌석/룸/테이블 줄 제외
+              if (/\(네이버(?:-[^)]+)?\)/.test(clean)) return false;
+              if (/\(룸\)|\(홀\)|\(네이버-룸\)|\(네이버-홀\)/.test(clean))
+                return false;
+
+              // 순수 좌석 표시만 제외합니다.
+              // 예: (예약 2실 31) 은 제외
+              // 예: (예약 2실 31) 심포지엄 은 메모로 살림
+              if (
+                /^\(?\s*예약\s*[1-5](?:[.,\s]*[1-5])*\s*실\s*[\d,\s]*\s*\)?$/.test(
+                  clean,
+                )
+              )
+                return false;
+
+              if (/^\(?\s*테이블\s*[\d,\s]+\s*\)?$/.test(clean)) return false;
+              if (/^룸\s*[1-5](?:[.,\s]*[1-5])*\s*실$/.test(clean)) return false;
+              if (/^[1-5](?:[.,\s]*[1-5])*\s*실$/.test(clean)) return false;
+              if (/^홀\s*[\d,\s]+$/.test(clean)) return false;
 
             // 이름만 남은 줄이면 제외
             if (name && clean === name.replace(/\s+/g, " ").trim())
@@ -8249,9 +8919,14 @@ ${String(r.memo || "").trim() ? `<span style="margin-left:6px; background:#fff3c
             ]
             .map((value) =>
               String(value || "")
-                .replace(/^\(([^)]*)\)$/, "$1")
-                .replace(/\s+/g, " ")
-                .trim(),
+                 .replace(/^\(([^)]*)\)$/, "$1")
+                 .replace(
+                   /\(?\s*예약\s*[1-5](?:[.,\s]*[1-5])*\s*실\s*[\d,\s]*\)?/g,
+                   " ",
+                 )
+                 .replace(/\(?\s*테이블\s*[\d,\s]+\)?/g, " ")
+                 .replace(/\s+/g, " ")
+                 .trim(),
             )
             .filter(Boolean)
             .filter((value, index, arr) => arr.indexOf(value) === index);
@@ -8737,7 +9412,7 @@ ${String(r.memo || "").trim() ? `<span style="margin-left:6px; background:#fff3c
             const hh = String(Math.floor(current / 60)).padStart(2, "0");
             const mm = String(current % 60).padStart(2, "0");
             times.push(`${hh}:${mm}`);
-            current += 5;
+            current += 10;
           }
         }
 
@@ -8756,7 +9431,11 @@ ${String(r.memo || "").trim() ? `<span style="margin-left:6px; background:#fff3c
       function initTimeSelects(dateString = selectedDate, selectedTime = "") {
         const hourSelect = document.getElementById("input-hour");
         const minuteSelect = document.getElementById("input-minute");
-        const times = getAvailableTimes(dateString);
+        let times = getAvailableTimes(dateString);
+
+        if (selectedTime && !times.includes(selectedTime)) {
+          times = [...times, selectedTime].sort();
+        }
 
         hourSelect.innerHTML = "";
         minuteSelect.innerHTML = "";
@@ -10094,144 +10773,145 @@ ${String(r.memo || "").trim() ? `<span style="margin-left:6px; background:#fff3c
       window.deleteTVCanceledReservation = deleteTVCanceledReservation;
       window.restoreTVCanceledReservation = restoreTVCanceledReservation;
 
-            async function lockMobileTVPortraitMode() {
-              if (!window.matchMedia("(max-width: 768px)").matches) return;
-              if (!document.body.classList.contains("tv-mode-body") && !isTVMode) return;
+          async function lockMobileTVPortraitMode() {
+            if (!window.matchMedia("(max-width: 768px)").matches) return;
+            if (!document.body.classList.contains("tv-mode-body") && !isTVMode) return;
 
-              try {
-                if (screen.orientation && screen.orientation.lock) {
-                  await screen.orientation.lock("portrait");
-                }
-              } catch (error) {
-                console.log("모바일 TV 세로 고정은 이 기기에서 지원되지 않습니다.");
+            try {
+              if (screen.orientation && screen.orientation.lock) {
+                await screen.orientation.lock("portrait");
               }
+            } catch (error) {
+              // 일부 모바일 기기는 화면 방향 고정을 지원하지 않습니다.
+              // 앱 사용에는 문제가 없으므로 조용히 넘깁니다.
             }
+          }
 
-      function isMobileTVRowStatusToggleAllowed() {
-        if (!document.body.classList.contains("tv-mode-body")) return false;
+          function isMobileTVRowStatusToggleAllowed() {
+            if (!document.body.classList.contains("tv-mode-body")) return false;
 
-        // 모바일 TV 화면에서만 작동
-        return window.matchMedia("(max-width: 768px)").matches;
-      }
+            // 모바일 TV 화면에서만 작동
+            return window.matchMedia("(max-width: 768px)").matches;
+          }
 
-      function toggleTVRowStatus(index) {
-        if (!isMobileTVRowStatusToggleAllowed()) return;
+          function toggleTVRowStatus(index) {
+            if (!isMobileTVRowStatusToggleAllowed()) return;
 
-        const realIndex = Number(index);
-        if (!Number.isInteger(realIndex) || realIndex < 0) return;
+            const realIndex = Number(index);
+            if (!Number.isInteger(realIndex) || realIndex < 0) return;
 
-        toggleStatus(realIndex);
-      }
+            toggleStatus(realIndex);
+          }
 
-      function renderTVView() {
-        loadTVSettingsForCurrentScreen();
-        applyAllTVSettings();
+          function renderTVView() {
+            loadTVSettingsForCurrentScreen();
+            applyAllTVSettings();
 
-        document.body.classList.add("tv-mode-body");
+            document.body.classList.add("tv-mode-body");
             lockMobileTVPortraitMode();
 
-        const tvTargetDate = getTVTargetDateString();
-        const tvTitleText = getTVReservationTitleText();
-        const monthView = document.getElementById("month-view");
-        const weekView = document.getElementById("week-view");
-        const dayHeader = document.getElementById("day-view-header");
-        const seatMapView = document.getElementById("seat-map-view");
-        const list = document.getElementById("reservation-list");
-        const main = document.querySelector("main");
-        const header = document.querySelector("header");
+            const tvTargetDate = getTVTargetDateString();
+            const tvTitleText = getTVReservationTitleText();
+            const monthView = document.getElementById("month-view");
+            const weekView = document.getElementById("week-view");
+            const dayHeader = document.getElementById("day-view-header");
+            const seatMapView = document.getElementById("seat-map-view");
+            const list = document.getElementById("reservation-list");
+            const main = document.querySelector("main");
+            const header = document.querySelector("header");
 
-        if (header) header.style.display = "none";
+            if (header) header.style.display = "none";
 
-        if (main) {
-          main.style.maxWidth = "none";
-          main.style.width = "100%";
-          main.style.margin = "0";
-          main.style.padding = "0";
-        }
+            if (main) {
+              main.style.maxWidth = "none";
+              main.style.width = "100%";
+              main.style.margin = "0";
+              main.style.padding = "0";
+            }
 
-        if (monthView) monthView.style.display = "none";
-        if (weekView) weekView.style.display = "none";
-        if (dayHeader) dayHeader.style.display = "none";
-        if (seatMapView) seatMapView.style.display = "none";
+            if (monthView) monthView.style.display = "none";
+            if (weekView) weekView.style.display = "none";
+            if (dayHeader) dayHeader.style.display = "none";
+            if (seatMapView) seatMapView.style.display = "none";
 
-        if (!list) return;
+            if (!list) return;
 
-        list.style.display = "block";
+            list.style.display = "block";
 
-        const todayReservations = reservations
-        .filter((r) => (r.date || "") === tvTargetDate && r.tvHidden !== true)
-        .sort((a, b) =>
-          String(a.time || "").localeCompare(String(b.time || "")),
-        );
+            const todayReservations = reservations
+              .filter((r) => (r.date || "") === tvTargetDate && r.tvHidden !== true)
+              .sort((a, b) =>
+                String(a.time || "").localeCompare(String(b.time || "")),
+              );
 
-        const canceledReservations = getTVCanceledReservationsForDate(tvTargetDate);
-        
-        const rowsHtml = todayReservations
-          .map((r, index) => {
-            const menu = getMenuDisplayText(r.menu);
-            const menuHtml = menu
-              ? `<span class="tv-menu">${escapeHtml(menu)}</span>`
-              : `<span class="tv-menu tv-menu-empty"></span>`;
+            const canceledReservations = getTVCanceledReservationsForDate(tvTargetDate);
 
-            const breakTimeMinutes = 14 * 60 + 30;
-            const currentMinutes = getReservationTimeMinutes(r.time);
+            const rowsHtml = todayReservations
+              .map((r, index) => {
+                const menu = getMenuDisplayText(r.menu);
+                const menuHtml = menu
+                  ? `<span class="tv-menu">${escapeHtml(menu)}</span>`
+                  : `<span class="tv-menu tv-menu-empty"></span>`;
 
-            const previousReservation = todayReservations[index - 1];
-            const previousMinutes = previousReservation
-              ? getReservationTimeMinutes(previousReservation.time)
-              : null;
+                const breakTimeMinutes = 14 * 60 + 30;
+                const currentMinutes = getReservationTimeMinutes(r.time);
 
-            const isFirstAfterBreak =
-              index > 0 &&
-              previousMinutes !== null &&
-              previousMinutes <= breakTimeMinutes &&
-              currentMinutes > breakTimeMinutes;
+                const previousReservation = todayReservations[index - 1];
+                const previousMinutes = previousReservation
+                  ? getReservationTimeMinutes(previousReservation.time)
+                  : null;
 
-              const tvNoticeType = getTVReservationNoticeType(r);
+                const isFirstAfterBreak =
+                  index > 0 &&
+                  previousMinutes !== null &&
+                  previousMinutes <= breakTimeMinutes &&
+                  currentMinutes > breakTimeMinutes;
 
-              const realIndex = reservations.findIndex((item) => {
-                if (item.id && r.id) return item.id === r.id;
-                return item === r;
-              });
+                const tvNoticeType = getTVReservationNoticeType(r);
 
-              const rowClasses = [
-              getDisplayStatus(r.status) === "도착" ? "tv-status-exit" : "",
-              isFirstAfterBreak ? "tv-after-break" : "",
-              tvNoticeType === "new" ? "tv-new-reservation-row" : "",
-            ]
-              .filter(Boolean)
-              .join(" ");
+                const realIndex = reservations.findIndex((item) => {
+                  if (item.id && r.id) return item.id === r.id;
+                  return item === r;
+                });
 
-            return `
-          <tr
-            class="${rowClasses}"
-            onclick="window.toggleTVRowStatus(${realIndex})"
-          >
-  <td>
-    ${wrapTVNoticeContent(escapeHtml(formatTVTime(r.time || "")), r, "time")}
-  </td>
+                const rowClasses = [
+                  getDisplayStatus(r.status) === "도착" ? "tv-status-exit" : "",
+                  isFirstAfterBreak ? "tv-after-break" : "",
+                  tvNoticeType === "new" ? "tv-new-reservation-row" : "",
+                ]
+                  .filter(Boolean)
+                  .join(" ");
 
-  <td>
-    ${escapeHtml(getReservationDisplayName(r))}
-  </td>
+                return `
+                  <tr
+                    class="${rowClasses}"
+                    onclick="window.toggleTVRowStatus(${realIndex})"
+                  >
+                    <td>
+                      ${wrapTVNoticeContent(escapeHtml(formatTVTime(r.time || "")), r, "time")}
+                    </td>
 
-  <td>
-    ${wrapTVNoticeContent(escapeHtml(getTVPeopleText(r)), r, "people")}
-  </td>
+                    <td>
+                      ${escapeHtml(getReservationDisplayName(r))}
+                    </td>
 
-  <td>
-    <span class="tv-seat">
-      ${wrapTVNoticeContent(getSeatDisplayHtml(r, "tv"), r, "seat")}
-    </span>
-  </td>
+                    <td>
+                      ${wrapTVNoticeContent(escapeHtml(getTVPeopleText(r)), r, "people")}
+                    </td>
 
-  <td>
-    ${wrapTVNoticeContent(menuHtml, r, "menu")}
-  </td>
-</tr>
-        `;
-          })
-          .join("");
+                    <td>
+                      <span class="tv-seat">
+                        ${wrapTVNoticeContent(getSeatDisplayHtml(r, "tv"), r, "seat")}
+                      </span>
+                    </td>
+
+                    <td>
+                      ${wrapTVNoticeContent(menuHtml, r, "menu")}
+                    </td>
+                  </tr>
+                `;
+              })
+              .join("");
 
         const totalPeople = todayReservations.reduce((sum, r) => {
           const people =
@@ -11759,8 +12439,6 @@ ${
 
       window.toggleSeatMap = toggleSeatMap;
 
-      window.toggleSeatMap = toggleSeatMap;
-
       function renderDayView() {
         const monthView = document.getElementById("month-view");
         const weekView = document.getElementById("week-view");
@@ -12655,95 +13333,78 @@ ${
         const editingReservation = editingReservationId
           ? reservations.find((r) => r.id === editingReservationId)
           : null;
-            if (editingPreviewIndex !== null) {
-            const previewSeat = document.getElementById("input-seat").value || "";
+        if (editingPreviewIndex !== null) {
+          const originalPreview = importPreviewList[editingPreviewIndex] || {};
 
-            const selectedPreviewRooms = Array.from(
-              document.querySelectorAll("#room-checkboxes input.room-check:checked"),
-            ).map((cb) => cb.value);
+          const previewSeat = document.getElementById("input-seat").value || "";
 
-            const previewRoomFromChecks =
-              previewSeat === "룸"
-                ? selectedPreviewRooms.length === 5
-                  ? "전체"
-                  : selectedPreviewRooms.join(", ")
-                : "";
+          const selectedPreviewRooms = Array.from(
+            document.querySelectorAll("#room-checkboxes input.room-check:checked"),
+          ).map((cb) => cb.value);
 
-            let previewTable = document.getElementById("input-table").value.trim();
+          const previewRoomFromChecks =
+            previewSeat === "룸"
+              ? selectedPreviewRooms.length === 5
+                ? "전체"
+                : selectedPreviewRooms.join(", ")
+              : "";
 
-            const checkedPreviewTableValues = Array.from(
-              document.querySelectorAll(".table-check:checked"),
-            ).map((cb) => cb.value);
+          let previewTable = document.getElementById("input-table").value.trim();
 
-            if (previewSeat === "룸" && checkedPreviewTableValues.length > 0) {
-              previewTable = checkedPreviewTableValues.join(", ");
-            }
+          const checkedPreviewTableValues = Array.from(
+            document.querySelectorAll(".table-check:checked"),
+          ).map((cb) => cb.value);
 
-            const previewRoom = normalizeRoomForSave(
-              previewSeat,
-              previewRoomFromChecks,
-              previewTable,
-            );
+          if (previewSeat === "룸" && checkedPreviewTableValues.length > 0) {
+            previewTable = checkedPreviewTableValues.join(", ");
+          }
 
-            const reservationData = {
+          const previewRoom = normalizeRoomForSave(
+            previewSeat,
+            previewRoomFromChecks,
+            previewTable,
+          );
+
+          const adult = Number(document.getElementById("input-adult").value) || 0;
+          const child = Number(document.getElementById("input-child").value) || 0;
+
+          const reservationData = {
+            ...originalPreview,
             date: document.getElementById("input-date").value,
             time:
               document.getElementById("input-hour").value +
               ":" +
               document.getElementById("input-minute").value,
             name: document.getElementById("input-name").value.trim(),
-            phone:
-              document.getElementById("input-phone-1").value +
-              document.getElementById("input-phone-2").value +
-              document.getElementById("input-phone-3").value,
-            adult: Number(document.getElementById("input-adult").value) || 0,
-            child: Number(document.getElementById("input-child").value) || 0,
-            people:
-              (Number(document.getElementById("input-adult").value) || 0) +
-              (Number(document.getElementById("input-child").value) || 0),
-              table: previewTable,
-              room: previewRoom,
-              menu: document.getElementById("input-menu").value.trim(),
-              memo: document.getElementById("input-memo").value.trim(),
-              seat: previewSeat,
-              nameDisplayMode: true,
-              tvHidden: false,
-              status: "예약",
+            phone: getPhoneValue(),
+            adult,
+            child,
+            people: adult + child,
+            peopleText:
+              document.getElementById("input-people-text")?.value.trim() || "",
+            table: previewTable,
+            room: previewRoom,
+            menu: document.getElementById("input-menu").value.trim(),
+            memo: document.getElementById("input-memo").value.trim(),
+            seat: previewSeat,
+            isNaver: document.getElementById("input-naver").checked,
+            nameDisplayMode: originalPreview.nameDisplayMode ?? true,
+            tvHidden: originalPreview.tvHidden ?? false,
+            status: originalPreview.status || "예약",
           };
 
-          // ====== 문자 전송용 인원 텍스트 계산 ======
-          // ====== 문자 전송용 인원 텍스트 계산 ======
-          reservationData.peopleText =
-            document.getElementById("input-people-text")?.value.trim() || "";
+          importPreviewList[editingPreviewIndex] = reservationData;
+          editingPreviewIndex = null;
 
-          // 문자 메시지 생성
-          const msg = `안녕하세요 고객님. 해운대 수림횟집 입니다.
-        금일 예약 확인차 문자 드립니다.
+          closeModal();
+          renderImportPreview();
 
-        *예약시간 - ${reservationData.time}
-        *예약인원 - ${reservationData.peopleText}
-        *예약메뉴 - ${reservationData.menu || ""}
-        *예약좌석 - ${reservationData.seat}
-        *예약자명 - ${reservationData.name}
-        *주차안내 : 매장 옆 '청담더타이' 건물을 끼고 코너를 돌아 '24시 주차장'에 주차하시면 됩니다.
+          const importPreviewModal = document.getElementById("import-preview-modal");
+          if (importPreviewModal) {
+            importPreviewModal.classList.add("show");
+          }
 
-        문의사항이나 변동사항이 있으시면 꼭 매장으로 연락 부탁드립니다.
-        감사합니다.`;
-
-          // sendSMS(msg, reservationData.phone); // 실제 발송
-          console.log("보낼 문자:\n", msg);
-
-              importPreviewList[editingPreviewIndex] = reservationData;
-              editingPreviewIndex = null;
-              closeModal();
-              renderImportPreview();
-
-              const importPreviewModal = document.getElementById("import-preview-modal");
-              if (importPreviewModal) {
-                importPreviewModal.classList.add("show");
-              }
-
-              return;
+          return;
         }
 
         if (!requireLogin()) return;
@@ -13264,26 +13925,10 @@ ${
       }
 
       setupBackdropClose("modal", closeModal);
-
       setupBackdropClose("import-modal", closeImportModal);
-
       setupBackdropClose("import-preview-modal", closeImportPreviewModal);
-
-      document
-        .getElementById("search-modal")
-        .addEventListener("click", function (e) {
-          if (e.target === this) {
-            closeSearchModal();
-          }
-        });
-
-      document
-      .getElementById("week-reservation-modal")
-      .addEventListener("click", function (e) {
-        if (e.target === this) {
-          closeWeekReservationModal();
-        }
-      });
+      setupBackdropClose("search-modal", closeSearchModal);
+      setupBackdropClose("week-reservation-modal", closeWeekReservationModal);
 
       window.setView = setView;
       window.openDayView = openDayView;
@@ -13370,18 +14015,13 @@ ${
 
       updateTotalPeople();
 
-      setupBackdropClose("modal", closeModal);
-
-      setupBackdropClose("import-modal", closeImportModal);
-
-      setupBackdropClose("import-preview-modal", closeImportPreviewModal);
-
       document.addEventListener("keydown", function (e) {
         if (e.key === "Escape") {
           closeModal();
           closeImportModal();
           closeImportPreviewModal();
           closeSearchModal();
+          closeWeekReservationModal();
         }
       });
 
@@ -13425,10 +14065,9 @@ ${
           .register("/soorim/service-worker.js", {
             scope: "/soorim/",
           })
-          .then(() => console.log("서비스워커 등록 성공"))
-          .catch((err) =>
-            console.log("서비스워커 실패:", err.name, err.message, err),
-          );
+          .catch(() => {
+            // 서비스워커 등록 실패는 앱 사용을 막지 않으므로 조용히 넘깁니다.
+          });
       }
     </script>
   </body>
