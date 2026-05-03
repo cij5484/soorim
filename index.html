@@ -764,15 +764,54 @@
         cursor: pointer;
       }
 
+      .help-category-wrap {
+        padding: 10px 12px 0;
+        background: #ffffff;
+        border-bottom: 1px solid #eef2f7;
+      }
+
+      .help-category-scroll {
+        display: flex;
+        gap: 8px;
+        overflow-x: auto;
+        scroll-behavior: smooth;
+        padding-bottom: 10px;
+      }
+
+      .help-category-scroll::-webkit-scrollbar {
+        display: none;
+      }
+
+      .help-category-btn {
+        flex: 0 0 auto;
+        height: 42px;
+        padding: 0 18px;
+        border: none;
+        border-radius: 999px;
+        background: #dbeafe;
+        color: #1e3a5f;
+        font-size: 15px;
+        font-weight: 900;
+        cursor: pointer;
+        white-space: nowrap;
+        box-shadow: 0 2px 6px rgba(15, 23, 42, 0.08);
+      }
+
+      .help-category-btn.active {
+        background: #1f4e79;
+        color: #ffffff;
+        box-shadow: 0 4px 10px rgba(31, 78, 121, 0.28);
+      }
+
       .help-tab-wrap {
         display: grid;
         grid-template-columns: 38px 1fr 38px;
         align-items: center;
         gap: 8px;
-        padding: 12px;
+        padding: 8px 12px 12px;
         border-bottom: 1px solid #e5e7eb;
-        background: #ffffff;
-        box-shadow: 0 4px 10px rgba(15, 23, 42, 0.06);
+        background: #f8fafc;
+        box-shadow: inset 0 1px 0 #eef2f7;
         position: relative;
         z-index: 2;
       }
@@ -784,6 +823,20 @@
         scroll-behavior: smooth;
         padding-bottom: 2px;
       }
+      
+      .help-tab-scroll {
+        cursor: grab;
+        user-select: none;
+      }
+
+      .help-tab-scroll.dragging {
+        cursor: grabbing;
+        scroll-behavior: auto;
+      }
+
+      .help-tab-scroll.dragging .help-tab-btn {
+        pointer-events: none;
+      }
 
       .help-tab-scroll::-webkit-scrollbar {
         display: none;
@@ -791,22 +844,22 @@
 
       .help-tab-btn {
         flex: 0 0 auto;
-        height: 38px;
-        padding: 0 14px;
-        border: 1px solid #cbd5e1;
-        border-radius: 999px;
-        background: #f3f4f6;
-        color: #1f2d3d;
-        font-size: 14px;
-        font-weight: 900;
+        height: 34px;
+        padding: 0 13px;
+        border-radius: 10px;
+        border: 1px solid #d1d9e6;
+        background: #ffffff;
+        color: #475569;
+        font-size: 13px;
+        font-weight: 800;
         cursor: pointer;
         white-space: nowrap;
       }
 
       .help-tab-btn.active {
-        background: #1f4e79;
-        border-color: #1f4e79;
-        color: white;
+        background: #eff6ff;
+        color: #1d4ed8;
+        border-color: #93c5fd;
       }
 
       .help-tab-arrow {
@@ -863,6 +916,102 @@
         line-height: 1.75;
       }
 
+      .help-button-list {
+        display: grid;
+        gap: 10px;
+        margin-top: 10px;
+      }
+
+      .help-button-item {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 10px 12px;
+        border: 1px solid #e5e7eb;
+        border-radius: 10px;
+        background: #ffffff;
+      }
+
+      .help-button-sample {
+        flex: 0 0 auto;
+        min-width: 64px;
+        height: 34px;
+        padding: 0 12px;
+        border: none;
+        border-radius: 8px;
+        background: #e5e7eb;
+        color: #111827;
+        font-size: 14px;
+        font-weight: 900;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        box-sizing: border-box;
+      }
+
+      .help-button-sample.blue {
+        background: #2563eb;
+        color: white;
+      }
+
+      .help-button-sample.red {
+        background: #ef4444;
+        color: white;
+      }
+
+      .help-button-sample.yellow {
+        background: #ffb703;
+        color: #1f2d3d;
+      }
+
+      .help-button-sample.green {
+        background: #dcfce7;
+        color: #166534;
+        border: 1px solid #86efac;
+      }
+
+      .help-button-sample.dark {
+        background: #1f4e79;
+        color: white;
+      }
+
+      .help-button-sample.light {
+        background: #f3f4f6;
+        color: #1f2d3d;
+        border: 1px solid #cbd5e1;
+      }
+
+      .help-button-sample.circle {
+        min-width: 34px;
+        width: 34px;
+        padding: 0;
+        border-radius: 999px;
+      }
+
+      .help-button-desc {
+        font-size: 14px;
+        line-height: 1.6;
+        color: #374151;
+        word-break: keep-all;
+      }
+
+      @media (min-width: 769px) {
+        .help-button-sample {
+          min-width: 72px;
+          height: 38px;
+          font-size: 15px;
+        }
+
+        .help-button-sample.circle {
+          min-width: 38px;
+          width: 38px;
+        }
+
+        .help-button-desc {
+          font-size: 15px;
+        }
+      }
+
       .help-related-btn {
         width: 100%;
         height: 44px;
@@ -911,6 +1060,18 @@
           font-size: 16px;
         }
 
+        .help-category-btn {
+          height: 46px;
+          padding: 0 22px;
+          font-size: 16px;
+        }
+
+        .help-tab-btn {
+          height: 36px;
+          padding: 0 14px;
+          font-size: 14px;
+        }
+
         .help-content {
           padding: 24px 32px;
           max-height: calc(88vh - 165px);
@@ -957,9 +1118,25 @@
           font-size: 12px;
         }
 
+        .help-category-wrap {
+          padding: 8px 10px 0;
+        }
+
+        .help-category-btn {
+          height: 36px;
+          padding: 0 14px;
+          font-size: 13px;
+        }
+
+        .help-tab-btn {
+          height: 32px;
+          padding: 0 12px;
+          font-size: 12px;
+        }
+
         .help-tab-wrap {
           grid-template-columns: 1fr;
-          padding: 10px;
+          padding: 8px 10px 10px;
         }
 
         .help-tab-arrow {
@@ -1847,6 +2024,19 @@
         margin-right: 0;
         padding-left: 6px;
         padding-right: 6px;
+      }
+
+      /* PC 테이블맵에서도 일간 상단 버튼 위치 고정 */
+      @media (min-width: 769px) {
+        body:has(#seat-map-view[style*="block"]) #day-view-header {
+          width: 100%;
+          max-width: 1000px;
+          margin-left: auto;
+          margin-right: auto;
+          padding-left: 20px;
+          padding-right: 20px;
+          box-sizing: border-box;
+        }
       }
 
       .hall-map {
@@ -4780,34 +4970,33 @@
         />
       </div>
 
-      <!-- 오른쪽: 월 주 일 -->
+          <!-- 오른쪽: 사용법 / 로그인 / 로그아웃 -->
+          <div id="auth-actions">
+            <button
+              id="usage-btn"
+              type="button"
+              onclick="openHelpModal()"
+              title="사용법"
+            >
+              사용법
+            </button>
 
-      <div id="auth-actions">
-        <button
-          id="login-btn"
-          onclick="showLogin()"
-          style="background: #2563eb; color: white"
-        >
-          로그인
-        </button>
+            <button
+              id="login-btn"
+              onclick="showLogin()"
+              style="background: #2563eb; color: white"
+            >
+              로그인
+            </button>
 
-        <button
-          id="usage-btn"
-          type="button"
-          onclick="openHelpModal()"
-          title="사용법"
-        >
-          사용법
-        </button>
-
-        <button
-          id="logout-btn"
-          onclick="logout()"
-          style="background: #ef4444; color: white"
-        >
-          로그아웃
-        </button>
-      </div>
+            <button
+              id="logout-btn"
+              onclick="logout()"
+              style="background: #ef4444; color: white; display: none"
+            >
+              로그아웃
+            </button>
+          </div>
     </header>
 
     <main>
@@ -4839,6 +5028,12 @@
           </button>
         </div>
 
+        <div class="help-category-wrap">
+          <div id="help-category-scroll" class="help-category-scroll">
+            <!-- 큰 카테고리 버튼들이 여기에 자동으로 들어갑니다 -->
+          </div>
+        </div>
+
         <div class="help-tab-wrap">
           <button
             type="button"
@@ -4850,7 +5045,7 @@
           </button>
 
           <div id="help-tab-scroll" class="help-tab-scroll">
-            <!-- help-data.js의 제목 버튼들이 여기에 자동으로 들어갑니다 -->
+            <!-- 선택한 카테고리 안의 세부 항목들이 여기에 자동으로 들어갑니다 -->
           </div>
 
           <button
@@ -5438,9 +5633,32 @@
 
       /* ====== 사용설명서 모달 ====== */
       let currentHelpSectionId = null;
+      let currentHelpCategory = null;
 
       function getHelpSections() {
         return Array.isArray(window.HELP_SECTIONS) ? window.HELP_SECTIONS : [];
+      }
+
+      function getHelpCategories(sections) {
+        if (Array.isArray(window.HELP_CATEGORIES) && window.HELP_CATEGORIES.length > 0) {
+          return window.HELP_CATEGORIES;
+        }
+
+        const categories = [];
+        sections.forEach((section) => {
+          const category = section.category || "기타";
+          if (!categories.includes(category)) {
+            categories.push(category);
+          }
+        });
+
+        return categories;
+      }
+
+      function getSectionsByCategory(category) {
+        return getHelpSections().filter((section) => {
+          return (section.category || "기타") === category;
+        });
       }
 
       function helpEscapeHtml(value) {
@@ -5453,21 +5671,61 @@
       }
 
       function renderHelpTabs() {
+        const categoryScroll = document.getElementById("help-category-scroll");
         const tabScroll = document.getElementById("help-tab-scroll");
         if (!tabScroll) return;
 
         const sections = getHelpSections();
 
         if (sections.length === 0) {
+          if (categoryScroll) {
+            categoryScroll.innerHTML = `<button type="button" class="help-category-btn active">준비중</button>`;
+          }
+
           tabScroll.innerHTML = `<button type="button" class="help-tab-btn active">준비중</button>`;
           return;
         }
 
-        if (!currentHelpSectionId) {
-          currentHelpSectionId = sections[0].id;
+        const categories = getHelpCategories(sections);
+
+        if (!currentHelpCategory || !categories.includes(currentHelpCategory)) {
+          currentHelpCategory = sections[0].category || categories[0] || "기타";
         }
 
-        tabScroll.innerHTML = sections
+        const sectionsInCategory = getSectionsByCategory(currentHelpCategory);
+
+        if (
+          !currentHelpSectionId ||
+          !sectionsInCategory.some((section) => section.id === currentHelpSectionId)
+        ) {
+          currentHelpSectionId = sectionsInCategory[0]?.id || sections[0].id;
+        }
+
+        if (categoryScroll) {
+          categoryScroll.innerHTML = categories
+            .map((category) => {
+              const activeClass = category === currentHelpCategory ? " active" : "";
+
+              return `
+                <button
+                  type="button"
+                  class="help-category-btn${activeClass}"
+                  data-help-category="${helpEscapeHtml(category)}"
+                >
+                  ${helpEscapeHtml(category)}
+                </button>
+              `;
+            })
+            .join("");
+
+          categoryScroll.querySelectorAll(".help-category-btn").forEach((btn) => {
+            btn.addEventListener("click", () => {
+              selectHelpCategory(btn.dataset.helpCategory);
+            });
+          });
+        }
+
+        tabScroll.innerHTML = sectionsInCategory
           .map((section) => {
             const activeClass =
               section.id === currentHelpSectionId ? " active" : "";
@@ -5485,7 +5743,13 @@
           .join("");
 
         tabScroll.querySelectorAll(".help-tab-btn").forEach((btn) => {
-          btn.addEventListener("click", () => {
+          btn.addEventListener("click", (event) => {
+            if (window.helpTabDidDrag) {
+              event.preventDefault();
+              window.helpTabDidDrag = false;
+              return;
+            }
+
             selectHelpSection(btn.dataset.helpId);
           });
         });
@@ -5516,19 +5780,45 @@
         const steps = Array.isArray(section.steps) ? section.steps : [];
         const caution = Array.isArray(section.caution) ? section.caution : [];
 
+        const buttonExamples = Array.isArray(section.buttonExamples)
+          ? section.buttonExamples
+          : [];
+
         content.innerHTML = `
           <h3>${helpEscapeHtml(section.title)}</h3>
-          <div class="help-en-title">${helpEscapeHtml(section.titleEn || "")}</div>
-
+          
           <div class="help-box">
             ${helpEscapeHtml(section.description || "")}
           </div>
 
-          <div class="help-box">
+                    <div class="help-box">
             <strong>사용 방법</strong>
-            <ol>
-              ${steps.map((text) => `<li>${helpEscapeHtml(text)}</li>`).join("")}
-            </ol>
+            ${
+              buttonExamples.length
+                ? `
+                  <div class="help-button-list">
+                    ${buttonExamples
+                      .map(
+                        (item) => `
+                          <div class="help-button-item">
+                            <div class="help-button-sample ${helpEscapeHtml(item.className || "")}">
+                              ${helpEscapeHtml(item.label || "")}
+                            </div>
+                            <div class="help-button-desc">
+                              ${helpEscapeHtml(item.description || "")}
+                            </div>
+                          </div>
+                        `
+                      )
+                      .join("")}
+                  </div>
+                `
+                : `
+                  <ol>
+                    ${steps.map((text) => `<li>${helpEscapeHtml(text)}</li>`).join("")}
+                  </ol>
+                `
+            }
           </div>
 
           <div class="help-box warning">
@@ -5537,6 +5827,7 @@
               ${caution.map((text) => `<li>${helpEscapeHtml(text)}</li>`).join("")}
             </ul>
           </div>
+          
 
           ${
             section.relatedSectionId
@@ -5553,17 +5844,33 @@
               `
               : ""
           }
-
-          <div class="help-box">
-            <strong>베트남어 간단 안내</strong>
-            <div class="help-manager-note">
-              ${helpEscapeHtml(section.managerNote || "")}
-            </div>
-          </div>
+          
         `;
       }
 
+      function selectHelpCategory(category) {
+        currentHelpCategory = category;
+
+        const sectionsInCategory = getSectionsByCategory(category);
+        currentHelpSectionId = sectionsInCategory[0]?.id || null;
+
+        renderHelpTabs();
+        renderHelpContent();
+
+        const content = document.getElementById("help-content");
+        if (content) {
+          content.scrollTop = 0;
+        }
+      }
+
       function selectHelpSection(sectionId) {
+        const sections = getHelpSections();
+        const targetSection = sections.find((section) => section.id === sectionId);
+
+        if (targetSection) {
+          currentHelpCategory = targetSection.category || "기타";
+        }
+
         currentHelpSectionId = sectionId;
         renderHelpTabs();
         renderHelpContent();
@@ -5576,6 +5883,15 @@
         const activeTab = document.querySelector(".help-tab-btn.active");
         if (activeTab) {
           activeTab.scrollIntoView({
+            behavior: "smooth",
+            inline: "center",
+            block: "nearest",
+          });
+        }
+
+        const activeCategory = document.querySelector(".help-category-btn.active");
+        if (activeCategory) {
+          activeCategory.scrollIntoView({
             behavior: "smooth",
             inline: "center",
             block: "nearest",
@@ -5615,6 +5931,111 @@
       window.closeHelpModal = closeHelpModal;
       window.moveHelpTabs = moveHelpTabs;
       window.selectHelpSection = selectHelpSection;
+      window.selectHelpCategory = selectHelpCategory;
+
+      /* ====== PC 사용설명서 탭 마우스 드래그 ====== */
+      let helpTabDragStartX = 0;
+      let helpTabDragStartScrollLeft = 0;
+      let isHelpTabMouseDown = false;
+      let isHelpTabDragging = false;
+      const HELP_TAB_DRAG_THRESHOLD = 6;
+
+      window.helpTabDidDrag = false;
+
+      document.addEventListener("mousedown", (event) => {
+        const tabScroll = document.getElementById("help-tab-scroll");
+        if (!tabScroll) return;
+        if (window.innerWidth <= 768) return;
+        if (!tabScroll.contains(event.target)) return;
+
+        isHelpTabMouseDown = true;
+        isHelpTabDragging = false;
+        window.helpTabDidDrag = false;
+
+        helpTabDragStartX = event.pageX;
+        helpTabDragStartScrollLeft = tabScroll.scrollLeft;
+      });
+
+      document.addEventListener("mousemove", (event) => {
+        if (!isHelpTabMouseDown) return;
+
+        const tabScroll = document.getElementById("help-tab-scroll");
+        if (!tabScroll) return;
+
+        const moveX = event.pageX - helpTabDragStartX;
+
+        if (!isHelpTabDragging && Math.abs(moveX) < HELP_TAB_DRAG_THRESHOLD) {
+          return;
+        }
+
+        isHelpTabDragging = true;
+        window.helpTabDidDrag = true;
+
+        tabScroll.classList.add("dragging");
+        tabScroll.scrollLeft = helpTabDragStartScrollLeft - moveX;
+      });
+
+      document.addEventListener("mouseup", () => {
+        const tabScroll = document.getElementById("help-tab-scroll");
+
+        if (tabScroll) {
+          tabScroll.classList.remove("dragging");
+        }
+
+        isHelpTabMouseDown = false;
+        isHelpTabDragging = false;
+
+        setTimeout(() => {
+          window.helpTabDidDrag = false;
+        }, 0);
+      });
+
+      document.addEventListener("mouseleave", () => {
+        const tabScroll = document.getElementById("help-tab-scroll");
+
+        if (tabScroll) {
+          tabScroll.classList.remove("dragging");
+        }
+
+        isHelpTabMouseDown = false;
+        isHelpTabDragging = false;
+
+        setTimeout(() => {
+          window.helpTabDidDrag = false;
+        }, 0);
+      });
+
+      document.addEventListener("mousemove", (event) => {
+        if (!isHelpTabDragging) return;
+
+        const tabScroll = document.getElementById("help-tab-scroll");
+        if (!tabScroll) return;
+
+        const moveX = event.pageX - helpTabDragStartX;
+        tabScroll.scrollLeft = helpTabDragStartScrollLeft - moveX;
+      });
+
+      document.addEventListener("mouseup", () => {
+        if (!isHelpTabDragging) return;
+
+        const tabScroll = document.getElementById("help-tab-scroll");
+        if (tabScroll) {
+          tabScroll.classList.remove("dragging");
+        }
+
+        isHelpTabDragging = false;
+      });
+
+      document.addEventListener("mouseleave", () => {
+        if (!isHelpTabDragging) return;
+
+        const tabScroll = document.getElementById("help-tab-scroll");
+        if (tabScroll) {
+          tabScroll.classList.remove("dragging");
+        }
+
+        isHelpTabDragging = false;
+      });
 
       document.addEventListener("keydown", (event) => {
         if (event.key === "Escape") {
@@ -5622,14 +6043,30 @@
         }
       });
 
-      document.addEventListener("click", (event) => {
-        const helpModal = document.getElementById("help-modal");
-        if (!helpModal) return;
+      function setupBackdropClose(modalId, closeFn) {
+        const modalBg = document.getElementById(modalId);
+        if (!modalBg) return;
 
-        if (event.target === helpModal) {
-          closeHelpModal();
-        }
-      });
+        let startedOnBackdrop = false;
+
+        modalBg.addEventListener("pointerdown", (event) => {
+          startedOnBackdrop = event.target === modalBg;
+        });
+
+        modalBg.addEventListener("pointerup", (event) => {
+          if (startedOnBackdrop && event.target === modalBg) {
+            closeFn();
+          }
+
+          startedOnBackdrop = false;
+        });
+
+        modalBg.addEventListener("pointercancel", () => {
+          startedOnBackdrop = false;
+        });
+      }
+
+      setupBackdropClose("help-modal", closeHelpModal);
 
       async function deleteReservationFromModal() {
         const targetId = editingReservationId || reservations[editingIndex]?.id;
@@ -12826,27 +13263,11 @@ ${
         document.getElementById("total-people").textContent = adult + child;
       }
 
-      document.getElementById("modal").addEventListener("click", function (e) {
-        if (e.target === this) {
-          closeModal();
-        }
-      });
+      setupBackdropClose("modal", closeModal);
 
-      document
-        .getElementById("import-modal")
-        .addEventListener("click", function (e) {
-          if (e.target === this) {
-            closeImportModal();
-          }
-        });
+      setupBackdropClose("import-modal", closeImportModal);
 
-      document
-        .getElementById("import-preview-modal")
-        .addEventListener("click", function (e) {
-          if (e.target === this) {
-            closeImportPreviewModal();
-          }
-        });
+      setupBackdropClose("import-preview-modal", closeImportPreviewModal);
 
       document
         .getElementById("search-modal")
@@ -12949,27 +13370,11 @@ ${
 
       updateTotalPeople();
 
-      document.getElementById("modal").addEventListener("click", function (e) {
-        if (e.target === this) {
-          closeModal();
-        }
-      });
+      setupBackdropClose("modal", closeModal);
 
-      document
-        .getElementById("import-modal")
-        .addEventListener("click", function (e) {
-          if (e.target === this) {
-            closeImportModal();
-          }
-        });
+      setupBackdropClose("import-modal", closeImportModal);
 
-      document
-        .getElementById("import-preview-modal")
-        .addEventListener("click", function (e) {
-          if (e.target === this) {
-            closeImportPreviewModal();
-          }
-        });
+      setupBackdropClose("import-preview-modal", closeImportPreviewModal);
 
       document.addEventListener("keydown", function (e) {
         if (e.key === "Escape") {
