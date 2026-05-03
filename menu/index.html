@@ -60,10 +60,14 @@
     .store-name {
       position: relative;
       z-index: 1;
-      font-size: 30px;
+      font-size: clamp(24px, 7vw, 30px);
       font-weight: 900;
       letter-spacing: -0.5px;
       margin: 0;
+      white-space: nowrap;
+      min-width: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
 
     .store-title-row {
@@ -71,13 +75,14 @@
       z-index: 1;
       display: flex;
       align-items: center;
-      gap: 10px;
+      gap: 8px;
+      min-width: 0;
     }
 
     .wifi-qr-btn {
       flex: 0 0 auto;
-      width: 36px;
-      height: 36px;
+      width: 34px;
+      height: 34px;
       padding: 2px;
       border: 1px solid rgba(255,255,255,0.35);
       border-radius: 10px;
@@ -245,9 +250,14 @@
     .store-subtitle {
       position: relative;
       z-index: 1;
-      margin: 8px 0 0;
-      font-size: 15px;
-      color: rgba(255,255,255,0.84);
+      margin: 5px 0 0;
+      font-size: 13px;
+      font-weight: 700;
+      color: rgba(255,255,255,0.72);
+      letter-spacing: -0.2px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
 
     .language-bar {
@@ -1107,9 +1117,9 @@
           EVENT
         </button>
       </div>
-      
-      <p class="store-subtitle" data-i18n="storeSubtitle">해운대 수림횟집 메뉴판 · 코스 · 사시미 · 식사 · 주류</p>
 
+      <p class="store-subtitle" data-i18n="storeSubtitle">사시미 & 해산물 전문점</p>
+      
       <div class="language-bar">
         <button class="lang-btn active" data-lang="ko">한국어</button>
         <button class="lang-btn" data-lang="en">English</button>
@@ -1333,7 +1343,7 @@
     const translations = {
       ko: {
         storeName: "수림횟집",
-        storeSubtitle: "해운대 수림횟집 메뉴판 · 코스 · 사시미 · 식사 · 주류",
+        storeSubtitle: "생선 & 해산물 전문점",
         mainTitle: "B코스",
         mainDesc: "수림횟집 대표 코스 메뉴 · 고급모듬회와 다양한 해산물을 함께 즐길 수 있는 인기 메뉴입니다.",
 
@@ -1350,8 +1360,8 @@
       },
 
       en: {
-        storeName: "Soorim Seafood Restaurant",
-        storeSubtitle: "Haeundae Soorim Menu · Courses · Sashimi · Meals · Drinks",
+        storeName: "Soorim",
+        storeSubtitle: "Sashimi & Seafood Restaurant",
         mainTitle: "B Course",
         mainDesc: "Soorim’s signature course menu. Enjoy premium assorted sashimi and a variety of seafood dishes.",
 
@@ -1368,8 +1378,8 @@
       },
 
       ja: {
-        storeName: "海雲台スリム海鮮料理店",
-        storeSubtitle: "海雲台スリム海鮮料理店 メニュー · コース · 刺身 · 食事 · ドリンク",
+        storeName: "スリム",
+        storeSubtitle: "刺身・海鮮料理店",
         mainTitle: "Bコース",
         mainDesc: "海雲台スリム海鮮料理店の代表コースです。高級盛り合わせ刺身とさまざまな海鮮料理を一緒に楽しめます。",
 
@@ -1386,8 +1396,8 @@
       },
 
       zh: {
-        storeName: "水林生鱼片店",
-        storeSubtitle: "海云台水林生鱼片店菜单 · 套餐 · 生鱼片 · 餐食 · 酒水",
+        storeName: "水林",
+        storeSubtitle: "生鱼片 · 海鲜餐厅",
         mainTitle: "B套餐",
         mainDesc: "水林的招牌套餐。可以同时享用高级综合生鱼片和多种海鲜料理。",
 
@@ -1404,8 +1414,8 @@
       },
 
       vi: {
-        storeName: "Nhà hàng hải sản Soorim",
-        storeSubtitle: "Thực đơn Soorim Haeundae · Set món · Sashimi · Món ăn · Đồ uống",
+        storeName: "Soorim",
+        storeSubtitle: "Nhà hàng sashimi & hải sản",
         mainTitle: "Set B",
         mainDesc: "Set món đại diện của Soorim. Bao gồm sashimi cao cấp và nhiều món hải sản đa dạng.",
 
@@ -1422,8 +1432,8 @@
       },
 
       fil: {
-        storeName: "Soorim Seafood Restaurant",
-        storeSubtitle: "Menu ng Soorim Haeundae · Course · Sashimi · Meals · Drinks",
+        storeName: "Soorim",
+        storeSubtitle: "Sashimi & Seafood Restaurant",
         mainTitle: "B Course",
         mainDesc: "Signature course ng Soorim. May premium assorted sashimi at iba’t ibang seafood dishes.",
 
@@ -1440,8 +1450,8 @@
       },
 
       ru: {
-        storeName: "Ресторан морепродуктов Soorim",
-        storeSubtitle: "Меню Soorim в Хэундэ · Сеты · Сашими · Блюда · Напитки",
+        storeName: "Soorim",
+        storeSubtitle: "Сашими и морепродукты",
         mainTitle: "Сет B",
         mainDesc: "Фирменный сет Soorim. Включает премиальное ассорти сашими и разные блюда из морепродуктов.",
 
@@ -1458,8 +1468,8 @@
       },
 
       mn: {
-        storeName: "Soorim далайн хоолны ресторан",
-        storeSubtitle: "Haeundae Soorim цэс · Сет · Сашими · Хоол · Ундаа",
+        storeName: "Soorim",
+        storeSubtitle: "Сашими ба далайн хоол",
         mainTitle: "B сет",
         mainDesc: "Soorim рестораны төлөөлөх сет меню. Дээд зэрэглэлийн сашими болон олон төрлийн далайн хоол багтсан.",
 
@@ -1754,13 +1764,14 @@
           mn: "20,000 KRW-с"
         },
         desc: {
-          ko: "차갑고 매콤한 물회 소스에 생선회와 채소를 함께 먹는 수림횟집 인기 메뉴입니다.",
-          en: "A popular cold and spicy raw fish dish with vegetables and mulhoe sauce.",
-          ja: "冷たく辛いムルフェ（冷たい辛味刺身スープ）ソースに刺身と野菜を混ぜて食べる人気メニューです。",
-          zh: "将生鱼片和蔬菜与冰凉微辣的水会酱汁一起拌食的人气菜单。",
-          vi: "Món cá sống lạnh cay nhẹ, ăn cùng rau và nước sốt mulhoe.",
-          ru: "Популярное холодное острое блюдо из сырой рыбы, овощей и соуса мульхве.",
-          mn: "Түүхий загас, ногоо, сэрүүн халуун ногоотой соустай алдартай хоол."
+          ko: "차갑고 매콤달콤한 물회 소스에 생선회와 채소를 함께 먹는 수림횟집 인기 메뉴입니다. 다양한 과일을 갈아 넣어 직접 개발한 특제 소스를 사용합니다.",
+          en: "A popular cold, sweet-and-spicy sashimi soup with raw fish, vegetables, and Soorim’s special house sauce made with blended fruits.",
+          ja: "冷たく甘辛いムルフェソースに刺身と野菜を混ぜて食べる人気メニューです。さまざまな果物をすり入れて開発した自家製特製ソースを使用しています。",
+          zh: "将生鱼片和蔬菜与冰凉酸甜微辣的水会酱汁一起拌食的人气菜单。酱汁为本店使用多种水果研磨后研发的特制酱汁。",
+          vi: "Món cá sống lạnh vị ngọt cay nhẹ, ăn cùng rau và sốt mulhoe đặc biệt của Soorim được xay từ nhiều loại trái cây.",
+          fil: "A popular cold, sweet-and-spicy sashimi soup with raw fish, vegetables, and Soorim’s special house sauce made with blended fruits.",
+          ru: "Популярное холодное сладко-острое блюдо из сырой рыбы и овощей с фирменным соусом Soorim, приготовленным с измельченными фруктами.",
+          mn: "Түүхий загас, ногоо, жимсээр хийсэн Soorim-ийн тусгай соустай, хүйтэн, чихэрлэг халуун ногоотой алдартай хоол."
         }
       },
       {
@@ -2520,7 +2531,7 @@
         rawTag: "날음식 포함",
         mealTag: "식사 메뉴",
         bestTag: "★ BEST",
-        spicyColdTag: "차갑고 매콤함",
+        spicyColdTag: "차갑고 매콤달콤함",
         winterTag: "겨울 한정",
         howToEat: "먹는 방법"
       },
@@ -2530,7 +2541,7 @@
         rawTag: "Includes raw food",
         mealTag: "Meal",
         bestTag: "★ BEST",
-        spicyColdTag: "Cold & spicy",
+        spicyColdTag: "Cold, sweet & spicy",
         winterTag: "Winter only",
         howToEat: "How to eat"
       },
@@ -2540,7 +2551,7 @@
         rawTag: "生もの含む",
         mealTag: "食事",
         bestTag: "★ BEST",
-        spicyColdTag: "冷たく辛い",
+        spicyColdTag: "冷たく甘辛い",
         winterTag: "冬限定",
         howToEat: "食べ方"
       },
@@ -2550,7 +2561,7 @@
         rawTag: "含生食",
         mealTag: "餐食",
         bestTag: "★ BEST",
-        spicyColdTag: "冰凉微辣",
+        spicyColdTag: "冰凉酸甜微辣",
         winterTag: "冬季限定",
         howToEat: "食用方法"
       },
@@ -2560,7 +2571,7 @@
         rawTag: "Có món sống",
         mealTag: "Món ăn",
         bestTag: "★ BEST",
-        spicyColdTag: "Lạnh & cay",
+        spicyColdTag: "Lạnh, ngọt & cay",
         winterTag: "Chỉ mùa đông",
         howToEat: "Cách ăn"
       },
@@ -2570,7 +2581,7 @@
         rawTag: "May raw food",
         mealTag: "Meal",
         bestTag: "★ BEST",
-        spicyColdTag: "Cold & spicy",
+        spicyColdTag: "Cold, sweet & spicy",
         winterTag: "Winter only",
         howToEat: "Paano kainin"
       },
@@ -2580,7 +2591,7 @@
         rawTag: "Есть сырые продукты",
         mealTag: "Блюдо",
         bestTag: "★ BEST",
-        spicyColdTag: "Холодное и острое",
+        spicyColdTag: "Холодное, сладко-острое",
         winterTag: "Только зимой",
         howToEat: "Как есть"
       },
@@ -2590,7 +2601,7 @@
         rawTag: "Түүхий хоол орсон",
         mealTag: "Хоол",
         bestTag: "★ BEST",
-        spicyColdTag: "Хүйтэн, халуун ногоотой",
+        spicyColdTag: "Хүйтэн, чихэрлэг халуун ногоотой",
         winterTag: "Зөвхөн өвөл",
         howToEat: "Идэх арга"
       }
@@ -2712,13 +2723,14 @@
           mn: "Мулхве"
         },
         desc: {
-          ko: "차갑고 매콤한 물회 소스에 생선회와 채소를 함께 먹는 수림횟집 인기 메뉴입니다. 매운탕, 공기밥, 소면이 포함되며, 매운탕은 맵지 않은 지리탕으로 변경 가능합니다.",
-          en: "A popular cold and spicy raw fish dish with vegetables and mulhoe sauce. Includes fish stew, rice, and noodles; the stew can be changed to clear soup.",
-          ja: "冷たく辛いムルフェ（冷たい辛味刺身スープ）ソースに刺身と野菜を混ぜて食べる人気メニューです。魚鍋、ご飯、素麺付きで、魚鍋は澄ましスープに変更できます。",
-          zh: "将生鱼片和蔬菜与冰凉微辣的水会酱汁一起拌食的人气菜单。包含鱼汤、米饭和素面，鱼汤可换成清汤。",
-          vi: "Món cá sống lạnh cay nhẹ ăn cùng rau và sốt mulhoe. Bao gồm canh cá, cơm và mì; canh có thể đổi sang canh trong.",
-          ru: "Популярное холодное острое блюдо из сырой рыбы, овощей и соуса мульхве. Включает суп, рис и лапшу; суп можно заменить на прозрачный.",
-          mn: "Түүхий загас, ногоо, сэрүүн халуун ногоотой соустай алдартай хоол. Загасны шөл, будаа, гоймон багтана; шөлийг тунгалаг шөлөөр сольж болно."
+          ko: "차갑고 매콤달콤한 물회 소스에 생선회와 채소를 함께 먹는 수림횟집 인기 메뉴입니다. 다양한 과일을 갈아 넣어 직접 개발한 특제 소스를 사용합니다. 매운탕, 공기밥, 소면이 포함되며, 매운탕은 맵지 않은 지리탕으로 변경 가능합니다.",
+          en: "A popular cold, sweet-and-spicy sashimi soup with raw fish, vegetables, and Soorim’s special house sauce made with blended fruits. Includes fish stew, rice, and noodles; the stew can be changed to clear soup.",
+          ja: "冷たく甘辛いムルフェソースに刺身と野菜を混ぜて食べる人気メニューです。さまざまな果物をすり入れて開発した自家製特製ソースを使用しています。魚鍋、ご飯、素麺付きで、魚鍋は澄ましスープに変更できます。",
+          zh: "将生鱼片和蔬菜与冰凉酸甜微辣的水会酱汁一起拌食的人气菜单。酱汁为本店使用多种水果研磨后研发的特制酱汁。包含鱼汤、米饭和素面，鱼汤可换成清汤。",
+          vi: "Món cá sống lạnh vị ngọt cay nhẹ, ăn cùng rau và sốt mulhoe đặc biệt của Soorim được xay từ nhiều loại trái cây. Bao gồm canh cá, cơm và mì; canh có thể đổi sang canh trong.",
+          fil: "A popular cold, sweet-and-spicy sashimi soup with raw fish, vegetables, and Soorim’s special house sauce made with blended fruits. Includes fish stew, rice, and noodles; the stew can be changed to clear soup.",
+          ru: "Популярное холодное сладко-острое блюдо из сырой рыбы и овощей с фирменным соусом Soorim, приготовленным с измельченными фруктами. Включает суп, рис и лапшу; суп можно заменить на прозрачный.",
+          mn: "Түүхий загас, ногоо, жимсээр хийсэн Soorim-ийн тусгай соустай, хүйтэн, чихэрлэг халуун ногоотой алдартай хоол. Загасны шөл, будаа, гоймон багтана; шөлийг тунгалаг шөлөөр сольж болно."
         },
         eating: {
           ko: "그릇 안에 물회 소스가 함께 들어있습니다. 생선회와 채소, 소스를 잘 섞어서 시원하게 드세요.",
