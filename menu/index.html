@@ -1,0 +1,964 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>수림횟집 메뉴판</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Noto Sans KR", Arial, sans-serif;
+      background: #f7f3ec;
+      color: #1f1f1f;
+      line-height: 1.55;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    .page {
+      max-width: 960px;
+      margin: 0 auto;
+      background: #fffaf3;
+      min-height: 100vh;
+      box-shadow: 0 0 30px rgba(0,0,0,0.08);
+    }
+
+    .hero {
+      position: relative;
+      padding: 28px 18px 20px;
+      background: linear-gradient(135deg, #17322b, #0f1f1b);
+      color: #fff;
+      overflow: hidden;
+    }
+
+    .hero::after {
+      content: "";
+      position: absolute;
+      right: -70px;
+      top: -70px;
+      width: 180px;
+      height: 180px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.08);
+    }
+
+    .store-name {
+      position: relative;
+      z-index: 1;
+      font-size: 30px;
+      font-weight: 900;
+      letter-spacing: -0.5px;
+      margin: 0;
+    }
+
+    .store-subtitle {
+      position: relative;
+      z-index: 1;
+      margin: 8px 0 0;
+      font-size: 15px;
+      color: rgba(255,255,255,0.84);
+    }
+
+    .language-bar {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      gap: 8px;
+      overflow-x: auto;
+      padding: 18px 0 2px;
+      scrollbar-width: none;
+    }
+
+    .language-bar::-webkit-scrollbar {
+      display: none;
+    }
+
+    .lang-btn {
+      flex: 0 0 auto;
+      border: 1px solid rgba(255,255,255,0.25);
+      background: rgba(255,255,255,0.1);
+      color: #fff;
+      padding: 8px 12px;
+      border-radius: 999px;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .lang-btn.active {
+      background: #fff;
+      color: #17322b;
+    }
+
+    .main-visual {
+      padding: 16px;
+      background: #17322b;
+      color: #fff;
+    }
+
+    .main-photo {
+      width: 100%;
+      height: 250px;
+      object-fit: cover;
+      display: block;
+      border-radius: 22px;
+      background: #ddd;
+    }
+
+    .main-visual-text {
+      padding: 16px 4px 4px;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 5px 9px;
+      border-radius: 999px;
+      background: #e94b35;
+      color: #fff;
+      font-size: 12px;
+      font-weight: 800;
+      line-height: 1;
+    }
+
+    .main-title {
+      margin: 10px 0 4px;
+      font-size: 25px;
+      font-weight: 900;
+      letter-spacing: -0.5px;
+    }
+
+    .main-desc {
+      margin: 0;
+      color: rgba(255,255,255,0.86);
+      font-size: 14px;
+    }
+
+    .quick-nav-wrap {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      background: rgba(255,250,243,0.96);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid #eadfce;
+    }
+
+    .quick-nav {
+      display: flex;
+      gap: 8px;
+      overflow-x: auto;
+      padding: 11px 14px;
+      scrollbar-width: none;
+    }
+
+    .quick-nav::-webkit-scrollbar {
+      display: none;
+    }
+
+    .quick-link {
+      flex: 0 0 auto;
+      padding: 8px 12px;
+      border-radius: 999px;
+      background: #fff;
+      border: 1px solid #e5d7c4;
+      font-size: 13px;
+      font-weight: 800;
+      color: #3a2a1c;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+    }
+
+    section {
+      padding: 26px 16px;
+      border-bottom: 10px solid #f2eadf;
+      scroll-margin-top: 64px;
+    }
+
+    .section-title-row {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 14px;
+    }
+
+    .section-title {
+      margin: 0;
+      font-size: 23px;
+      font-weight: 900;
+      letter-spacing: -0.6px;
+    }
+
+    .section-note {
+      margin: 5px 0 0;
+      font-size: 13px;
+      color: #786b5b;
+    }
+
+    .featured-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 14px;
+    }
+
+    .featured-card {
+      overflow: hidden;
+      background: #fff;
+      border: 1px solid #eadfce;
+      border-radius: 20px;
+      box-shadow: 0 6px 18px rgba(0,0,0,0.06);
+    }
+
+    .featured-card img {
+      width: 100%;
+      height: 210px;
+      object-fit: cover;
+      display: block;
+      background: #ddd;
+    }
+
+    .featured-body {
+      padding: 15px;
+    }
+
+    .featured-kicker {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin-bottom: 8px;
+    }
+
+    .small-badge {
+      display: inline-flex;
+      padding: 4px 7px;
+      border-radius: 999px;
+      background: #17322b;
+      color: #fff;
+      font-size: 11px;
+      font-weight: 900;
+    }
+
+    .featured-title {
+      margin: 0;
+      font-size: 19px;
+      font-weight: 900;
+      letter-spacing: -0.4px;
+    }
+
+    .featured-price {
+      margin: 6px 0 8px;
+      font-size: 16px;
+      font-weight: 900;
+      color: #b13b25;
+    }
+
+    .featured-desc {
+      margin: 0;
+      font-size: 14px;
+      color: #51483d;
+    }
+
+    .menu-list {
+      display: grid;
+      gap: 10px;
+    }
+
+    .menu-card {
+      background: #fff;
+      border: 1px solid #eadfce;
+      border-radius: 16px;
+      padding: 15px;
+      box-shadow: 0 3px 10px rgba(0,0,0,0.035);
+    }
+
+    .menu-head {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .menu-name {
+      margin: 0;
+      font-size: 17px;
+      font-weight: 900;
+      letter-spacing: -0.3px;
+    }
+
+    .menu-price {
+      flex: 0 0 auto;
+      font-size: 16px;
+      font-weight: 900;
+      color: #b13b25;
+      white-space: nowrap;
+    }
+
+    .menu-desc {
+      margin: 8px 0 0;
+      font-size: 14px;
+      color: #51483d;
+    }
+
+    .price-lines {
+      margin-top: 9px;
+      display: grid;
+      gap: 5px;
+      font-size: 14px;
+      color: #332a22;
+    }
+
+    .notice-box {
+      margin-top: 14px;
+      padding: 13px 14px;
+      border-radius: 14px;
+      background: #fff4e1;
+      border: 1px solid #f1d4a6;
+      color: #5d4121;
+      font-size: 14px;
+      font-weight: 700;
+    }
+
+    details {
+      background: #fff;
+      border: 1px solid #eadfce;
+      border-radius: 16px;
+      overflow: hidden;
+    }
+
+    summary {
+      cursor: pointer;
+      padding: 16px;
+      font-size: 17px;
+      font-weight: 900;
+      list-style: none;
+    }
+
+    summary::-webkit-details-marker {
+      display: none;
+    }
+
+    summary::after {
+      content: "펼치기";
+      float: right;
+      font-size: 12px;
+      color: #8a7764;
+      margin-top: 4px;
+    }
+
+    details[open] summary::after {
+      content: "접기";
+    }
+
+    .details-content {
+      padding: 0 16px 16px;
+    }
+
+    .drink-group {
+      padding: 12px 0;
+      border-top: 1px solid #f0e5d6;
+    }
+
+    .drink-group:first-child {
+      border-top: 0;
+    }
+
+    .drink-title {
+      margin: 0 0 8px;
+      font-size: 15px;
+      font-weight: 900;
+    }
+
+    .drink-text {
+      margin: 0;
+      font-size: 14px;
+      color: #51483d;
+    }
+
+    .footer {
+      padding: 28px 16px 40px;
+      background: #17322b;
+      color: #fff;
+    }
+
+    .footer-title {
+      margin: 0 0 12px;
+      font-size: 20px;
+      font-weight: 900;
+    }
+
+    .footer-list {
+      margin: 0;
+      padding-left: 18px;
+      color: rgba(255,255,255,0.86);
+      font-size: 14px;
+    }
+
+    .footer-list li {
+      margin-bottom: 8px;
+    }
+
+    .top-button {
+      position: fixed;
+      right: 16px;
+      bottom: 16px;
+      width: 46px;
+      height: 46px;
+      border-radius: 999px;
+      border: 0;
+      background: #17322b;
+      color: #fff;
+      font-size: 18px;
+      font-weight: 900;
+      box-shadow: 0 6px 18px rgba(0,0,0,0.25);
+      cursor: pointer;
+      z-index: 20;
+    }
+
+    @media (min-width: 720px) {
+      .hero {
+        padding: 34px 26px 24px;
+      }
+
+      .store-name {
+        font-size: 38px;
+      }
+
+      .main-photo {
+        height: 420px;
+      }
+
+      .featured-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .featured-card img {
+        height: 230px;
+      }
+
+      section {
+        padding: 34px 24px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="page">
+
+    <header class="hero" id="top">
+      <h1 class="store-name">수림횟집</h1>
+      <p class="store-subtitle">해운대 수림횟집 메뉴판 · 코스 · 사시미 · 식사 · 주류</p>
+
+      <div class="language-bar">
+        <button class="lang-btn active">한국어</button>
+        <button class="lang-btn">English</button>
+        <button class="lang-btn">日本語</button>
+        <button class="lang-btn">中文</button>
+        <button class="lang-btn">Tiếng Việt</button>
+        <button class="lang-btn">Русский</button>
+        <button class="lang-btn">Монгол</button>
+      </div>
+    </header>
+
+    <div class="main-visual">
+      <img class="main-photo" src="images/b-course.jpg" alt="수림횟집 B코스 대표 사진">
+      <div class="main-visual-text">
+        <span class="badge">BEST</span>
+        <h2 class="main-title">B코스</h2>
+        <p class="main-desc">수림횟집 대표 코스 메뉴 · 고급모듬회와 다양한 해산물을 함께 즐길 수 있는 인기 메뉴입니다.</p>
+      </div>
+    </div>
+
+    <div class="quick-nav-wrap">
+      <nav class="quick-nav">
+        <a class="quick-link" href="#featured">대표메뉴</a>
+        <a class="quick-link" href="#course">코스메뉴</a>
+        <a class="quick-link" href="#sashimi">단품 사시미</a>
+        <a class="quick-link" href="#meal">식사메뉴</a>
+        <a class="quick-link" href="#lunch">점심특선</a>
+        <a class="quick-link" href="#extra-seafood">추가해산물</a>
+        <a class="quick-link" href="#extra-menu">추가메뉴</a>
+        <a class="quick-link" href="#drink">주류/음료</a>
+        <a class="quick-link" href="#guide">이용안내</a>
+      </nav>
+    </div>
+
+    <section id="featured">
+      <div class="section-title-row">
+        <div>
+          <h2 class="section-title">대표 메뉴</h2>
+          <p class="section-note">사진이 있는 수림횟집 추천 메뉴입니다.</p>
+        </div>
+      </div>
+
+      <div class="featured-grid">
+
+        <article class="featured-card">
+          <img src="images/b-course.jpg" alt="B코스">
+          <div class="featured-body">
+            <div class="featured-kicker">
+              <span class="small-badge">BEST</span>
+              <span class="small-badge">대표 코스</span>
+            </div>
+            <h3 class="featured-title">B코스</h3>
+            <p class="featured-price">1인 70,000원</p>
+            <p class="featured-desc">고급모듬회, 모듬해물, 맛보기 물회, 우럭탕수, 산낙지, 가리비찜, 매운탕이 포함된 대표 코스입니다.</p>
+          </div>
+        </article>
+
+        <article class="featured-card">
+          <img src="images/sashimi-red-sea-bream.jpg" alt="참돔 사시미">
+          <div class="featured-body">
+            <div class="featured-kicker">
+              <span class="small-badge">사시미</span>
+            </div>
+            <h3 class="featured-title">참돔 사시미</h3>
+            <p class="featured-price">소 120,000원</p>
+            <p class="featured-desc">담백하고 고급스러운 맛의 참돔 사시미입니다. 모듬해물, 맛보기 물회, 매운탕이 포함됩니다.</p>
+          </div>
+        </article>
+
+        <article class="featured-card">
+          <img src="images/mulhoe.jpg" alt="물회">
+          <div class="featured-body">
+            <div class="featured-kicker">
+              <span class="small-badge">BEST</span>
+              <span class="small-badge">인기 식사</span>
+            </div>
+            <h3 class="featured-title">물회</h3>
+            <p class="featured-price">일반 20,000원</p>
+            <p class="featured-desc">시원하고 매콤한 육수에 생선회와 채소를 함께 즐기는 수림횟집 인기 식사 메뉴입니다.</p>
+          </div>
+        </article>
+
+        <article class="featured-card">
+          <img src="images/hoedeopbap.jpg" alt="회덮밥">
+          <div class="featured-body">
+            <div class="featured-kicker">
+              <span class="small-badge">식사</span>
+            </div>
+            <h3 class="featured-title">회덮밥</h3>
+            <p class="featured-price">일반 17,000원</p>
+            <p class="featured-desc">생선회와 채소를 밥과 함께 비벼 먹는 식사 메뉴입니다. 매운탕과 공기밥이 포함됩니다.</p>
+          </div>
+        </article>
+
+        <article class="featured-card">
+          <img src="images/kids-donkatsu.jpg" alt="돈까스 정식">
+          <div class="featured-body">
+            <div class="featured-kicker">
+              <span class="small-badge">어린이</span>
+            </div>
+            <h3 class="featured-title">돈까스 정식</h3>
+            <p class="featured-price">10,000원</p>
+            <p class="featured-desc">등심 돈까스, 샐러드, 후리가케 밥으로 구성된 어린이 메뉴입니다.</p>
+          </div>
+        </article>
+
+        <article class="featured-card">
+          <img src="images/lunch-set.jpg" alt="회정식">
+          <div class="featured-body">
+            <div class="featured-kicker">
+              <span class="small-badge">점심특선</span>
+            </div>
+            <h3 class="featured-title">회정식</h3>
+            <p class="featured-price">1인 35,000원</p>
+            <p class="featured-desc">모듬회, 모듬해물, 맛보기 물회, 매운탕, 공기밥이 포함된 점심 대표 메뉴입니다.</p>
+          </div>
+        </article>
+
+        <article class="featured-card">
+          <img src="images/live-octopus.jpg" alt="산낙지">
+          <div class="featured-body">
+            <div class="featured-kicker">
+              <span class="small-badge">체험 메뉴</span>
+            </div>
+            <h3 class="featured-title">산낙지</h3>
+            <p class="featured-price">소 30,000원</p>
+            <p class="featured-desc">주문 후 손질되어 제공되며, 접시 위에서 움직일 수 있습니다. 천천히 꼭꼭 씹어 드세요.</p>
+          </div>
+        </article>
+
+      </div>
+    </section>
+
+    <section id="course">
+      <h2 class="section-title">수림 코스</h2>
+      <p class="section-note">2인 이상 주문 가능 · 모든 코스는 1인 가격입니다.</p>
+
+      <div class="menu-list">
+        <article class="menu-card">
+          <div class="menu-head">
+            <h3 class="menu-name">A코스</h3>
+            <div class="menu-price">50,000원</div>
+          </div>
+          <p class="menu-desc">모듬회 + 모듬해물 + 맛보기 물회 + 매운탕</p>
+        </article>
+
+        <article class="menu-card">
+          <div class="menu-head">
+            <h3 class="menu-name">B코스 <span class="small-badge">BEST</span></h3>
+            <div class="menu-price">70,000원</div>
+          </div>
+          <p class="menu-desc">고급모듬회 + 모듬해물 + 맛보기 물회 + 우럭탕수 + 산낙지 + 가리비찜 + 매운탕</p>
+        </article>
+
+        <article class="menu-card">
+          <div class="menu-head">
+            <h3 class="menu-name">C코스</h3>
+            <div class="menu-price">90,000원</div>
+          </div>
+          <p class="menu-desc">최고급모듬회 + 계절회 + 모듬해물 + 맛보기 물회 + 우럭탕수 + 산낙지 + 가리비찜 + 매운탕</p>
+        </article>
+      </div>
+    </section>
+
+    <section id="sashimi">
+      <h2 class="section-title">단품 사시미</h2>
+      <p class="section-note">모듬해물, 맛보기 물회, 매운탕 포함</p>
+
+      <div class="menu-list">
+        <article class="menu-card">
+          <h3 class="menu-name">참돔</h3>
+          <div class="price-lines">
+            <div>소 120,000원 / 중 170,000원 / 대 220,000원</div>
+          </div>
+        </article>
+
+        <article class="menu-card">
+          <h3 class="menu-name">줄돔</h3>
+          <div class="price-lines">
+            <div>소 160,000원 / 중 230,000원 / 대 300,000원</div>
+          </div>
+        </article>
+
+        <article class="menu-card">
+          <h3 class="menu-name">광어</h3>
+          <div class="price-lines">
+            <div>소 110,000원 / 중 160,000원 / 대 210,000원</div>
+          </div>
+        </article>
+
+        <article class="menu-card">
+          <h3 class="menu-name">우럭 / 농어</h3>
+          <div class="price-lines">
+            <div>소 110,000원 / 중 160,000원 / 대 210,000원</div>
+          </div>
+        </article>
+
+        <article class="menu-card">
+          <h3 class="menu-name">밀치</h3>
+          <div class="price-lines">
+            <div>소 110,000원 / 중 160,000원 / 대 210,000원</div>
+          </div>
+        </article>
+
+        <article class="menu-card">
+          <h3 class="menu-name">도다리 세꼬시</h3>
+          <div class="price-lines">
+            <div>소 100,000원 / 중 140,000원 / 대 180,000원</div>
+          </div>
+        </article>
+      </div>
+
+      <div class="notice-box">
+        회를 드신 후 매운탕을 꼭 요청해 주세요. 매운탕 조리 시간은 약 10분 정도 소요됩니다.
+      </div>
+    </section>
+
+    <section id="meal">
+      <h2 class="section-title">식사 메뉴</h2>
+
+      <div class="menu-list">
+        <article class="menu-card">
+          <h3 class="menu-name">생우럭 매운탕 / 지리탕</h3>
+          <div class="price-lines">
+            <div>소 30,000원 / 중 50,000원 / 대 70,000원</div>
+          </div>
+        </article>
+
+        <article class="menu-card">
+          <div class="menu-head">
+            <h3 class="menu-name">생대구탕</h3>
+            <div class="menu-price">22,000원</div>
+          </div>
+          <p class="menu-desc">겨울 한정 메뉴</p>
+        </article>
+
+        <article class="menu-card">
+          <h3 class="menu-name">회덮밥</h3>
+          <div class="price-lines">
+            <div>일반 17,000원</div>
+            <div>모듬 22,000원</div>
+            <div>전복모듬 27,000원</div>
+            <div>도다리 19,000원</div>
+          </div>
+        </article>
+
+        <article class="menu-card">
+          <h3 class="menu-name">물회 <span class="small-badge">BEST</span></h3>
+          <p class="menu-desc">매운탕, 공기밥, 소면 포함</p>
+          <div class="price-lines">
+            <div>일반 20,000원</div>
+            <div>모듬 25,000원</div>
+            <div>전복모듬 30,000원</div>
+            <div>도다리 22,000원</div>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section id="lunch">
+      <h2 class="section-title">점심특선</h2>
+      <p class="section-note">2인 이상 주문 가능</p>
+
+      <div class="menu-list">
+        <article class="menu-card">
+          <div class="menu-head">
+            <h3 class="menu-name">회정식</h3>
+            <div class="menu-price">35,000원</div>
+          </div>
+          <p class="menu-desc">모듬회 + 모듬해물 + 맛보기 물회 + 매운탕 + 공기밥</p>
+        </article>
+      </div>
+    </section>
+
+    <section id="kids">
+      <h2 class="section-title">어린이 메뉴</h2>
+      <p class="section-note">단독 주문 불가</p>
+
+      <div class="menu-list">
+        <article class="menu-card">
+          <div class="menu-head">
+            <h3 class="menu-name">돈까스 정식</h3>
+            <div class="menu-price">10,000원</div>
+          </div>
+          <p class="menu-desc">등심 돈까스 + 샐러드 + 후리가케 밥</p>
+        </article>
+      </div>
+    </section>
+
+    <section id="extra-seafood">
+      <h2 class="section-title">추가 해산물</h2>
+      <p class="section-note">단독 주문 불가</p>
+
+      <div class="menu-list">
+        <article class="menu-card">
+          <div class="menu-head">
+            <h3 class="menu-name">모듬 해물</h3>
+            <div class="menu-price">50,000원</div>
+          </div>
+        </article>
+
+        <article class="menu-card">
+          <div class="menu-head">
+            <h3 class="menu-name">해삼</h3>
+            <div class="menu-price">30,000원</div>
+          </div>
+        </article>
+
+        <article class="menu-card">
+          <div class="menu-head">
+            <h3 class="menu-name">산낙지</h3>
+            <div class="menu-price">소 30,000원</div>
+          </div>
+          <p class="menu-desc">주문 후 손질되어 제공되며, 접시 위에서 움직일 수 있습니다. 천천히 꼭꼭 씹어 드세요.</p>
+        </article>
+
+        <article class="menu-card">
+          <div class="menu-head">
+            <h3 class="menu-name">개불</h3>
+            <div class="menu-price">30,000원 / 중 50,000원</div>
+          </div>
+        </article>
+
+        <article class="menu-card">
+          <div class="menu-head">
+            <h3 class="menu-name">전복회</h3>
+            <div class="menu-price">50,000원</div>
+          </div>
+        </article>
+
+        <article class="menu-card">
+          <div class="menu-head">
+            <h3 class="menu-name">멍게</h3>
+            <div class="menu-price">30,000원</div>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section id="extra-menu">
+      <h2 class="section-title">추가 메뉴</h2>
+      <p class="section-note">단독 주문 불가</p>
+
+      <div class="menu-list">
+        <article class="menu-card">
+          <div class="menu-head">
+            <h3 class="menu-name">공기밥</h3>
+            <div class="menu-price">1,000원</div>
+          </div>
+        </article>
+
+        <article class="menu-card">
+          <div class="menu-head">
+            <h3 class="menu-name">초밥알</h3>
+            <div class="menu-price">3,000원</div>
+          </div>
+        </article>
+
+        <article class="menu-card">
+          <div class="menu-head">
+            <h3 class="menu-name">국수사리</h3>
+            <div class="menu-price">1,000원</div>
+          </div>
+        </article>
+
+        <article class="menu-card">
+          <div class="menu-head">
+            <h3 class="menu-name">연어구이</h3>
+            <div class="menu-price">10,000원</div>
+          </div>
+        </article>
+
+        <article class="menu-card">
+          <div class="menu-head">
+            <h3 class="menu-name">꽁치구이</h3>
+            <div class="menu-price">3,000원</div>
+          </div>
+        </article>
+
+        <article class="menu-card">
+          <div class="menu-head">
+            <h3 class="menu-name">우럭탕수</h3>
+            <div class="menu-price">30,000원</div>
+          </div>
+        </article>
+
+        <article class="menu-card">
+          <div class="menu-head">
+            <h3 class="menu-name">새우장 5마리</h3>
+            <div class="menu-price">10,000원</div>
+          </div>
+        </article>
+
+        <article class="menu-card">
+          <div class="menu-head">
+            <h3 class="menu-name">새우튀김 5마리</h3>
+            <div class="menu-price">4,000원</div>
+          </div>
+        </article>
+
+        <article class="menu-card">
+          <div class="menu-head">
+            <h3 class="menu-name">가리비찜 5마리</h3>
+            <div class="menu-price">20,000원</div>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section id="drink">
+      <h2 class="section-title">주류 및 음료</h2>
+      <p class="section-note">주류 메뉴는 접었다 펼칠 수 있습니다.</p>
+
+      <details>
+        <summary>주류 및 음료 전체 보기</summary>
+
+        <div class="details-content">
+
+          <div class="drink-group">
+            <h3 class="drink-title">소주 5,000원</h3>
+            <p class="drink-text">참이슬 / 진로 / 좋은데이 / 대선 / 새로 / 참이슬C</p>
+          </div>
+
+          <div class="drink-group">
+            <h3 class="drink-title">맥주 5,000원</h3>
+            <p class="drink-text">카스 / 테라 / 크러시 / 켈리</p>
+          </div>
+
+          <div class="drink-group">
+            <h3 class="drink-title">음료</h3>
+            <p class="drink-text">탄산음료 2,000원 / 토닉워터 2,000원 / 카스 0.0 무알콜 4,000원</p>
+          </div>
+
+          <div class="drink-group">
+            <h3 class="drink-title">전통주 / 기타 주류</h3>
+            <p class="drink-text">화요 25도 25,000원 / 화요 41도 40,000원 / 일품진로 25,000원 / 청하·별빛청하 6,000원 / 백세주 8,000원 / 막걸리 5,000원 / 보해복분자 18,000원</p>
+          </div>
+
+          <div class="drink-group">
+            <h3 class="drink-title">사케</h3>
+            <p class="drink-text">간바레오또상 35,000원 / 하쿠츠루마루 35,000원 / 라쿠엔유즈슈 35,000원 / 준마이다이긴조 80,000원 / 닷사이39 130,000원</p>
+          </div>
+
+        </div>
+      </details>
+    </section>
+
+    <section id="guide">
+      <h2 class="section-title">이용 안내</h2>
+
+      <div class="notice-box">
+        사진은 대표 이미지이며 실제 구성은 계절, 재료 수급, 주문 인원에 따라 달라질 수 있습니다.
+      </div>
+
+      <div class="notice-box">
+        일부 메뉴는 2인 이상 주문 가능합니다. 추가 해산물과 추가 메뉴는 단독 주문이 불가합니다.
+      </div>
+
+      <div class="notice-box">
+        생선회, 산낙지 등 날것으로 제공되는 메뉴가 있습니다. 알레르기가 있으신 경우 직원에게 꼭 말씀해 주세요.
+      </div>
+
+      <div class="notice-box">
+        메뉴와 가격은 매장 상황에 따라 변경될 수 있습니다.
+      </div>
+    </section>
+
+    <footer class="footer">
+      <h2 class="footer-title">수림횟집</h2>
+      <ul class="footer-list">
+        <li>해운대 수림횟집 메뉴판입니다.</li>
+        <li>외국어 메뉴는 순차적으로 추가 예정입니다.</li>
+        <li>주문 전 직원에게 메뉴 구성을 확인해 주세요.</li>
+      </ul>
+    </footer>
+
+  </div>
+
+  <button class="top-button" onclick="scrollToTop()">↑</button>
+
+  <script>
+    function scrollToTop() {
+      window.scrollTo({
+        top: 0,
+        behavior: "smooth"
+      });
+    }
+
+    const langButtons = document.querySelectorAll(".lang-btn");
+
+    langButtons.forEach((button) => {
+      button.addEventListener("click", () => {
+        if (!button.classList.contains("active")) {
+          alert("외국어 메뉴는 다음 단계에서 추가할 예정입니다.");
+        }
+      });
+    });
+  </script>
+</body>
+</html>
