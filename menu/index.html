@@ -351,6 +351,18 @@
       scrollbar-width: none;
     }
 
+    .language-bar,
+    .quick-nav {
+      cursor: grab;
+      user-select: none;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .language-bar.dragging,
+    .quick-nav.dragging {
+      cursor: grabbing;
+    }
+
     .quick-nav::-webkit-scrollbar {
       display: none;
     }
@@ -368,6 +380,12 @@
       transition: background 0.2s ease, color 0.2s ease, transform 0.2s ease;
     }
 
+    .quick-link {
+      -webkit-user-drag: none;
+      user-select: none;
+    }
+
+    
     .quick-link.active {
       background: #17322b;
       color: #fff;
@@ -4403,8 +4421,76 @@
       });
     });
 
+    function enableDragScroll(selector) {
+      const scrollAreas = document.querySelectorAll(selector);
+
+      scrollAreas.forEach((area) => {
+        let isDown = false;
+        let startX = 0;
+        let startScrollLeft = 0;
+        let moved = false;
+
+        area.dataset.dragMoved = "0";
+
+        area.addEventListener("dragstart", (event) => {
+          event.preventDefault();
+        });
+
+        area.addEventListener("mousedown", (event) => {
+          if (event.button !== 0) return;
+
+          isDown = true;
+          moved = false;
+          startX = event.pageX;
+          startScrollLeft = area.scrollLeft;
+          area.dataset.dragMoved = "0";
+          area.classList.add("dragging");
+        });
+
+        window.addEventListener("mousemove", (event) => {
+          if (!isDown) return;
+
+          const moveX = event.pageX - startX;
+
+          if (Math.abs(moveX) > 4) {
+            moved = true;
+            area.dataset.dragMoved = "1";
+            area.scrollLeft = startScrollLeft - moveX;
+            event.preventDefault();
+          }
+        });
+
+        window.addEventListener("mouseup", () => {
+          if (!isDown) return;
+
+          isDown = false;
+          area.classList.remove("dragging");
+
+          if (moved) {
+            setTimeout(() => {
+              area.dataset.dragMoved = "0";
+            }, 180);
+          } else {
+            area.dataset.dragMoved = "0";
+          }
+        });
+
+        area.addEventListener("click", (event) => {
+          if (area.dataset.dragMoved === "1") {
+            event.preventDefault();
+            event.stopPropagation();
+            area.dataset.dragMoved = "0";
+          }
+        }, true);
+      });
+    }
+
+    enableDragScroll(".language-bar");
+    enableDragScroll(".quick-nav");
+
     const savedLang = localStorage.getItem("soorim-menu-lang") || "ko";
     applyLanguage(savedLang);
+
     function scrollToTop() {
       window.scrollTo({
         top: 0,
@@ -4440,6 +4526,7 @@
       }
     });
 
+    const quickNavEl = document.querySelector(".quick-nav");
     const quickLinks = Array.from(document.querySelectorAll(".quick-link"));
 
     const navItems = quickLinks
@@ -4455,7 +4542,30 @@
       })
       .filter((item) => item.section);
 
-    function setActiveQuickLink(sectionId) {
+    let currentActiveSectionId = "";
+
+    function centerQuickNavLink(activeLink) {
+      if (!quickNavEl || !activeLink) return;
+      if (quickNavEl.classList.contains("dragging")) return;
+
+      const navRect = quickNavEl.getBoundingClientRect();
+      const linkRect = activeLink.getBoundingClientRect();
+
+      const targetLeft =
+        quickNavEl.scrollLeft +
+        (linkRect.left - navRect.left) -
+        (quickNavEl.clientWidth / 2) +
+        (activeLink.clientWidth / 2);
+
+      quickNavEl.scrollTo({
+        left: targetLeft,
+        behavior: "smooth"
+      });
+    }
+
+    function setActiveQuickLink(sectionId, shouldCenter = true) {
+      currentActiveSectionId = sectionId;
+
       quickLinks.forEach((link) => {
         const linkTargetId = link.getAttribute("href").replace("#", "");
         link.classList.toggle("active", linkTargetId === sectionId);
@@ -4465,18 +4575,13 @@
         return link.getAttribute("href").replace("#", "") === sectionId;
       });
 
-      if (activeLink) {
-        activeLink.scrollIntoView({
-          behavior: "smooth",
-          inline: "center",
-          block: "nearest"
-        });
+      if (shouldCenter) {
+        centerQuickNavLink(activeLink);
       }
     }
 
     function updateActiveQuickLink() {
       const checkLine = window.scrollY + 120;
-
       let currentItem = navItems[0];
 
       navItems.forEach((item) => {
@@ -4485,8 +4590,8 @@
         }
       });
 
-      if (currentItem) {
-        setActiveQuickLink(currentItem.id);
+      if (currentItem && currentItem.id !== currentActiveSectionId) {
+        setActiveQuickLink(currentItem.id, true);
       }
     }
 
@@ -4495,9 +4600,33 @@
     updateActiveQuickLink();
 
     quickLinks.forEach((link) => {
-      link.addEventListener("click", () => {
+      link.addEventListener("click", (event) => {
+        event.preventDefault();
+
+        if (quickNavEl && quickNavEl.dataset.dragMoved === "1") {
+          quickNavEl.dataset.dragMoved = "0";
+          return;
+        }
+
         const targetId = link.getAttribute("href").replace("#", "");
-        setActiveQuickLink(targetId);
+        const targetSection = document.getElementById(targetId);
+
+        if (!targetSection) return;
+
+        const navHeight = document.querySelector(".quick-nav-wrap")?.offsetHeight || 0;
+        const targetTop =
+          targetSection.getBoundingClientRect().top +
+          window.pageYOffset -
+          navHeight -
+          8;
+
+        window.scrollTo({
+          top: targetTop,
+          behavior: "smooth"
+        });
+
+        history.replaceState(null, "", `#${targetId}`);
+        setActiveQuickLink(targetId, true);
       });
     });
 
