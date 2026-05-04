@@ -247,6 +247,110 @@
       line-height: 1.45;
     }
 
+    .event-steps {
+      margin: 9px 0 0;
+      padding-left: 18px;
+      color: #51483d;
+      font-size: 13.5px;
+      font-weight: 750;
+      line-height: 1.55;
+    }
+
+    .event-steps li {
+      margin-bottom: 5px;
+    }
+
+    .event-gift-box {
+      margin-top: 10px;
+      padding: 10px 12px;
+      border-radius: 13px;
+      background: #17322b;
+      color: #fff;
+      font-size: 14px;
+      font-weight: 900;
+      line-height: 1.45;
+    }
+
+    .event-small-note {
+      margin-top: 8px;
+      color: #8a3b1f;
+      font-size: 12.5px;
+      font-weight: 900;
+      line-height: 1.45;
+    }
+
+    .event-review-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-top: 12px;
+      padding: 11px 13px;
+      border-radius: 999px;
+      background: linear-gradient(135deg, #f8df8a, #d4a017 50%, #fff1a8);
+      color: #3a2500;
+      font-size: 14px;
+      font-weight: 900;
+      text-align: center;
+      box-shadow: 0 4px 12px rgba(126, 82, 0, 0.24);
+      border: 1px solid rgba(255, 245, 190, 0.9);
+    }
+
+    .event-choice-grid {
+      display: grid;
+      gap: 10px;
+      margin-top: 10px;
+    }
+
+    .event-choice-btn {
+      width: 100%;
+      border: 1px solid #f1d4a6;
+      background: #fff4e1;
+      color: #5d4121;
+      border-radius: 15px;
+      padding: 13px 14px;
+      text-align: left;
+      cursor: pointer;
+      font-weight: 900;
+      box-shadow: 0 3px 10px rgba(0,0,0,0.035);
+    }
+
+    .event-choice-title {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      font-size: 15px;
+    }
+
+    .event-choice-title::after {
+      content: "›";
+      font-size: 20px;
+      font-weight: 900;
+      color: #b13b25;
+    }
+
+    .event-choice-sub {
+      display: block;
+      margin-top: 5px;
+      font-size: 12.5px;
+      font-weight: 800;
+      color: #8a7764;
+      line-height: 1.4;
+    }
+
+    .event-back-btn {
+      width: 100%;
+      margin-top: 10px;
+      border: 1px solid #eadfce;
+      background: #fff;
+      color: #51483d;
+      border-radius: 999px;
+      padding: 10px 12px;
+      font-size: 13px;
+      font-weight: 900;
+      cursor: pointer;
+    }
+
     .store-subtitle {
       position: relative;
       z-index: 1;
@@ -4024,116 +4128,546 @@
       }
     }
 
+    const googleReviewUrl = "https://www.google.com/search?sca_esv=09ded882b0027700&si=AL3DRZFIhG6pAqfNLal55wUTwygCG0fClF3UxiOmgw9Hq7nbWa6Qk-weUi5uM4sXlTfnFATiccFpqMTFxpkCaUH5tWF-wvfwnLkcdv9ZumG39xo0EgSlZRWiE5j0-sHPe2udCrgx0uZv&q=%EC%88%98%EB%A6%BC%ED%9A%9F%EC%A7%91+%EB%A6%AC%EB%B7%B0&sa=X&ved=2ahUKEwi4x7KuiZ-UAxXbtVYBHfZdNDMQ0bkNegQIIhAH&biw=1920&bih=911&dpr=1";
+
+    const naverReviewUrl = "https://m.place.naver.com/restaurant/16547341/review/visitor";
+
     const modalTexts = {
       ko: {
         eventButton: "EVENT",
         wifiTitle: "Wi-Fi",
+
         eventTitle: "리뷰 이벤트",
-        eventDesc: "식사 후 리뷰를 남겨주시면 감사의 마음을 담아 작은 혜택을 준비해 드립니다.",
+        eventDesc: "참여하실 리뷰 이벤트를 선택해 주세요.",
+
         naverTitle: "네이버 영수증 리뷰",
-        naverDesc: "내용은 추후 입력 예정입니다.",
-        googleTitle: "구글 리뷰",
-        googleDesc: "내용은 추후 입력 예정입니다."
+        naverShort: "영수증 리뷰 이벤트는 추후 준비 예정입니다.",
+        naverDesc: "네이버 영수증 리뷰 이벤트는 추후 준비 예정입니다.",
+
+        googleTitle: "구글 리뷰 이벤트",
+        googleShort: "사진 리뷰 작성 시 라라스윗 아이스크림 제공",
+        googleLead: "구글 리뷰를 남겨주시면 라라스윗 아이스크림을 드립니다.",
+
+        stepTitle: "참여 방법",
+        step1: "아래 버튼을 눌러 구글 리뷰 페이지에 접속해 주세요.",
+        step2: "사진을 최소 1장 이상 첨부해 주세요.",
+        step3: "리뷰 작성 후 직원에게 보여주세요.",
+
+        benefitLabel: "리뷰 혜택",
+        benefitText: "라라스윗 아이스크림 1개 (5,000원 상당)",
+        note: "리뷰 1건당 아이스크림 1개가 제공됩니다.",
+
+        buttonText: "구글 리뷰 하러가기",
+        backText: "← 이벤트 선택으로 돌아가기"
       },
+
       en: {
         eventButton: "EVENT",
         wifiTitle: "Wi-Fi",
+
         eventTitle: "Review Event",
-        eventDesc: "Leave a review after your meal and receive a small thank-you benefit.",
+        eventDesc: "Please choose a review event.",
+
         naverTitle: "Naver Receipt Review",
-        naverDesc: "Details will be added later.",
-        googleTitle: "Google Review",
-        googleDesc: "Details will be added later."
+        naverShort: "The Naver receipt review event will be prepared later.",
+        naverDesc: "The Naver receipt review event will be prepared later.",
+
+        googleTitle: "Google Review Event",
+        googleShort: "Photo review required · Lalasweet ice cream",
+        googleLead: "Leave us a Google review and receive a Lalasweet ice cream.",
+
+        stepTitle: "How to participate",
+        step1: "Tap the button below to open our Google review page.",
+        step2: "Please attach at least 1 photo.",
+        step3: "After posting your review, show it to our staff.",
+
+        benefitLabel: "Review Benefit",
+        benefitText: "1 Lalasweet Ice Cream (worth 5,000 KRW)",
+        note: "1 ice cream is provided for each review.",
+
+        buttonText: "Write a Google Review",
+        backText: "← Back to event selection"
       },
+
       ja: {
         eventButton: "EVENT",
         wifiTitle: "Wi-Fi",
+
         eventTitle: "レビューイベント",
-        eventDesc: "お食事後にレビューを残していただくと、感謝の気持ちとして小さな特典をご用意いたします。",
+        eventDesc: "参加するレビューイベントを選んでください。",
+
         naverTitle: "NAVERレシートレビュー",
-        naverDesc: "内容は後ほど入力予定です。",
-        googleTitle: "Googleレビュー",
-        googleDesc: "内容は後ほど入力予定です。"
+        naverShort: "NAVERレシートレビューイベントは後日準備予定です。",
+        naverDesc: "NAVERレシートレビューイベントは後日準備予定です。",
+
+        googleTitle: "Googleレビューイベント",
+        googleShort: "写真付きレビューでララスイートアイスクリーム提供",
+        googleLead: "Googleレビューを残していただくと、ララスイートアイスクリームを差し上げます。",
+
+        stepTitle: "参加方法",
+        step1: "下のボタンからGoogleレビュー画面を開いてください。",
+        step2: "写真を最低1枚以上添付してください。",
+        step3: "レビュー投稿後、スタッフにお見せください。",
+
+        benefitLabel: "レビュー特典",
+        benefitText: "ララスイートアイスクリーム1個（5,000ウォン相当）",
+        note: "レビュー1件につきアイスクリーム1個を差し上げます。",
+
+        buttonText: "Googleレビューを書く",
+        backText: "← イベント選択に戻る"
       },
+
       zh: {
         eventButton: "EVENT",
         wifiTitle: "Wi-Fi",
+
         eventTitle: "评价活动",
-        eventDesc: "用餐后留下评价，我们将准备一份小小的感谢优惠。",
+        eventDesc: "请选择要参加的评价活动。",
+
         naverTitle: "Naver 小票评价",
-        naverDesc: "内容稍后添加。",
-        googleTitle: "Google 评价",
-        googleDesc: "内容稍后添加。"
+        naverShort: "Naver 小票评价活动稍后准备。",
+        naverDesc: "Naver 小票评价活动稍后准备。",
+
+        googleTitle: "Google 评价活动",
+        googleShort: "上传照片评价即可获得 Lalasweet 冰淇淋",
+        googleLead: "留下 Google 评价即可获赠 Lalasweet 冰淇淋。",
+
+        stepTitle: "参与方法",
+        step1: "请点击下方按钮进入 Google 评价页面。",
+        step2: "请至少上传1张照片。",
+        step3: "评价发布后，请出示给工作人员确认。",
+
+        benefitLabel: "评价福利",
+        benefitText: "Lalasweet 冰淇淋1个（价值5,000韩元）",
+        note: "每条评价赠送1个冰淇淋。",
+
+        buttonText: "去写 Google 评价",
+        backText: "← 返回活动选择"
       },
+
+      zhTw: {
+        eventButton: "EVENT",
+        wifiTitle: "Wi-Fi",
+
+        eventTitle: "評論活動",
+        eventDesc: "請選擇要參加的評論活動。",
+
+        naverTitle: "Naver 發票評論",
+        naverShort: "Naver 發票評論活動稍後準備。",
+        naverDesc: "Naver 發票評論活動稍後準備。",
+
+        googleTitle: "Google 評論活動",
+        googleShort: "上傳照片評論即可獲得 Lalasweet 冰淇淋",
+        googleLead: "留下 Google 評論即可獲贈 Lalasweet 冰淇淋。",
+
+        stepTitle: "參與方法",
+        step1: "請點擊下方按鈕進入 Google 評論頁面。",
+        step2: "請至少上傳1張照片。",
+        step3: "評論發布後，請出示給工作人員確認。",
+
+        benefitLabel: "評論福利",
+        benefitText: "Lalasweet 冰淇淋1個（價值5,000韓元）",
+        note: "每則評論贈送1個冰淇淋。",
+
+        buttonText: "去寫 Google 評論",
+        backText: "← 返回活動選擇"
+      },
+
       vi: {
         eventButton: "EVENT",
         wifiTitle: "Wi-Fi",
+
         eventTitle: "Sự kiện đánh giá",
-        eventDesc: "Sau bữa ăn, nếu quý khách để lại đánh giá, chúng tôi sẽ chuẩn bị một ưu đãi nhỏ để cảm ơn.",
+        eventDesc: "Vui lòng chọn sự kiện đánh giá.",
+
         naverTitle: "Đánh giá hóa đơn Naver",
-        naverDesc: "Nội dung sẽ được thêm sau.",
-        googleTitle: "Đánh giá Google",
-        googleDesc: "Nội dung sẽ được thêm sau."
+        naverShort: "Sự kiện đánh giá hóa đơn Naver sẽ được chuẩn bị sau.",
+        naverDesc: "Sự kiện đánh giá hóa đơn Naver sẽ được chuẩn bị sau.",
+
+        googleTitle: "Sự kiện đánh giá Google",
+        googleShort: "Đánh giá có ảnh · Nhận kem Lalasweet",
+        googleLead: "Để lại đánh giá Google và nhận kem Lalasweet.",
+
+        stepTitle: "Cách tham gia",
+        step1: "Nhấn nút bên dưới để mở trang đánh giá Google.",
+        step2: "Vui lòng đính kèm ít nhất 1 ảnh.",
+        step3: "Sau khi đăng đánh giá, vui lòng cho nhân viên xem.",
+
+        benefitLabel: "Ưu đãi đánh giá",
+        benefitText: "1 kem Lalasweet (trị giá 5,000 KRW)",
+        note: "Mỗi đánh giá được tặng 1 cây kem.",
+
+        buttonText: "Viết đánh giá Google",
+        backText: "← Quay lại chọn sự kiện"
       },
+
       fil: {
         eventButton: "EVENT",
         wifiTitle: "Wi-Fi",
+
         eventTitle: "Review Event",
-        eventDesc: "Mag-iwan ng review pagkatapos kumain at makakatanggap kayo ng maliit na thank-you benefit.",
+        eventDesc: "Pumili ng review event.",
+
         naverTitle: "Naver Receipt Review",
-        naverDesc: "Ilalagay ang detalye mamaya.",
-        googleTitle: "Google Review",
-        googleDesc: "Ilalagay ang detalye mamaya."
+        naverShort: "Ihahanda mamaya ang Naver receipt review event.",
+        naverDesc: "Ihahanda mamaya ang Naver receipt review event.",
+
+        googleTitle: "Google Review Event",
+        googleShort: "Photo review · Lalasweet ice cream",
+        googleLead: "Mag-iwan ng Google review at makatanggap ng Lalasweet ice cream.",
+
+        stepTitle: "How to join",
+        step1: "I-tap ang button sa ibaba para buksan ang Google review page.",
+        step2: "Mag-upload ng kahit 1 photo.",
+        step3: "Pagkatapos mag-post ng review, ipakita ito sa staff.",
+
+        benefitLabel: "Review Benefit",
+        benefitText: "1 Lalasweet Ice Cream (worth 5,000 KRW)",
+        note: "1 ice cream para sa bawat review.",
+
+        buttonText: "Write a Google Review",
+        backText: "← Back to event selection"
       },
+
       ru: {
         eventButton: "EVENT",
         wifiTitle: "Wi-Fi",
+
         eventTitle: "Акция за отзыв",
-        eventDesc: "Оставьте отзыв после еды и получите небольшой подарок в знак благодарности.",
+        eventDesc: "Выберите акцию для отзыва.",
+
         naverTitle: "Отзыв Naver по чеку",
-        naverDesc: "Информация будет добавлена позже.",
-        googleTitle: "Отзыв Google",
-        googleDesc: "Информация будет добавлена позже."
+        naverShort: "Акция для отзывов Naver по чеку будет подготовлена позже.",
+        naverDesc: "Акция для отзывов Naver по чеку будет подготовлена позже.",
+
+        googleTitle: "Акция за отзыв Google",
+        googleShort: "Отзыв с фото · мороженое Lalasweet",
+        googleLead: "Оставьте отзыв в Google и получите мороженое Lalasweet.",
+
+        stepTitle: "Как участвовать",
+        step1: "Нажмите кнопку ниже, чтобы открыть страницу отзыва Google.",
+        step2: "Пожалуйста, прикрепите минимум 1 фото.",
+        step3: "После публикации отзыва покажите его сотруднику.",
+
+        benefitLabel: "Бонус за отзыв",
+        benefitText: "1 мороженое Lalasweet (стоимостью 5,000 KRW)",
+        note: "За 1 отзыв предоставляется 1 мороженое.",
+
+        buttonText: "Написать отзыв Google",
+        backText: "← Вернуться к выбору акции"
       },
+
       mn: {
         eventButton: "EVENT",
         wifiTitle: "Wi-Fi",
+
         eventTitle: "Сэтгэгдлийн эвент",
-        eventDesc: "Хоолны дараа сэтгэгдэл үлдээвэл талархлын жижиг урамшуулал бэлдэнэ.",
+        eventDesc: "Оролцох сэтгэгдлийн эвентээ сонгоно уу.",
+
         naverTitle: "Naver баримтын сэтгэгдэл",
-        naverDesc: "Дэлгэрэнгүйг дараа оруулна.",
-        googleTitle: "Google сэтгэгдэл",
-        googleDesc: "Дэлгэрэнгүйг дараа оруулна."
+        naverShort: "Naver баримтын сэтгэгдлийн эвент дараа бэлэн болно.",
+        naverDesc: "Naver баримтын сэтгэгдлийн эвент дараа бэлэн болно.",
+
+        googleTitle: "Google сэтгэгдлийн эвент",
+        googleShort: "Зурагтай сэтгэгдэл · Lalasweet зайрмаг",
+        googleLead: "Google сэтгэгдэл үлдээвэл Lalasweet зайрмаг өгнө.",
+
+        stepTitle: "Оролцох арга",
+        step1: "Доорх товчийг дарж Google сэтгэгдлийн хуудсыг нээнэ үү.",
+        step2: "Дор хаяж 1 зураг хавсаргана уу.",
+        step3: "Сэтгэгдэл нийтэлсний дараа ажилтанд үзүүлнэ үү.",
+
+        benefitLabel: "Сэтгэгдлийн урамшуулал",
+        benefitText: "Lalasweet зайрмаг 1ш (5,000 KRW үнэ бүхий)",
+        note: "1 сэтгэгдэлд 1 зайрмаг өгнө.",
+
+        buttonText: "Google сэтгэгдэл бичих",
+        backText: "← Эвент сонголт руу буцах"
       }
     };
 
-    function renderModals(lang) {
-      const text = getLanguageBlock(modalTexts, lang);
+    const naverEventTexts = {
+      ko: {
+        title: "네이버 영수증 리뷰",
+        short: "네이버 아이디 필요 · 영수증 리뷰 작성 시 라라스윗 아이스크림 제공",
+        lead: "네이버 영수증 리뷰를 남겨주시면 라라스윗 아이스크림을 드립니다.",
+        stepTitle: "참여 방법",
+        step1: "계산 후 영수증을 받거나 직원에게 영수증을 요청해 주세요.",
+        step2: "아래 버튼을 눌러 네이버 리뷰 페이지에 접속해 주세요.",
+        step3: "리뷰 → 리뷰쓰기 → 영수증을 선택해 주세요.",
+        step4: "영수증 사진을 촬영해 인증해 주세요.",
+        step5: "음식 사진을 최소 1장 이상 첨부해 주세요.",
+        step6: "리뷰 작성 후 직원에게 보여주세요.",
+        benefitLabel: "리뷰 혜택",
+        benefitText: "라라스윗 아이스크림 1개 (5,000원 상당)",
+        note: "리뷰 1건당 아이스크림 1개가 제공됩니다. 영수증이 더 필요하신 경우 직원에게 문의해 주세요.",
+        buttonText: "네이버 리뷰 하러가기"
+      },
 
-      const eventBtnEl = document.getElementById("event-btn-text");
-      const wifiTitleEl = document.getElementById("wifi-modal-title-text");
+      en: {
+        title: "Naver Receipt Review",
+        short: "Naver account required · Receipt review · Lalasweet ice cream",
+        lead: "Leave a Naver receipt review and receive a Lalasweet ice cream.",
+        stepTitle: "How to participate",
+        step1: "Please receive your receipt after payment.",
+        step2: "Tap the button below to open our Naver review page.",
+        step3: "Select Review → Write Review → Receipt.",
+        step4: "Take a photo of your receipt to verify it.",
+        step5: "Please attach at least 1 food photo.",
+        step6: "After posting your review, show it to our staff.",
+        benefitLabel: "Review Benefit",
+        benefitText: "1 Lalasweet Ice Cream (worth 5,000 KRW)",
+        note: "1 ice cream is provided for each review. If you need an additional receipt, please ask our staff.",
+        buttonText: "Write a Naver Review"
+      },
+
+      ja: {
+        title: "NAVERレシートレビュー",
+        short: "NAVERアカウント必要 · レシートレビューでアイスクリーム提供",
+        lead: "NAVERレシートレビューを残していただくと、ララスイートアイスクリームを差し上げます。",
+        stepTitle: "参加方法",
+        step1: "お会計後、レシートをお受け取りください。",
+        step2: "下のボタンからNAVERレビュー画面を開いてください。",
+        step3: "レビュー → レビューを書く → レシートを選択してください。",
+        step4: "レシートの写真を撮影して認証してください。",
+        step5: "料理写真を最低1枚以上添付してください。",
+        step6: "レビュー投稿後、スタッフにお見せください。",
+        benefitLabel: "レビュー特典",
+        benefitText: "ララスイートアイスクリーム1個（5,000ウォン相当）",
+        note: "レビュー1件につきアイスクリーム1個を差し上げます。追加のレシートが必要な場合はスタッフにお問い合わせください。",
+        buttonText: "NAVERレビューを書く"
+      },
+
+      zh: {
+        title: "Naver 小票评价",
+        short: "需要 Naver 账号 · 完成小票评价即可获得冰淇淋",
+        lead: "留下 Naver 小票评价即可获赠 Lalasweet 冰淇淋。",
+        stepTitle: "参与方法",
+        step1: "结账后请领取小票。",
+        step2: "请点击下方按钮进入 Naver 评价页面。",
+        step3: "选择 评价 → 写评价 → 小票。",
+        step4: "拍摄小票照片进行认证。",
+        step5: "请至少上传1张食物照片。",
+        step6: "评价发布后，请出示给工作人员确认。",
+        benefitLabel: "评价福利",
+        benefitText: "Lalasweet 冰淇淋1个（价值5,000韩元）",
+        note: "每条评价赠送1个冰淇淋。如需更多小票，请咨询工作人员。",
+        buttonText: "去写 Naver 评价"
+      },
+
+      zhTw: {
+        title: "Naver 發票評論",
+        short: "需要 Naver 帳號 · 完成發票評論即可獲得冰淇淋",
+        lead: "留下 Naver 發票評論即可獲贈 Lalasweet 冰淇淋。",
+        stepTitle: "參與方法",
+        step1: "結帳後請領取發票或收據。",
+        step2: "請點擊下方按鈕進入 Naver 評論頁面。",
+        step3: "選擇 評論 → 寫評論 → 發票/收據。",
+        step4: "拍攝發票或收據照片進行認證。",
+        step5: "請至少上傳1張食物照片。",
+        step6: "評論發布後，請出示給工作人員確認。",
+        benefitLabel: "評論福利",
+        benefitText: "Lalasweet 冰淇淋1個（價值5,000韓元）",
+        note: "每則評論贈送1個冰淇淋。如需更多發票或收據，請詢問工作人員。",
+        buttonText: "去寫 Naver 評論"
+      },
+
+      vi: {
+        title: "Đánh giá hóa đơn Naver",
+        short: "Cần tài khoản Naver · Đánh giá hóa đơn · Nhận kem",
+        lead: "Để lại đánh giá hóa đơn Naver và nhận kem Lalasweet.",
+        stepTitle: "Cách tham gia",
+        step1: "Vui lòng nhận hóa đơn sau khi thanh toán.",
+        step2: "Nhấn nút bên dưới để mở trang đánh giá Naver.",
+        step3: "Chọn Đánh giá → Viết đánh giá → Hóa đơn.",
+        step4: "Chụp ảnh hóa đơn để xác nhận.",
+        step5: "Vui lòng đính kèm ít nhất 1 ảnh món ăn.",
+        step6: "Sau khi đăng đánh giá, vui lòng cho nhân viên xem.",
+        benefitLabel: "Ưu đãi đánh giá",
+        benefitText: "1 kem Lalasweet (trị giá 5,000 KRW)",
+        note: "Mỗi đánh giá được tặng 1 cây kem. Nếu cần thêm hóa đơn, vui lòng hỏi nhân viên.",
+        buttonText: "Viết đánh giá Naver"
+      },
+
+      fil: {
+        title: "Naver Receipt Review",
+        short: "Naver account required · Receipt review · Ice cream",
+        lead: "Mag-iwan ng Naver receipt review at makatanggap ng Lalasweet ice cream.",
+        stepTitle: "How to join",
+        step1: "Kunin ang receipt pagkatapos magbayad.",
+        step2: "I-tap ang button sa ibaba para buksan ang Naver review page.",
+        step3: "Piliin ang Review → Write Review → Receipt.",
+        step4: "Kunan ng photo ang receipt para ma-verify.",
+        step5: "Mag-upload ng kahit 1 food photo.",
+        step6: "Pagkatapos mag-post ng review, ipakita ito sa staff.",
+        benefitLabel: "Review Benefit",
+        benefitText: "1 Lalasweet Ice Cream (worth 5,000 KRW)",
+        note: "1 ice cream para sa bawat review. Kung kailangan ng dagdag na receipt, magtanong sa staff.",
+        buttonText: "Write a Naver Review"
+      },
+
+      ru: {
+        title: "Отзыв Naver по чеку",
+        short: "Нужен аккаунт Naver · отзыв по чеку · мороженое",
+        lead: "Оставьте отзыв Naver по чеку и получите мороженое Lalasweet.",
+        stepTitle: "Как участвовать",
+        step1: "Пожалуйста, получите чек после оплаты.",
+        step2: "Нажмите кнопку ниже, чтобы открыть страницу отзыва Naver.",
+        step3: "Выберите Отзыв → Написать отзыв → Чек.",
+        step4: "Сфотографируйте чек для подтверждения.",
+        step5: "Пожалуйста, прикрепите минимум 1 фото еды.",
+        step6: "После публикации отзыва покажите его сотруднику.",
+        benefitLabel: "Бонус за отзыв",
+        benefitText: "1 мороженое Lalasweet (стоимостью 5,000 KRW)",
+        note: "За 1 отзыв предоставляется 1 мороженое. Если нужен дополнительный чек, пожалуйста, спросите сотрудника.",
+        buttonText: "Написать отзыв Naver"
+      },
+
+      mn: {
+        title: "Naver баримтын сэтгэгдэл",
+        short: "Naver бүртгэл хэрэгтэй · баримтын сэтгэгдэл · зайрмаг",
+        lead: "Naver баримтын сэтгэгдэл үлдээвэл Lalasweet зайрмаг өгнө.",
+        stepTitle: "Оролцох арга",
+        step1: "Төлбөр хийсний дараа баримтаа авна уу.",
+        step2: "Доорх товчийг дарж Naver сэтгэгдлийн хуудсыг нээнэ үү.",
+        step3: "Review → Write Review → Receipt хэсгийг сонгоно уу.",
+        step4: "Баримтын зургийг авч баталгаажуулна уу.",
+        step5: "Дор хаяж 1 хоолны зураг хавсаргана уу.",
+        step6: "Сэтгэгдэл нийтэлсний дараа ажилтанд үзүүлнэ үү.",
+        benefitLabel: "Сэтгэгдлийн урамшуулал",
+        benefitText: "Lalasweet зайрмаг 1ш (5,000 KRW үнэ бүхий)",
+        note: "1 сэтгэгдэлд 1 зайрмаг өгнө. Нэмэлт баримт хэрэгтэй бол ажилтнаас асууна уу.",
+        buttonText: "Naver сэтгэгдэл бичих"
+      }
+    };
+
+    let currentEventLang = "ko";
+
+    function getCurrentEventText() {
+      return getLanguageBlock(modalTexts, currentEventLang);
+    }
+
+    function showEventChoices() {
+      const text = getCurrentEventText();
+      const naverText = getLanguageBlock(naverEventTexts, currentEventLang);
+
       const eventTitleEl = document.getElementById("event-modal-title-text");
       const eventDescEl = document.getElementById("event-modal-desc-text");
       const eventListEl = document.getElementById("event-list-text");
 
-      if (eventBtnEl) eventBtnEl.textContent = text.eventButton;
-      if (wifiTitleEl) wifiTitleEl.textContent = text.wifiTitle;
       if (eventTitleEl) eventTitleEl.textContent = text.eventTitle;
       if (eventDescEl) eventDescEl.textContent = text.eventDesc;
 
       if (eventListEl) {
         eventListEl.innerHTML = `
-          <div class="event-item">
-            <strong>${text.naverTitle}</strong><br>
-            ${text.naverDesc}
-          </div>
+          <div class="event-choice-grid">
+            <button class="event-choice-btn" type="button" onclick="showEventDetail('naver')">
+              <span class="event-choice-title">${naverText.title}</span>
+              <span class="event-choice-sub">${naverText.short}</span>
+            </button>
 
-          <div class="event-item">
-            <strong>${text.googleTitle}</strong><br>
-            ${text.googleDesc}
+            <button class="event-choice-btn" type="button" onclick="showEventDetail('google')">
+              <span class="event-choice-title">${text.googleTitle}</span>
+              <span class="event-choice-sub">${text.googleShort}</span>
+            </button>
           </div>
         `;
       }
+    }
+
+    function showEventDetail(type) {
+      const text = getCurrentEventText();
+
+      const eventTitleEl = document.getElementById("event-modal-title-text");
+      const eventDescEl = document.getElementById("event-modal-desc-text");
+      const eventListEl = document.getElementById("event-list-text");
+
+      if (!eventListEl) return;
+
+      if (type === "naver") {
+        const naverText = getLanguageBlock(naverEventTexts, currentEventLang);
+
+        if (eventTitleEl) eventTitleEl.textContent = naverText.title;
+        if (eventDescEl) eventDescEl.textContent = naverText.lead;
+
+        eventListEl.innerHTML = `
+          <div class="event-item">
+            <strong>${naverText.stepTitle}</strong>
+
+            <ol class="event-steps">
+              <li>${naverText.step1}</li>
+              <li>${naverText.step2}</li>
+              <li>${naverText.step3}</li>
+              <li>${naverText.step4}</li>
+              <li>${naverText.step5}</li>
+              <li>${naverText.step6}</li>
+            </ol>
+
+            <div class="event-gift-box">
+              ${naverText.benefitLabel}: ${naverText.benefitText}
+            </div>
+
+            <div class="event-small-note">
+              ${naverText.note}
+            </div>
+
+            <a class="event-review-btn" href="${naverReviewUrl}" target="_blank" rel="noopener noreferrer">
+              ${naverText.buttonText}
+            </a>
+
+            <button class="event-back-btn" type="button" onclick="showEventChoices()">
+              ${text.backText}
+            </button>
+          </div>
+        `;
+
+        return;
+      }
+
+      if (eventTitleEl) eventTitleEl.textContent = text.googleTitle;
+      if (eventDescEl) eventDescEl.textContent = text.googleLead;
+
+      eventListEl.innerHTML = `
+        <div class="event-item">
+          <strong>${text.stepTitle}</strong>
+
+          <ol class="event-steps">
+            <li>${text.step1}</li>
+            <li>${text.step2}</li>
+            <li>${text.step3}</li>
+          </ol>
+
+          <div class="event-gift-box">
+            ${text.benefitLabel}: ${text.benefitText}
+          </div>
+
+          <div class="event-small-note">
+            ${text.note}
+          </div>
+
+          <a class="event-review-btn" href="${googleReviewUrl}" target="_blank" rel="noopener noreferrer">
+            ${text.buttonText}
+          </a>
+
+          <button class="event-back-btn" type="button" onclick="showEventChoices()">
+            ${text.backText}
+          </button>
+        </div>
+      `;
+    }
+
+    function renderModals(lang) {
+      currentEventLang = lang;
+
+      const text = getCurrentEventText();
+
+      const eventBtnEl = document.getElementById("event-btn-text");
+      const wifiTitleEl = document.getElementById("wifi-modal-title-text");
+
+      if (eventBtnEl) eventBtnEl.textContent = text.eventButton;
+      if (wifiTitleEl) wifiTitleEl.textContent = text.wifiTitle;
+
+      showEventChoices();
     }
 
     const aboutTexts = {
@@ -4154,7 +4688,7 @@
       },
 
       en: {
-        button: "About 수림",
+        button: "About Soorim",
         title: "About Soorim",
         lead: "Soorim Seafood Restaurant has been serving guests in the same place in Haeundae for 14 years.",
         items: [
