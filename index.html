@@ -5119,6 +5119,139 @@
       #modal {
         z-index: 3000 !important;
       }
+      /* ====== 모바일 TV QR 모달 ====== */
+      .tv-qr-btn {
+        display: none;
+        position: absolute;
+        right: 8px;
+        top: 50%;
+        transform: translateY(-50%);
+
+        width: 38px;
+        height: 34px;
+        padding: 0;
+
+        border: 2px solid #111;
+        border-radius: 9px;
+        background: #fef3c7;
+        color: #111;
+
+        font-size: 14px;
+        font-weight: 900;
+        line-height: 1;
+        cursor: pointer;
+      }
+
+      .tv-qr-btn:hover {
+        background: #fde68a;
+      }
+
+      .tv-qr-modal-bg {
+        display: none;
+        position: fixed;
+        inset: 0;
+        z-index: 100000;
+
+        background: rgba(0, 0, 0, 0.45);
+        align-items: center;
+        justify-content: center;
+
+        padding: 14px;
+      }
+
+      .tv-qr-modal-bg.show {
+        display: flex;
+      }
+
+      .tv-qr-modal {
+        width: min(94vw, 430px);
+        max-height: 88vh;
+        overflow-y: auto;
+
+        background: #ffffff;
+        border: 3px solid #111;
+        border-radius: 16px;
+        padding: 14px;
+
+        color: #111;
+        font-family: "Malgun Gothic", "Apple SD Gothic Neo", sans-serif;
+        box-shadow: 0 12px 40px rgba(0, 0, 0, 0.28);
+      }
+
+      .tv-qr-modal-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+        margin-bottom: 12px;
+      }
+
+      .tv-qr-modal-title {
+        font-size: 22px;
+        font-weight: 900;
+      }
+
+      .tv-qr-close-btn {
+        width: 36px;
+        height: 36px;
+        border: none;
+        border-radius: 9px;
+        background: #e5e7eb;
+        color: #111;
+        font-size: 26px;
+        font-weight: 900;
+        line-height: 1;
+        cursor: pointer;
+      }
+
+      .tv-qr-list {
+        display: flex;
+        flex-direction: column;
+        gap: 14px;
+      }
+
+      .tv-qr-card {
+        padding: 12px;
+        border: 1px solid #d1d5db;
+        border-radius: 14px;
+        background: #f8fafc;
+        text-align: center;
+      }
+
+      .tv-qr-card-title {
+        margin-bottom: 8px;
+        font-size: 20px;
+        font-weight: 900;
+        color: #1f2d3d;
+      }
+
+      .tv-qr-img {
+        width: min(72vw, 280px);
+        max-width: 100%;
+        height: auto;
+        background: white;
+        border-radius: 12px;
+      }
+
+      .tv-qr-desc {
+        margin-top: 8px;
+        font-size: 14px;
+        font-weight: 800;
+        color: #4b5563;
+        line-height: 1.4;
+      }
+
+      @media (max-width: 768px) {
+        .tv-title {
+          padding-right: 46px;
+        }
+
+        .tv-qr-btn {
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+        }
+      }
     </style>
   </head>
   <body spellcheck="false">
@@ -10807,6 +10940,62 @@
             toggleStatus(realIndex);
           }
 
+      function openTVQrModal() {
+        const modal = document.getElementById("tv-qr-modal");
+        if (modal) modal.classList.add("show");
+      }
+
+      function closeTVQrModal() {
+        const modal = document.getElementById("tv-qr-modal");
+        if (modal) modal.classList.remove("show");
+      }
+
+      function renderTVQrModal() {
+        return `
+          <div
+            class="tv-qr-modal-bg"
+            id="tv-qr-modal"
+            onclick="if (event.target === this) window.closeTVQrModal()"
+          >
+            <div class="tv-qr-modal">
+              <div class="tv-qr-modal-header">
+                <div class="tv-qr-modal-title">손님 안내 QR</div>
+                <button
+                  class="tv-qr-close-btn"
+                  onclick="window.closeTVQrModal()"
+                  type="button"
+                >
+                  ×
+                </button>
+              </div>
+
+              <div class="tv-qr-list">
+                <div class="tv-qr-card">
+                  <div class="tv-qr-card-title">와이파이</div>
+                  <img class="tv-qr-img" src="qr-wifi.JPG" alt="와이파이 QR">
+                  <div class="tv-qr-desc">손님께 와이파이 연결을 안내할 때 보여주세요.</div>
+                </div>
+
+                <div class="tv-qr-card">
+                  <div class="tv-qr-card-title">구글 리뷰</div>
+                  <img class="tv-qr-img" src="qr-google.png" alt="구글 리뷰 QR">
+                  <div class="tv-qr-desc">구글 리뷰 작성을 요청할 때 보여주세요.</div>
+                </div>
+
+                <div class="tv-qr-card">
+                  <div class="tv-qr-card-title">메뉴판</div>
+                  <img class="tv-qr-img" src="qr-menu.jpg" alt="메뉴판 QR">
+                  <div class="tv-qr-desc">메뉴판을 요청한 손님께 보여주세요.</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        `;
+      }
+
+      window.openTVQrModal = openTVQrModal;
+      window.closeTVQrModal = closeTVQrModal;
+
           function renderTVView() {
             loadTVSettingsForCurrentScreen();
             applyAllTVSettings();
@@ -10975,6 +11164,14 @@ ${renderTVCancelMobileButton(canceledReservations)}
   ${tvDateOffset >= 1 ? "disabled" : ""}
 >
   ▶
+</button>
+<button
+  class="tv-qr-btn"
+  onclick="window.openTVQrModal()"
+  type="button"
+  title="손님 안내 QR"
+>
+  QR
 </button>
 </div>
 
@@ -11184,6 +11381,7 @@ ${renderTVCancelMobileButton(canceledReservations)}
 </div>
 
 ${renderTVCanceledModal(canceledReservations, tvTargetDate)}
+${renderTVQrModal()}
 
             ${
               todayReservations.length
