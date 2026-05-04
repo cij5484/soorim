@@ -7873,7 +7873,7 @@
               .map((r) => {
                 const statusBadge = getImportPreviewBadgeHtml(r);
                 const peopleText = getTVPeopleText(r) || "-";
-                const seatParts = [r.room, r.table].filter(Boolean).join(" / ");
+                const seatParts = getImportSeatSummary(r);
                 const phoneText = r.phone || "-";
                 const menuText = r.menu || "";
                 const memoText = r.memo || "";
@@ -8973,7 +8973,8 @@
           /\(네이버-룸\)|\(룸\)|예약\s*[1-5](?:[.,\s]*[1-5])*실/.test(value) ||
           /(^|\n)\s*\(?\s*룸\s*[1-5](?:[.,\s]*[1-5])*\s*실\s*\)?\s*($|\n)/.test(value) ||
           /(^|\n)\s*\(?\s*[1-5](?:[.,\s]*[1-5])*\s*실\s*\)?\s*($|\n)/.test(value) ||
-          /(^|\n)\s*.*(?:\s|^)\(?룸\)?\s*($|\n)/.test(value)
+          /(^|\n)\s*\(?룸\)?(?=\s|\)|$)/.test(value) ||
+          /(^|\n)[^\n]*\s\(?룸\)?(?=\s|\)|$)/.test(value)
         ) {
           return "룸";
         }
@@ -9313,6 +9314,8 @@
             .replace(/\d+\s*~\s*\d+\s*(?:명|인)?/g, " ")
             .replace(/(?:성인|어른|아이|아동|유아|초등)\s*\d+/g, " ")
             .replace(/\d+\s*(?:명|인)/g, " ")
+            .replace(/(^|\s)\(?룸\)?(?=\s|$)/g, " ")
+            .replace(/(^|\s)\(?홀\)?(?=\s|$)/g, " ")
 
             // 네이버/좌석 괄호 제거
             .replace(/\(네이버(?:-[^)]+)?\)/g, " ")
