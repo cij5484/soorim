@@ -5238,35 +5238,35 @@
       .mobile-tv-seat-map-tabs { display:flex; gap:6px; padding:8px 12px; }
       .mobile-tv-seat-map-tab { border:1px solid #cbd5e1; background:#f8fafc; border-radius:8px; padding:6px 12px; font-weight:800; }
       .mobile-tv-seat-map-tab.active { background:#1d4ed8; color:#fff; border-color:#1d4ed8; }
-      .mobile-tv-seat-map-grid { padding:8px 12px; overflow:auto; min-height:240px; }
-      .mobile-tv-seat-map-grid.mobile-tv-seat-hall-layout { display:grid; grid-template-columns:repeat(23, 1fr); grid-template-rows:repeat(16, minmax(28px, 1fr)); gap:8px; }
+      .mobile-tv-seat-map-grid { padding:4px 4px 2px; overflow:hidden; min-height:0; }
+      .mobile-tv-seat-map-grid.mobile-tv-seat-hall-layout { display:grid; grid-template-columns:repeat(20, minmax(0, 1fr)); grid-template-rows:repeat(13, minmax(32px, 1fr)); gap:6px; min-height:0; }
       .mobile-tv-seat-map-grid.mobile-tv-seat-room-layout { display:flex; flex-direction:column; gap:10px; }
       .mobile-tv-seat-room-section { background:#f8fafc; border:1px solid #d1d5db; border-radius:12px; padding:8px 10px; }
       .mobile-tv-seat-room-inner { display:grid; grid-template-columns:34px 1fr 1fr 18px 1fr 1fr; gap:8px; align-items:stretch; min-height:74px; }
       .mobile-tv-seat-room-label { display:inline-flex; align-items:center; justify-content:center; font-size:11px; font-weight:900; color:#374151; background:#e5e7eb; border:1px solid #cbd5e1; border-radius:999px; height:20px; margin-top:2px; }
       .mobile-tv-seat-room-gap { pointer-events:none; }
-      .mobile-tv-seat-table { position:relative; overflow:hidden; border:1px solid #cbd5e1; border-radius:8px; min-height:68px; padding:6px; background:#f8fafc; cursor:pointer; }
+      .mobile-tv-seat-table { position:relative; overflow:hidden; border:1px solid #cbd5e1; border-radius:8px; min-height:76px; padding:6px; background:#f8fafc; cursor:pointer; }
       .mobile-tv-seat-table-label { font-size:12px; font-weight:900; margin-bottom:2px; }
       .mobile-tv-seat-table-reservation { font-size:11px; line-height:1.25; }
       .mobile-tv-seat-x-overlay { position:absolute; inset:0; z-index:10; display:flex; align-items:center; justify-content:center; font-size:clamp(48px, 12vw, 120px); font-weight:900; color:rgba(220, 38, 38, 0.82); pointer-events:none; line-height:1; }
-      .mobile-tv-seat-hall-table-no-19 { grid-column:2 / 6; grid-row:1 / 3; }
-      .mobile-tv-seat-hall-table-no-18 { grid-column:7 / 11; grid-row:1 / 3; }
-      .mobile-tv-seat-hall-table-no-17 { grid-column:11 / 15; grid-row:1 / 3; }
-      .mobile-tv-seat-hall-table-no-16 { grid-column:16 / 20; grid-row:1 / 3; }
-      .mobile-tv-seat-hall-table-no-15 { grid-column:20 / 24; grid-row:1 / 3; }
-      .mobile-tv-seat-hall-table-no-10 { grid-column:2 / 6; grid-row:4 / 6; }
-      .mobile-tv-seat-hall-table-no-9 { grid-column:2 / 6; grid-row:6 / 8; }
-      .mobile-tv-seat-hall-table-no-8 { grid-column:2 / 6; grid-row:9 / 11; }
-      .mobile-tv-seat-hall-table-no-11 { grid-column:7 / 11; grid-row:5 / 7; }
-      .mobile-tv-seat-hall-table-no-12 { grid-column:11 / 15; grid-row:5 / 7; }
-      .mobile-tv-seat-hall-table-no-7 { grid-column:7 / 11; grid-row:9 / 11; }
-      .mobile-tv-seat-hall-table-no-6 { grid-column:11 / 15; grid-row:9 / 11; }
-      .mobile-tv-seat-hall-table-no-13 { grid-column:16 / 20; grid-row:5 / 7; }
-      .mobile-tv-seat-hall-table-no-14 { grid-column:20 / 24; grid-row:5 / 7; }
-      .mobile-tv-seat-hall-table-no-5 { grid-column:16 / 20; grid-row:9 / 11; }
-      .mobile-tv-seat-hall-table-no-4 { grid-column:20 / 24; grid-row:9 / 11; }
-      .mobile-tv-seat-hall-table-no-3 { grid-column:16 / 20; grid-row:11 / 13; }
-      .mobile-tv-empty-tables { border-top:1px solid #e5e7eb; padding:10px 12px; font-size:12px; line-height:1.45; }
+      .mobile-tv-seat-hall-table-no-19 { grid-column:1 / 5; grid-row:1 / 3; }
+      .mobile-tv-seat-hall-table-no-18 { grid-column:5 / 9; grid-row:1 / 3; }
+      .mobile-tv-seat-hall-table-no-17 { grid-column:9 / 13; grid-row:1 / 3; }
+      .mobile-tv-seat-hall-table-no-16 { grid-column:13 / 17; grid-row:1 / 3; }
+      .mobile-tv-seat-hall-table-no-15 { grid-column:17 / 21; grid-row:1 / 3; }
+      .mobile-tv-seat-hall-table-no-10 { grid-column:1 / 5; grid-row:4 / 6; }
+      .mobile-tv-seat-hall-table-no-9 { grid-column:1 / 5; grid-row:6 / 8; }
+      .mobile-tv-seat-hall-table-no-8 { grid-column:1 / 5; grid-row:9 / 11; }
+      .mobile-tv-seat-hall-table-no-11 { grid-column:5 / 9; grid-row:5 / 7; }
+      .mobile-tv-seat-hall-table-no-12 { grid-column:9 / 13; grid-row:5 / 7; }
+      .mobile-tv-seat-hall-table-no-7 { grid-column:5 / 9; grid-row:9 / 11; }
+      .mobile-tv-seat-hall-table-no-6 { grid-column:9 / 13; grid-row:9 / 11; }
+      .mobile-tv-seat-hall-table-no-13 { grid-column:13 / 17; grid-row:5 / 7; }
+      .mobile-tv-seat-hall-table-no-14 { grid-column:17 / 21; grid-row:5 / 7; }
+      .mobile-tv-seat-hall-table-no-5 { grid-column:13 / 17; grid-row:9 / 11; }
+      .mobile-tv-seat-hall-table-no-4 { grid-column:17 / 21; grid-row:9 / 11; }
+      .mobile-tv-seat-hall-table-no-3 { grid-column:13 / 17; grid-row:11 / 13; }
+      .mobile-tv-empty-tables { border-top:1px solid #e5e7eb; padding:6px 8px; font-size:12px; line-height:1.45; }
       .mobile-tv-seat-map-close { border:0; background:#ef4444; color:#fff; border-radius:8px; padding:5px 10px; font-weight:800; }
 
       .tv-qr-modal-bg {
@@ -11399,13 +11399,48 @@
 
         return "";
       }
-      function isMobileTvTableOccupied(tableNo) {
+      function getMobileTvTableKey(tableNo) {
+        return String(tableNo);
+      }
+      function getMobileTvTableOffKey(tableNo) {
+        return `off:${String(tableNo)}`;
+      }
+      function isMobileTvTableManuallyOccupied(tableNo) {
         return Array.isArray(mobileTvOccupiedTables) &&
-          mobileTvOccupiedTables.map(String).includes(String(tableNo));
+          mobileTvOccupiedTables.map(String).includes(getMobileTvTableKey(tableNo));
+      }
+      function isMobileTvReservedTableManuallyCleared(tableNo) {
+        return Array.isArray(mobileTvOccupiedTables) &&
+          mobileTvOccupiedTables.map(String).includes(getMobileTvTableOffKey(tableNo));
+      }
+      function isMobileTvTableOccupiedForDisplay(tableNo, reservedByTable) {
+        const key = getMobileTvTableKey(tableNo);
+        const hasReservation = !!(reservedByTable && reservedByTable[key]);
+        if (hasReservation) return !isMobileTvReservedTableManuallyCleared(key);
+        return isMobileTvTableManuallyOccupied(key);
+      }
+      function getMobileTvReservedByTable() {
+        const tvTargetDate = String(getTVTargetDateString() || "");
+        const reservedByTable = {};
+        (Array.isArray(reservations) ? reservations : []).forEach((r) => {
+          if (!r) return;
+          if (String(r.date || "") !== tvTargetDate) return;
+          if (isMobileTvSeatCanceledReservation(r)) return;
+          if (r.tvHidden === true) return;
+          try {
+            getMobileTvSeatMappedTables(r).forEach((tableNo) => {
+              const key = String(tableNo);
+              if (!reservedByTable[key]) reservedByTable[key] = r;
+            });
+          } catch (error) {
+            console.error("mobile-tv seat table mapping failed", error, r);
+          }
+        });
+        return reservedByTable;
       }
       function renderMobileTvSeatTableHtml(tableNo, reservedByTable, extraClass = "") {
         const r = reservedByTable[tableNo] || null;
-        const occupied = isMobileTvTableOccupied(tableNo);
+        const occupied = isMobileTvTableOccupiedForDisplay(tableNo, reservedByTable);
         const lines = r ? [r.time || "", r.name || "", formatMobileTvSeatPeopleText(r)].filter(Boolean).map((v) => `<div>${escapeHtml(String(v))}</div>`).join("") : '<div style="opacity:.55;">예약 없음</div>';
         const cls = ["mobile-tv-seat-table", extraClass].filter(Boolean).join(" ");
         return `<div class="${cls}" onclick="window.toggleMobileTvOccupiedTable('${tableNo}')"><div class="mobile-tv-seat-table-label">${escapeHtml(String(tableNo))}번</div><div class="mobile-tv-seat-table-reservation">${lines}</div>${occupied ? '<div class="mobile-tv-seat-x-overlay">X</div>' : ''}</div>`;
@@ -11421,30 +11456,13 @@
       function renderMobileTvEmptyTables(reservedByTable) {
         const empty = document.getElementById("mobile-tv-empty-tables");
         if (!empty) return;
-        const isEmpty = (t) => !reservedByTable[t] && !isMobileTvTableOccupied(t);
+        const isEmpty = (t) => !reservedByTable[String(t)] && !isMobileTvTableManuallyOccupied(t);
         empty.innerHTML = `<strong>빈 테이블</strong><br>홀: ${MOBILE_TV_HALL_TABLES.filter(isEmpty).join(', ') || '-'}<br>룸: ${MOBILE_TV_ROOM_TABLES.filter(isEmpty).join(', ') || '-'}`;
       }
       function renderMobileTvSeatMapModalBody() {
         const grid = document.getElementById("mobile-tv-seat-map-grid");
         if (!grid) return;
-        const tvTargetDate = String(getTVTargetDateString() || "");
-        const reservedByTable = {};
-
-        (Array.isArray(reservations) ? reservations : []).forEach((r) => {
-          if (!r) return;
-          if (String(r.date || "") !== tvTargetDate) return;
-          if (isMobileTvSeatCanceledReservation(r)) return;
-          if (r.tvHidden === true) return;
-
-          try {
-            getMobileTvSeatMappedTables(r).forEach((tableNo) => {
-              const key = String(tableNo);
-              if (!reservedByTable[key]) reservedByTable[key] = r;
-            });
-          } catch (error) {
-            console.error("mobile-tv seat table mapping failed", error, r);
-          }
-        });
+        const reservedByTable = getMobileTvReservedByTable();
         if (mobileTvSeatMapMode === "room") {
           grid.className = "mobile-tv-seat-map-grid mobile-tv-seat-room-layout";
           grid.innerHTML = renderMobileTvRoomSeatMapHtml(reservedByTable);
@@ -11456,8 +11474,21 @@
       }
       async function toggleMobileTvOccupiedTable(tableNo) {
         const dateString = getTVTargetDateString();
-        const set = new Set(mobileTvOccupiedTables.map(String));
-        if (set.has(String(tableNo))) set.delete(String(tableNo)); else set.add(String(tableNo));
+        const key = getMobileTvTableKey(tableNo);
+        const offKey = getMobileTvTableOffKey(tableNo);
+        const reservedByTable = getMobileTvReservedByTable();
+        const hasReservation = !!reservedByTable[key];
+        const current = Array.isArray(mobileTvOccupiedTables) ? mobileTvOccupiedTables.map(String) : [];
+        const set = new Set(current);
+
+        if (hasReservation) {
+          set.delete(key);
+          if (set.has(offKey)) set.delete(offKey); else set.add(offKey);
+        } else {
+          set.delete(offKey);
+          if (set.has(key)) set.delete(key); else set.add(key);
+        }
+
         try { await setDoc(doc(db, "tableOccupancy", dateString), { date: dateString, occupiedTables: Array.from(set), updatedAt: serverTimestamp() }, { merge: true }); }
         catch (error) { console.error(error); alert("착석 상태 저장에 실패했습니다."); }
       }
