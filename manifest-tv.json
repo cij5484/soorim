@@ -1,15 +1,13 @@
 {
-  "id": "/soorim/tv/",
+  "id": "/soorim/tv",
   "name": "수림TV",
   "short_name": "수림TV",
-  "start_url": "/soorim/tv/",
-  "scope": "/soorim/tv/",
+  "start_url": "/soorim/?tv=1",
+  "scope": "/soorim/",
   "display": "standalone",
-  "orientation": "portrait",
   "background_color": "#000000",
-  "theme_color": "#000000"
   "theme_color": "#111111",
-  "orientation": "any",
+  "orientation": "portrait",
   "icons": [
     {
       "src": "icon-tv-192.png",
