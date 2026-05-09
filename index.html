@@ -5852,21 +5852,25 @@
           placeholder="바탕화면 캘린더 내용을 여기에 붙여넣기"
           style="min-height: 220px"
         ></textarea>
-        <label
+        <div
           style="
-            display: block;
             margin-top: 10px;
             margin-bottom: 10px;
             font-size: 14px;
             color: #333;
           "
         >
-          <input type="checkbox" id="import-full-compare-toggle" />
-          이 날짜의 전체 예약 목록으로 비교하기
+          <label
+            for="import-full-compare-toggle"
+            style="display: flex; align-items: center; gap: 7px; cursor: pointer"
+          >
+            <input type="checkbox" id="import-full-compare-toggle" />
+            <span>이 날짜의 전체 예약 목록으로 비교하기</span>
+          </label>
           <div style="font-size: 12px; color: #666; margin-top: 4px">
             체크하면 앱에는 있지만 이번 불러오기 목록에는 없는 예약을 취소 의심으로 보여줍니다.
           </div>
-        </label>
+        </div>
 
         <div class="modal-actions" style="justify-content: space-between">
           <div>
@@ -8278,6 +8282,50 @@
           .trim();
       }
 
+      function normalizeImportCompareName(value) {
+        return String(value || "")
+          .replace(/\s+/g, "")
+          .trim();
+      }
+
+      function isSameImportPhoneFamily(phoneA, phoneB) {
+        const a = normalizeImportPhone(phoneA);
+        const b = normalizeImportPhone(phoneB);
+        if (!a || !b) return false;
+        if (a === b) return true;
+
+        const includesMatch =
+          (a.length >= 4 && b.includes(a)) || (b.length >= 4 && a.includes(b));
+        if (includesMatch) return true;
+
+        if (a.length >= 8 && b.length >= 8) return false;
+
+        return false;
+      }
+
+      function isSameCancelSuspectReservation(existing, incoming) {
+        const existingName = normalizeImportCompareName(existing?.name);
+        const incomingName = normalizeImportCompareName(incoming?.name);
+        const existingPhone = normalizeImportPhone(existing?.phone);
+        const incomingPhone = normalizeImportPhone(incoming?.phone);
+        const sameTime =
+          String(existing?.time || "") === String(incoming?.time || "");
+        const sameName = !!existingName && existingName === incomingName;
+        const samePhoneFamily = isSameImportPhoneFamily(existingPhone, incomingPhone);
+
+        if (sameName && sameTime) {
+          if (!existingPhone || !incomingPhone) return true;
+          if (samePhoneFamily) return true;
+          if (existingPhone.length >= 8 && incomingPhone.length >= 8) return false;
+          return true;
+        }
+
+        if (sameName && samePhoneFamily) return true;
+        if (samePhoneFamily && sameTime) return true;
+
+        return false;
+      }
+
       function findMatchingImportedReservation(newReservation) {
         const newDate = String(newReservation.date || "");
         const newPhone = normalizeImportPhone(newReservation.phone);
@@ -9047,27 +9095,12 @@
           });
           importCancelSuspectList = existingDayReservations
             .filter((existing) => {
-              const existingName = normalizeImportText(existing.name);
+              const existingName = normalizeImportCompareName(existing.name);
               const existingPhone = normalizeImportPhone(existing.phone);
               if (!existingName && !existingPhone) return false;
-              return !importedList.some((incoming) => {
-                const incomingName = normalizeImportText(incoming.name);
-                const incomingPhone = normalizeImportPhone(incoming.phone);
-                if (existingPhone && incomingPhone) {
-                  return existingPhone === incomingPhone;
-                }
-                if (!existingPhone && existingName && incomingName) {
-                  return (
-                    existingName === incomingName &&
-                    String(existing.date || "") === String(incoming.date || "") &&
-                    String(existing.time || "") === String(incoming.time || "")
-                  );
-                }
-                if (existingName && incomingName && existingName === incomingName) {
-                  return true;
-                }
-                return false;
-              });
+              return !importedList.some((incoming) =>
+                isSameCancelSuspectReservation(existing, incoming),
+              );
             })
             .map((reservation) => ({ reservation }));
         }
