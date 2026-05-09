@@ -5238,11 +5238,34 @@
       .mobile-tv-seat-map-tabs { display:flex; gap:6px; padding:8px 12px; }
       .mobile-tv-seat-map-tab { border:1px solid #cbd5e1; background:#f8fafc; border-radius:8px; padding:6px 12px; font-weight:800; }
       .mobile-tv-seat-map-tab.active { background:#1d4ed8; color:#fff; border-color:#1d4ed8; }
-      .mobile-tv-seat-map-grid { padding:8px 12px; overflow:auto; display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:8px; min-height:240px; }
+      .mobile-tv-seat-map-grid { padding:8px 12px; overflow:auto; min-height:240px; }
+      .mobile-tv-seat-map-grid.mobile-tv-seat-hall-layout { display:grid; grid-template-columns:repeat(23, 1fr); grid-template-rows:repeat(16, minmax(28px, 1fr)); gap:8px; }
+      .mobile-tv-seat-map-grid.mobile-tv-seat-room-layout { display:flex; flex-direction:column; gap:10px; }
+      .mobile-tv-seat-room-section { background:#f8fafc; border:1px solid #d1d5db; border-radius:12px; padding:8px 10px; }
+      .mobile-tv-seat-room-inner { display:grid; grid-template-columns:34px 1fr 1fr 18px 1fr 1fr; gap:8px; align-items:stretch; min-height:74px; }
+      .mobile-tv-seat-room-label { display:inline-flex; align-items:center; justify-content:center; font-size:11px; font-weight:900; color:#374151; background:#e5e7eb; border:1px solid #cbd5e1; border-radius:999px; height:20px; margin-top:2px; }
+      .mobile-tv-seat-room-gap { pointer-events:none; }
       .mobile-tv-seat-table { position:relative; overflow:hidden; border:1px solid #cbd5e1; border-radius:8px; min-height:68px; padding:6px; background:#f8fafc; cursor:pointer; }
       .mobile-tv-seat-table-label { font-size:12px; font-weight:900; margin-bottom:2px; }
       .mobile-tv-seat-table-reservation { font-size:11px; line-height:1.25; }
       .mobile-tv-seat-x-overlay { position:absolute; inset:0; z-index:10; display:flex; align-items:center; justify-content:center; font-size:clamp(48px, 12vw, 120px); font-weight:900; color:rgba(220, 38, 38, 0.82); pointer-events:none; line-height:1; }
+      .mobile-tv-seat-hall-table-no-19 { grid-column:2 / 6; grid-row:1 / 3; }
+      .mobile-tv-seat-hall-table-no-18 { grid-column:7 / 11; grid-row:1 / 3; }
+      .mobile-tv-seat-hall-table-no-17 { grid-column:11 / 15; grid-row:1 / 3; }
+      .mobile-tv-seat-hall-table-no-16 { grid-column:16 / 20; grid-row:1 / 3; }
+      .mobile-tv-seat-hall-table-no-15 { grid-column:20 / 24; grid-row:1 / 3; }
+      .mobile-tv-seat-hall-table-no-10 { grid-column:2 / 6; grid-row:4 / 6; }
+      .mobile-tv-seat-hall-table-no-9 { grid-column:2 / 6; grid-row:6 / 8; }
+      .mobile-tv-seat-hall-table-no-8 { grid-column:2 / 6; grid-row:9 / 11; }
+      .mobile-tv-seat-hall-table-no-11 { grid-column:7 / 11; grid-row:5 / 7; }
+      .mobile-tv-seat-hall-table-no-12 { grid-column:11 / 15; grid-row:5 / 7; }
+      .mobile-tv-seat-hall-table-no-7 { grid-column:7 / 11; grid-row:9 / 11; }
+      .mobile-tv-seat-hall-table-no-6 { grid-column:11 / 15; grid-row:9 / 11; }
+      .mobile-tv-seat-hall-table-no-13 { grid-column:16 / 20; grid-row:5 / 7; }
+      .mobile-tv-seat-hall-table-no-14 { grid-column:20 / 24; grid-row:5 / 7; }
+      .mobile-tv-seat-hall-table-no-5 { grid-column:16 / 20; grid-row:9 / 11; }
+      .mobile-tv-seat-hall-table-no-4 { grid-column:20 / 24; grid-row:9 / 11; }
+      .mobile-tv-seat-hall-table-no-3 { grid-column:16 / 20; grid-row:11 / 13; }
       .mobile-tv-empty-tables { border-top:1px solid #e5e7eb; padding:10px 12px; font-size:12px; line-height:1.45; }
       .mobile-tv-seat-map-close { border:0; background:#ef4444; color:#fff; border-radius:8px; padding:5px 10px; font-weight:800; }
 
@@ -5365,7 +5388,6 @@
           align-items:center;
           justify-content:center;
         }
-        .mobile-tv-seat-map-grid { grid-template-columns: repeat(3, minmax(0,1fr)); }
 
       }
     </style>
@@ -11362,44 +11384,55 @@
       function renderMobileTvSeatMapModal() {
         return `<div class="mobile-tv-seat-map-modal" id="mobile-tv-seat-map-modal" onclick="if(event.target===this) window.closeMobileTvSeatMapModal()"><div class="mobile-tv-seat-map-card"><div class="mobile-tv-seat-map-header"><strong>현재 착석 테이블 확인</strong><button class="mobile-tv-seat-map-close" type="button" onclick="window.closeMobileTvSeatMapModal()">닫기</button></div><div class="mobile-tv-seat-map-tabs"><button class="mobile-tv-seat-map-tab ${mobileTvSeatMapMode==="hall"?"active":""}" data-mode="hall" onclick="window.setMobileTvSeatMapMode('hall')" type="button">홀</button><button class="mobile-tv-seat-map-tab ${mobileTvSeatMapMode==="room"?"active":""}" data-mode="room" onclick="window.setMobileTvSeatMapMode('room')" type="button">룸</button></div><div class="mobile-tv-seat-map-grid" id="mobile-tv-seat-map-grid"></div><div class="mobile-tv-empty-tables" id="mobile-tv-empty-tables"></div></div></div>`;
       }
+      function formatMobileTvSeatPeopleText(r) {
+        if (!r) return "";
+        if (r.peopleText) return String(r.peopleText).trim();
+        const adult = Number(r.people || 0);
+        const child = Number(r.child || 0);
+        if (adult > 0 && child > 0) return `성인${adult}, 아이${child}`;
+        if (adult > 0) return `${adult}명`;
+        if (child > 0) return `아이${child}`;
+        return "";
+      }
+      function renderMobileTvSeatTableHtml(tableNo, reservedByTable, extraClass = "") {
+        const r = reservedByTable[tableNo] || null;
+        const occupied = mobileTvOccupiedTables.has(String(tableNo));
+        const lines = r ? [r.time || "", r.name || "", formatMobileTvSeatPeopleText(r)].filter(Boolean).map((v) => `<div>${escapeHtml(String(v))}</div>`).join("") : '<div style="opacity:.55;">예약 없음</div>';
+        const cls = ["mobile-tv-seat-table", extraClass].filter(Boolean).join(" ");
+        return `<div class="${cls}" onclick="window.toggleMobileTvOccupiedTable('${tableNo}')"><div class="mobile-tv-seat-table-label">${escapeHtml(String(tableNo))}번</div><div class="mobile-tv-seat-table-reservation">${lines}</div>${occupied ? '<div class="mobile-tv-seat-x-overlay">X</div>' : ''}</div>`;
+      }
+      function renderMobileTvHallSeatMapHtml(reservedByTable) {
+        const order = ["19","18","17","16","15","10","9","11","12","13","14","8","7","6","5","4","3"];
+        return order.map((t) => renderMobileTvSeatTableHtml(t, reservedByTable, `mobile-tv-seat-hall-table mobile-tv-seat-hall-table-no-${t}`)).join("");
+      }
+      function renderMobileTvRoomSeatMapHtml(reservedByTable) {
+        const rooms = [["1실",["21","22","23","24"]],["2실",["31","32","33","34"]],["3실",["41","42","43","44"]],["4실",["51","52","53","54"]],["5실",["61","62","63","64"]]];
+        return rooms.map(([label,tables]) => `<div class="mobile-tv-seat-room-section"><div class="mobile-tv-seat-room-inner"><div class="mobile-tv-seat-room-label">${label}</div>${renderMobileTvSeatTableHtml(tables[0], reservedByTable)}${renderMobileTvSeatTableHtml(tables[1], reservedByTable)}<div class="mobile-tv-seat-room-gap"></div>${renderMobileTvSeatTableHtml(tables[2], reservedByTable)}${renderMobileTvSeatTableHtml(tables[3], reservedByTable)}</div></div>`).join("");
+      }
+      function renderMobileTvEmptyTables(reservedByTable) {
+        const empty = document.getElementById("mobile-tv-empty-tables");
+        if (!empty) return;
+        const isEmpty = (t) => !reservedByTable[t] && !mobileTvOccupiedTables.has(String(t));
+        empty.innerHTML = `<strong>빈 테이블</strong><br>홀: ${MOBILE_TV_HALL_TABLES.filter(isEmpty).join(', ') || '-'}<br>룸: ${MOBILE_TV_ROOM_TABLES.filter(isEmpty).join(', ') || '-'}`;
+      }
       function renderMobileTvSeatMapModalBody() {
         const grid = document.getElementById("mobile-tv-seat-map-grid");
-        const empty = document.getElementById("mobile-tv-empty-tables");
-        if (!grid || !empty) return;
-
-        const tvTargetDate = String(getTVTargetDateString() || "");
-        const todaySeatReservations = (Array.isArray(reservations) ? reservations : []).filter((r) => {
-          if (String(r?.date || "") !== tvTargetDate) return false;
-          if (isMobileTvSeatCanceledReservation(r)) return false;
-          if (r?.tvHidden === true) return false;
-          return true;
+        if (!grid) return;
+        const reservedByTable = {};
+        (reservations || []).forEach((r) => {
+          if (!r || (r.date || "") !== selectedDate) return;
+          const t = String(r.table || "").trim();
+          if (!t) return;
+          if (!reservedByTable[t]) reservedByTable[t] = r;
         });
-
-        const reservedByTable = new Map();
-        todaySeatReservations.forEach((r) => {
-          try {
-            getMobileTvSeatMappedTables(r).forEach((t) => {
-              if (!reservedByTable.has(t)) reservedByTable.set(t, r);
-            });
-          } catch (error) {
-            console.error("mobile-tv seat table mapping failed", error, r);
-          }
-        });
-
-        const tables = mobileTvSeatMapMode === "room" ? MOBILE_TV_ROOM_TABLES : MOBILE_TV_HALL_TABLES;
-        grid.innerHTML = tables.map((t) => {
-          const r = reservedByTable.get(t);
-          const lines = r
-            ? [formatTVTime(r.time || ""), escapeHtml(getReservationDisplayName(r)), escapeHtml(getMobileTvSeatPeopleText(r))]
-                .filter(Boolean)
-                .join("<br>")
-            : "";
-          const occupied = mobileTvOccupiedTables.includes(String(t));
-          return `<div class="mobile-tv-seat-table" onclick="window.toggleMobileTvOccupiedTable('${t}')"><div class="mobile-tv-seat-table-label">${mobileTvSeatMapMode === 'hall' ? '홀' : '룸'} ${t}</div><div class="mobile-tv-seat-table-reservation">${lines}</div>${occupied ? '<div class="mobile-tv-seat-x-overlay">X</div>' : ''}</div>`;
-        }).join("");
-
-        const isEmpty = (t) => !reservedByTable.has(t) && !mobileTvOccupiedTables.includes(String(t));
-        empty.innerHTML = `<strong>빈 테이블</strong><br>홀: ${MOBILE_TV_HALL_TABLES.filter(isEmpty).join(', ') || '-'}<br>룸: ${MOBILE_TV_ROOM_TABLES.filter(isEmpty).join(', ') || '-'}`;
+        if (mobileTvSeatMapMode === "room") {
+          grid.className = "mobile-tv-seat-map-grid mobile-tv-seat-room-layout";
+          grid.innerHTML = renderMobileTvRoomSeatMapHtml(reservedByTable);
+        } else {
+          grid.className = "mobile-tv-seat-map-grid mobile-tv-seat-hall-layout";
+          grid.innerHTML = renderMobileTvHallSeatMapHtml(reservedByTable);
+        }
+        renderMobileTvEmptyTables(reservedByTable);
       }
       async function toggleMobileTvOccupiedTable(tableNo) {
         const dateString = getTVTargetDateString();
