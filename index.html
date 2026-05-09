@@ -11386,17 +11386,26 @@
       }
       function formatMobileTvSeatPeopleText(r) {
         if (!r) return "";
-        if (r.peopleText) return String(r.peopleText).trim();
-        const adult = Number(r.people || 0);
-        const child = Number(r.child || 0);
+        if ((r.peopleText || "").trim()) return String(r.peopleText).trim();
+
+        const adult = Number(r.adult) || 0;
+        const child = Number(r.child) || 0;
+        const people = Number(r.people) || 0;
+
         if (adult > 0 && child > 0) return `성인${adult}, 아이${child}`;
         if (adult > 0) return `${adult}명`;
         if (child > 0) return `아이${child}`;
+        if (people > 0) return `${people}명`;
+
         return "";
+      }
+      function isMobileTvTableOccupied(tableNo) {
+        return Array.isArray(mobileTvOccupiedTables) &&
+          mobileTvOccupiedTables.map(String).includes(String(tableNo));
       }
       function renderMobileTvSeatTableHtml(tableNo, reservedByTable, extraClass = "") {
         const r = reservedByTable[tableNo] || null;
-        const occupied = mobileTvOccupiedTables.has(String(tableNo));
+        const occupied = isMobileTvTableOccupied(tableNo);
         const lines = r ? [r.time || "", r.name || "", formatMobileTvSeatPeopleText(r)].filter(Boolean).map((v) => `<div>${escapeHtml(String(v))}</div>`).join("") : '<div style="opacity:.55;">예약 없음</div>';
         const cls = ["mobile-tv-seat-table", extraClass].filter(Boolean).join(" ");
         return `<div class="${cls}" onclick="window.toggleMobileTvOccupiedTable('${tableNo}')"><div class="mobile-tv-seat-table-label">${escapeHtml(String(tableNo))}번</div><div class="mobile-tv-seat-table-reservation">${lines}</div>${occupied ? '<div class="mobile-tv-seat-x-overlay">X</div>' : ''}</div>`;
@@ -11412,18 +11421,29 @@
       function renderMobileTvEmptyTables(reservedByTable) {
         const empty = document.getElementById("mobile-tv-empty-tables");
         if (!empty) return;
-        const isEmpty = (t) => !reservedByTable[t] && !mobileTvOccupiedTables.has(String(t));
+        const isEmpty = (t) => !reservedByTable[t] && !isMobileTvTableOccupied(t);
         empty.innerHTML = `<strong>빈 테이블</strong><br>홀: ${MOBILE_TV_HALL_TABLES.filter(isEmpty).join(', ') || '-'}<br>룸: ${MOBILE_TV_ROOM_TABLES.filter(isEmpty).join(', ') || '-'}`;
       }
       function renderMobileTvSeatMapModalBody() {
         const grid = document.getElementById("mobile-tv-seat-map-grid");
         if (!grid) return;
+        const tvTargetDate = String(getTVTargetDateString() || "");
         const reservedByTable = {};
-        (reservations || []).forEach((r) => {
-          if (!r || (r.date || "") !== selectedDate) return;
-          const t = String(r.table || "").trim();
-          if (!t) return;
-          if (!reservedByTable[t]) reservedByTable[t] = r;
+
+        (Array.isArray(reservations) ? reservations : []).forEach((r) => {
+          if (!r) return;
+          if (String(r.date || "") !== tvTargetDate) return;
+          if (isMobileTvSeatCanceledReservation(r)) return;
+          if (r.tvHidden === true) return;
+
+          try {
+            getMobileTvSeatMappedTables(r).forEach((tableNo) => {
+              const key = String(tableNo);
+              if (!reservedByTable[key]) reservedByTable[key] = r;
+            });
+          } catch (error) {
+            console.error("mobile-tv seat table mapping failed", error, r);
+          }
         });
         if (mobileTvSeatMapMode === "room") {
           grid.className = "mobile-tv-seat-map-grid mobile-tv-seat-room-layout";
