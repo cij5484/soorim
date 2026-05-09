@@ -828,6 +828,26 @@
         gap: 8px;
         flex-wrap: wrap;
       }
+      .import-full-compare-label {
+        display: inline-flex !important;
+        align-items: center !important;
+        justify-content: flex-start !important;
+        gap: 7px !important;
+        width: auto !important;
+        max-width: 100% !important;
+        cursor: pointer !important;
+        line-height: 1.3 !important;
+      }
+      #import-full-compare-toggle {
+        width: 16px !important;
+        min-width: 16px !important;
+        max-width: 16px !important;
+        height: 16px !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        flex: 0 0 16px !important;
+        display: inline-block !important;
+      }
       body {
         margin: 0;
         font-family: "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
@@ -5862,7 +5882,7 @@
         >
           <label
             for="import-full-compare-toggle"
-            style="display: flex; align-items: center; gap: 7px; cursor: pointer"
+            class="import-full-compare-label"
           >
             <input type="checkbox" id="import-full-compare-toggle" />
             <span>이 날짜의 전체 예약 목록으로 비교하기</span>
@@ -8282,44 +8302,62 @@
           .trim();
       }
 
+      function getImportCompareReservation(value) {
+        return value?.reservation || value?.newReservation || value?.data || value || {};
+      }
+
       function normalizeImportCompareName(value) {
         return String(value || "")
           .replace(/\s+/g, "")
+          .replace(/님$/g, "")
           .trim();
+      }
+
+      function normalizeImportCompareTime(value) {
+        return String(value || "").trim();
       }
 
       function isSameImportPhoneFamily(phoneA, phoneB) {
         const a = normalizeImportPhone(phoneA);
         const b = normalizeImportPhone(phoneB);
+
         if (!a || !b) return false;
         if (a === b) return true;
 
-        const includesMatch =
-          (a.length >= 4 && b.includes(a)) || (b.length >= 4 && a.includes(b));
-        if (includesMatch) return true;
+        if (a.length >= 4 && b.includes(a)) return true;
+        if (b.length >= 4 && a.includes(b)) return true;
 
-        if (a.length >= 8 && b.length >= 8) return false;
+        const aLast4 = a.length >= 4 ? a.slice(-4) : "";
+        const bLast4 = b.length >= 4 ? b.slice(-4) : "";
+
+        if (aLast4 && bLast4 && aLast4 === bLast4) return true;
 
         return false;
       }
 
-      function isSameCancelSuspectReservation(existing, incoming) {
+      function isSameCancelSuspectReservation(existingValue, incomingValue) {
+        const existing = getImportCompareReservation(existingValue);
+        const incoming = getImportCompareReservation(incomingValue);
+
         const existingName = normalizeImportCompareName(existing?.name);
         const incomingName = normalizeImportCompareName(incoming?.name);
+
         const existingPhone = normalizeImportPhone(existing?.phone);
         const incomingPhone = normalizeImportPhone(incoming?.phone);
+
         const sameTime =
-          String(existing?.time || "") === String(incoming?.time || "");
-        const sameName = !!existingName && existingName === incomingName;
+          normalizeImportCompareTime(existing?.time) === normalizeImportCompareTime(incoming?.time);
+
+        const sameName =
+          !!existingName &&
+          !!incomingName &&
+          (existingName === incomingName ||
+            existingName.includes(incomingName) ||
+            incomingName.includes(existingName));
+
         const samePhoneFamily = isSameImportPhoneFamily(existingPhone, incomingPhone);
 
-        if (sameName && sameTime) {
-          if (!existingPhone || !incomingPhone) return true;
-          if (samePhoneFamily) return true;
-          if (existingPhone.length >= 8 && incomingPhone.length >= 8) return false;
-          return true;
-        }
-
+        if (sameName && sameTime) return true;
         if (sameName && samePhoneFamily) return true;
         if (samePhoneFamily && sameTime) return true;
 
@@ -9082,9 +9120,10 @@
         if (!compareEnabled) {
           importCancelSuspectList = [];
         } else {
-          const importedList = importPreviewList.filter(
-            (r) => String(r.date || "") === String(compareDate || ""),
-          );
+          const importedList = importPreviewList.filter((item) => {
+            const r = getImportCompareReservation(item);
+            return String(r.date || "") === String(compareDate || "");
+          });
           const isCanceledStatus = (statusValue) =>
             /(취소|cancel|canceled|cancelled)/i.test(String(statusValue || ""));
           const existingDayReservations = reservations.filter((r) => {
