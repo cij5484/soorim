@@ -798,6 +798,36 @@
       * {
         box-sizing: border-box;
       }
+      .import-preview-status-badge.cancel-suspect {
+        background: #fff4db;
+        color: #8a5a00;
+        border-color: #f6d78b;
+      }
+      .import-preview-cancel-suspect-section {
+        margin-top: 12px;
+        padding: 12px;
+        border: 1px solid #fde3b1;
+        background: #fffbf2;
+        border-radius: 10px;
+      }
+      .import-preview-cancel-suspect-note {
+        font-size: 12px;
+        color: #8a5a00;
+        margin: 6px 0 10px 0;
+      }
+      .import-preview-cancel-suspect-card {
+        border: 1px solid #f2d9ab;
+        background: #ffffff;
+        border-radius: 10px;
+        padding: 10px;
+        margin-bottom: 8px;
+      }
+      .import-preview-cancel-suspect-actions {
+        margin-top: 8px;
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+      }
       body {
         margin: 0;
         font-family: "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
@@ -5822,6 +5852,21 @@
           placeholder="바탕화면 캘린더 내용을 여기에 붙여넣기"
           style="min-height: 220px"
         ></textarea>
+        <label
+          style="
+            display: block;
+            margin-top: 10px;
+            margin-bottom: 10px;
+            font-size: 14px;
+            color: #333;
+          "
+        >
+          <input type="checkbox" id="import-full-compare-toggle" />
+          이 날짜의 전체 예약 목록으로 비교하기
+          <div style="font-size: 12px; color: #666; margin-top: 4px">
+            체크하면 앱에는 있지만 이번 불러오기 목록에는 없는 예약을 취소 의심으로 보여줍니다.
+          </div>
+        </label>
 
         <div class="modal-actions" style="justify-content: space-between">
           <div>
@@ -7344,6 +7389,7 @@
       let editingIndex = null;
       let editingReservationId = null;
       let importPreviewList = [];
+      let importCancelSuspectList = [];
       let editingPreviewIndex = null;
       let currentView = "day";
       let selectedDate =
@@ -7380,6 +7426,13 @@
         if (importDateInput) {
           importDateInput.value = selectedDate;
         }
+        const fullCompareToggle = document.getElementById(
+          "import-full-compare-toggle",
+        );
+        if (fullCompareToggle) {
+          fullCompareToggle.checked = false;
+        }
+        importCancelSuspectList = [];
 
         document.getElementById("import-modal").classList.add("show");
       }
@@ -7948,10 +8001,11 @@
 
         const warningCount =
           previewStatusCounts.duplicateCount + previewStatusCounts.conflictCount;
+        const cancelSuspectCount = importCancelSuspectList.length;
 
         if (title) {
           title.textContent = count
-            ? `불러오기 미리보기 (${count}건 / 저장가능 ${saveableCount}건 / 확인필요 ${warningCount}건)`
+            ? `불러오기 미리보기 (${count}건 / 저장가능 ${saveableCount}건 / 확인필요 ${warningCount}건 / 취소의심 ${cancelSuspectCount}건)`
             : "불러오기 미리보기";
         }
 
@@ -7998,7 +8052,7 @@
 
         const sortedDates = Object.keys(grouped).sort();
 
-        list.innerHTML = sortedDates
+        const groupedHtml = sortedDates
           .map((date) => {
             const items = grouped[date];
 
@@ -8073,6 +8127,71 @@
             `;
           })
           .join("");
+        const compareEnabled = !!document.getElementById(
+          "import-full-compare-toggle",
+        )?.checked;
+        const cancelSuspectHtml = compareEnabled
+          ? `
+            <div class="import-preview-cancel-suspect-section">
+              <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap;">
+                <span class="import-preview-status-badge cancel-suspect">취소의심</span>
+                <strong>취소 의심 예약</strong>
+              </div>
+              <div class="import-preview-cancel-suspect-note">
+                앱에는 있지만 이번 불러오기 목록에는 없는 예약입니다. 바탕화면 달력에서 취소되었을 가능성이 있습니다.
+              </div>
+              ${
+                importCancelSuspectList.length
+                  ? importCancelSuspectList
+                      .map((item, idx) => {
+                        const r = item.reservation || {};
+                        const peopleText = getTVPeopleText(r) || "-";
+                        const seatParts = getImportSeatSummary(r);
+                        return `
+                          <div class="import-preview-cancel-suspect-card">
+                            <div class="import-preview-first-line">
+                              <span>${escapeHtml(r.time || "-")}</span>
+                              <span>&nbsp;${escapeHtml(r.name || "이름없음")}</span>
+                              <span>&nbsp;${escapeHtml(peopleText)}</span>
+                              ${r.menu ? `<span>&nbsp;${escapeHtml(r.menu)}</span>` : ""}
+                            </div>
+                            <div class="import-preview-sub-line">
+                              ${escapeHtml(r.phone || "-")}
+                              ${seatParts ? " · " : ""}
+                              ${escapeHtml(seatParts)}
+                              ${r.memo ? ` · 메모: ${escapeHtml(r.memo)}` : ""}
+                            </div>
+                            <div class="import-preview-cancel-suspect-actions">
+                              <button type="button" class="btn-cancel" onclick="removeImportCancelSuspect(${idx})">유지</button>
+                              <button type="button" class="btn-save" onclick="cancelImportSuspectReservation(${idx})">취소처리</button>
+                            </div>
+                          </div>
+                        `;
+                      })
+                      .join("")
+                  : `<div style="font-size:13px; color:#666;">취소 의심 예약 없음</div>`
+              }
+            </div>
+          `
+          : "";
+
+        list.innerHTML = groupedHtml + cancelSuspectHtml;
+      }
+
+      function removeImportCancelSuspect(index) {
+        importCancelSuspectList.splice(index, 1);
+        renderImportPreview();
+      }
+
+      async function cancelImportSuspectReservation(index) {
+        const suspect = importCancelSuspectList[index];
+        const r = suspect?.reservation;
+        if (!r?.id) return;
+        const targetIndex = reservations.findIndex((item) => item.id === r.id);
+        if (targetIndex === -1) return;
+        await changeStatus(targetIndex, "취소");
+        importCancelSuspectList.splice(index, 1);
+        renderImportPreview();
       }
 
       function removePreviewItem(index) {
@@ -8907,6 +9026,51 @@
         }
 
         importPreviewList = parsedReservations;
+        const importDateInput = document.getElementById("import-date");
+        const compareDate = importDateInput?.value || selectedDate;
+        const compareEnabled = !!document.getElementById(
+          "import-full-compare-toggle",
+        )?.checked;
+        if (!compareEnabled) {
+          importCancelSuspectList = [];
+        } else {
+          const importedList = importPreviewList.filter(
+            (r) => String(r.date || "") === String(compareDate || ""),
+          );
+          const isCanceledStatus = (statusValue) =>
+            /(취소|cancel|canceled|cancelled)/i.test(String(statusValue || ""));
+          const existingDayReservations = reservations.filter((r) => {
+            if (String(r.date || "") !== String(compareDate || "")) return false;
+            if (r?.deleted) return false;
+            if (isCanceledStatus(r?.status)) return false;
+            return true;
+          });
+          importCancelSuspectList = existingDayReservations
+            .filter((existing) => {
+              const existingName = normalizeImportText(existing.name);
+              const existingPhone = normalizeImportPhone(existing.phone);
+              if (!existingName && !existingPhone) return false;
+              return !importedList.some((incoming) => {
+                const incomingName = normalizeImportText(incoming.name);
+                const incomingPhone = normalizeImportPhone(incoming.phone);
+                if (existingPhone && incomingPhone) {
+                  return existingPhone === incomingPhone;
+                }
+                if (!existingPhone && existingName && incomingName) {
+                  return (
+                    existingName === incomingName &&
+                    String(existing.date || "") === String(incoming.date || "") &&
+                    String(existing.time || "") === String(incoming.time || "")
+                  );
+                }
+                if (existingName && incomingName && existingName === incomingName) {
+                  return true;
+                }
+                return false;
+              });
+            })
+            .map((reservation) => ({ reservation }));
+        }
         renderImportPreview();
         openImportPreviewModal();
       }
@@ -14147,6 +14311,8 @@ ${
       window.confirmImport = confirmImport;
       window.removePreviewItem = removePreviewItem;
       window.editPreviewItem = editPreviewItem;
+      window.removeImportCancelSuspect = removeImportCancelSuspect;
+      window.cancelImportSuspectReservation = cancelImportSuspectReservation;
       window.goToReservationFromSearch = goToReservationFromSearch;
       window.editReservationFromSearch = editReservationFromSearch;
       window.openWeekReservationModal = openWeekReservationModal;
