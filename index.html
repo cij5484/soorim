@@ -828,25 +828,56 @@
         gap: 8px;
         flex-wrap: wrap;
       }
-      .import-full-compare-label {
-        display: inline-flex !important;
-        align-items: center !important;
+      .import-full-compare-box {
+        margin-top: 10px !important;
+        margin-bottom: 10px !important;
+        font-size: 14px !important;
+        color: #333 !important;
+        text-align: left !important;
+      }
+      .import-full-compare-row {
+        display: flex !important;
+        align-items: flex-start !important;
         justify-content: flex-start !important;
-        gap: 7px !important;
-        width: auto !important;
-        max-width: 100% !important;
-        cursor: pointer !important;
-        line-height: 1.3 !important;
+        gap: 8px !important;
+        width: 100% !important;
+        text-align: left !important;
       }
       #import-full-compare-toggle {
         width: 16px !important;
         min-width: 16px !important;
         max-width: 16px !important;
         height: 16px !important;
-        margin: 0 !important;
+        min-height: 16px !important;
+        max-height: 16px !important;
+        margin: 2px 0 0 0 !important;
         padding: 0 !important;
         flex: 0 0 16px !important;
-        display: inline-block !important;
+        display: block !important;
+      }
+      .import-full-compare-text {
+        display: block !important;
+        width: auto !important;
+        max-width: none !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        flex: 1 1 auto !important;
+        text-align: left !important;
+        line-height: 1.35 !important;
+        font-weight: 700 !important;
+        color: #333 !important;
+        cursor: pointer !important;
+        white-space: normal !important;
+        word-break: keep-all !important;
+      }
+      .import-full-compare-desc {
+        margin-top: 4px !important;
+        padding-left: 24px !important;
+        font-size: 12px !important;
+        color: #666 !important;
+        line-height: 1.35 !important;
+        text-align: left !important;
+        word-break: keep-all !important;
       }
       body {
         margin: 0;
@@ -5872,22 +5903,17 @@
           placeholder="바탕화면 캘린더 내용을 여기에 붙여넣기"
           style="min-height: 220px"
         ></textarea>
-        <div
-          style="
-            margin-top: 10px;
-            margin-bottom: 10px;
-            font-size: 14px;
-            color: #333;
-          "
-        >
-          <label
-            for="import-full-compare-toggle"
-            class="import-full-compare-label"
-          >
+        <div class="import-full-compare-box">
+          <div class="import-full-compare-row">
             <input type="checkbox" id="import-full-compare-toggle" />
-            <span>이 날짜의 전체 예약 목록으로 비교하기</span>
-          </label>
-          <div style="font-size: 12px; color: #666; margin-top: 4px">
+            <label
+              for="import-full-compare-toggle"
+              class="import-full-compare-text"
+            >
+              이 날짜의 전체 예약 목록으로 비교하기
+            </label>
+          </div>
+          <div class="import-full-compare-desc">
             체크하면 앱에는 있지만 이번 불러오기 목록에는 없는 예약을 취소 의심으로 보여줍니다.
           </div>
         </div>
