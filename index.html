@@ -3703,6 +3703,152 @@
       }
 
       /* ====== TV모드 모바일: 예약표만 표시 ====== */
+      body.tv-mode-body.mobile-tv-layout {
+        background: #f3f3f3 !important;
+        overflow: hidden !important;
+      }
+
+      body.tv-mode-body.mobile-tv-layout main {
+        width: 100% !important;
+        max-width: none !important;
+        margin: 0 !important;
+        padding: 0 !important;
+      }
+
+      body.tv-mode-body.mobile-tv-layout #reservation-list {
+        width: 100vw !important;
+        height: 100dvh !important;
+      }
+
+      body.tv-mode-body.mobile-tv-layout .tv-wrap {
+        width: 100vw !important;
+        height: 100dvh !important;
+        padding: 6px !important;
+        display: block !important;
+        background: #f3f3f3 !important;
+      }
+
+      body.tv-mode-body.mobile-tv-layout .tv-photo-panel {
+        display: none !important;
+      }
+
+      body.tv-mode-body.mobile-tv-layout .tv-reservation-panel {
+        width: 100% !important;
+        height: calc(100dvh - 12px) !important;
+        border: 3px solid #111 !important;
+        padding: 0 5px 6px !important;
+        background: white !important;
+      }
+
+      body.tv-mode-body.mobile-tv-layout .tv-title {
+        font-size: 26px !important;
+        margin: 6px 0 8px !important;
+        line-height: 1.1 !important;
+      }
+
+      body.tv-mode-body.mobile-tv-layout .tv-settings-btn {
+        left: 4px !important;
+        width: 30px !important;
+        height: 26px !important;
+        font-size: 15px !important;
+      }
+
+      body.tv-mode-body.mobile-tv-layout .tv-date-nav-btn {
+        display: inline-flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+
+        width: 22px !important;
+        height: 22px !important;
+        min-width: 22px !important;
+
+        margin: 0 3px !important;
+        padding: 0 !important;
+
+        border: 1px solid #111 !important;
+        border-radius: 6px !important;
+        background: #f3f4f6 !important;
+        color: #111 !important;
+
+        font-size: 13px !important;
+        font-weight: 900 !important;
+        line-height: 1 !important;
+        vertical-align: middle !important;
+      }
+
+      body.tv-mode-body.mobile-tv-layout .tv-date-nav-btn:disabled {
+        opacity: 0.25 !important;
+      }
+
+      body.tv-mode-body.mobile-tv-layout .tv-table th {
+        font-size: 15px !important;
+        padding: 6px 3px !important;
+      }
+
+      body.tv-mode-body.mobile-tv-layout .tv-table td {
+        font-size: var(--tv-reservation-font-size, 18px);
+        padding: var(--tv-row-padding-y, 6px) 3px !important;
+        line-height: 1.2 !important;
+      }
+
+      body.tv-mode-body.mobile-tv-layout .tv-seat {
+        padding-left: 4px !important;
+      }
+
+      body.tv-mode-body.mobile-tv-layout .tv-footer {
+        font-size: 14px !important;
+        padding: 6px 4px 0 !important;
+      }
+
+      body.tv-mode-body.mobile-tv-layout .tv-empty {
+        font-size: 24px !important;
+      }
+
+      body.tv-mode-body.mobile-tv-layout .tv-settings-modal-bg.show {
+        display: flex !important;
+        align-items: flex-end !important;
+        justify-content: center !important;
+        background: transparent !important;
+      }
+
+      body.tv-mode-body.mobile-tv-layout .tv-settings-modal {
+        width: 100vw !important;
+        max-width: none !important;
+
+        border-left: none !important;
+        border-right: none !important;
+        border-bottom: none !important;
+        border-radius: 14px 14px 0 0 !important;
+
+        padding: 8px 8px 10px !important;
+        background: white !important;
+        box-shadow: 0 -8px 30px rgba(0, 0, 0, 0.24) !important;
+      }
+
+      body.tv-mode-body.mobile-tv-layout .tv-settings-header,
+      body.tv-mode-body.mobile-tv-layout .tv-setting-row {
+        display: none !important;
+      }
+
+      body.tv-mode-body.mobile-tv-layout .mobile-tv-settings-panel {
+        display: block !important;
+      }
+
+      body.tv-mode-body.mobile-tv-layout .tv-setting-label {
+        font-size: 17px !important;
+      }
+
+      body.tv-mode-body.mobile-tv-layout .tv-setting-btn {
+        width: 48px !important;
+        height: 34px !important;
+        font-size: 15px !important;
+      }
+
+      body.tv-mode-body.mobile-tv-layout .tv-preset-btn {
+        width: 62px !important;
+        font-size: 13px !important;
+      }
+
       @media (max-width: 768px) {
         body.tv-mode-body {
           background: #f3f3f3 !important;
@@ -6815,8 +6961,9 @@
           window.matchMedia?.("(pointer: coarse)")?.matches ||
           navigator.maxTouchPoints > 0;
         const isPortrait = height > width;
+        const isTabletPortrait = isPortrait && width <= 1100;
 
-        return isNarrowScreen || (isTouchDevice && isPortrait);
+        return isNarrowScreen || (isTouchDevice && isPortrait) || isTabletPortrait;
       }
 
       function isTVMobileScreen() {
