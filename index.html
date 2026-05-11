@@ -2818,11 +2818,41 @@
 
       .tv-photo-panel {
         padding: 12px;
-        display: grid;
-        grid-template-rows: 58% 28%;
-        gap: 8px;
-        align-content: end;
         position: relative;
+      }
+
+      body.tv-mode-body:not(.mobile-tv-layout) .tv-photo-stack {
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-end;
+        gap: clamp(8px, 1.2vh, 14px);
+      }
+
+      body.tv-mode-body:not(.mobile-tv-layout) .tv-main-photo {
+        width: 100%;
+        height: auto;
+        max-height: min(58vh, calc(100% - 190px));
+        object-fit: contain;
+        object-position: center center;
+        background: white;
+        flex: 0 1 auto;
+      }
+
+      body.tv-mode-body:not(.mobile-tv-layout) .tv-sub-photos {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: clamp(6px, 0.9vh, 10px);
+        height: clamp(130px, 22vh, 220px);
+        min-height: 120px;
+      }
+
+      body.tv-mode-body:not(.mobile-tv-layout) .tv-sub-photos img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        object-position: center center;
+        background: white;
       }
 
       #tv-clock {
@@ -2856,27 +2886,6 @@
         font-weight: 400;
         color: #111;
         margin-left: 50px;
-      }
-
-      .tv-main-photo {
-        width: 100%;
-        height: 100%;
-        object-fit: contain;
-        background: white;
-      }
-
-      .tv-sub-photos {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 8px;
-        height: 100%;
-      }
-
-      .tv-sub-photos img {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-        background: white;
       }
 
       .tv-reservation-panel {
@@ -11682,6 +11691,76 @@
       window.setMobileTvSeatMapMode = setMobileTvSeatMapMode;
       window.toggleMobileTvOccupiedTable = toggleMobileTvOccupiedTable;
 
+      const PC_TV_ROTATING_SMALL_IMAGES = [
+        "도다리.JPG",
+        "돈까스.JPG",
+        "산낙지.JPG",
+        "생우럭매운탕.JPG",
+        "참돔회.JPG",
+        "해물모듬.JPG",
+        "활전복회.JPG",
+        "회덮밥.JPG",
+      ];
+      let pcTvSmallPhotoRotationTimer = null;
+      let pcTvSmallPhotoRotationIndex = 0;
+
+      function isPcTvPhotoRotationEnabled() {
+        return (
+          document.body.classList.contains("tv-mode-body") &&
+          !document.body.classList.contains("mobile-tv-layout")
+        );
+      }
+
+      function updatePcTvSmallPhotos() {
+        if (!isPcTvPhotoRotationEnabled()) return;
+
+        const photo1 = document.getElementById("pc-tv-small-photo-1");
+        const photo2 = document.getElementById("pc-tv-small-photo-2");
+        if (!photo1 || !photo2) return;
+
+        const length = PC_TV_ROTATING_SMALL_IMAGES.length;
+        if (length < 2) return;
+
+        const firstIndex = pcTvSmallPhotoRotationIndex % length;
+        const secondIndex = (firstIndex + 1) % length;
+        const firstSrc = PC_TV_ROTATING_SMALL_IMAGES[firstIndex];
+        const secondSrc = PC_TV_ROTATING_SMALL_IMAGES[secondIndex];
+
+        photo1.src = firstSrc;
+        photo2.src = secondSrc;
+        photo1.alt = `수림횟집 음식 사진 ${firstSrc}`;
+        photo2.alt = `수림횟집 음식 사진 ${secondSrc}`;
+      }
+
+      function startPcTvSmallPhotoRotation() {
+        if (!isPcTvPhotoRotationEnabled()) {
+          stopPcTvSmallPhotoRotation();
+          return;
+        }
+
+        updatePcTvSmallPhotos();
+
+        if (pcTvSmallPhotoRotationTimer) return;
+
+        pcTvSmallPhotoRotationTimer = setInterval(() => {
+          if (!isPcTvPhotoRotationEnabled()) {
+            stopPcTvSmallPhotoRotation();
+            return;
+          }
+
+          pcTvSmallPhotoRotationIndex =
+            (pcTvSmallPhotoRotationIndex + 2) % PC_TV_ROTATING_SMALL_IMAGES.length;
+          updatePcTvSmallPhotos();
+        }, 10000);
+      }
+
+      function stopPcTvSmallPhotoRotation() {
+        if (pcTvSmallPhotoRotationTimer) {
+          clearInterval(pcTvSmallPhotoRotationTimer);
+          pcTvSmallPhotoRotationTimer = null;
+        }
+      }
+
       function handleTVViewportChange() {
         if (!document.body.classList.contains("tv-mode-body")) return;
         syncMobileTvLayoutClass();
@@ -11821,11 +11900,13 @@
 
 ${renderTVCanceledLayer(canceledReservations, tvTargetDate)}
 
+  <div class="tv-photo-stack">
   <img class="tv-main-photo" src="tv-main.jpg" alt="수림횟집 음식 사진">
             <div class="tv-sub-photos">
-              <img src="tv-sub1.jpg" alt="수림횟집 음식 사진">
-              <img src="tv-sub2.jpg" alt="수림횟집 음식 사진">
+              <img id="pc-tv-small-photo-1" src="도다리.JPG" alt="수림횟집 음식 사진 도다리.JPG">
+              <img id="pc-tv-small-photo-2" src="돈까스.JPG" alt="수림횟집 음식 사진 돈까스.JPG">
             </div>
+          </div>
           </div>
 
           <div class="tv-reservation-panel">
@@ -12104,6 +12185,8 @@ ${renderMobileTvSeatMapModal()}
           </div>
         </div>
       `;
+
+      startPcTvSmallPhotoRotation();
       }
 
       // ====== 화면 그리기 ======
@@ -12116,6 +12199,7 @@ ${renderMobileTvSeatMapModal()}
           return;
         }
 
+        stopPcTvSmallPhotoRotation();
         document.body.classList.remove("tv-mode-body", "mobile-tv-layout");
 
         updateViewButtons();
