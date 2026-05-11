@@ -6791,8 +6791,21 @@
         },
       };
 
+      function isMobileTvLayout() {
+        const width = window.innerWidth || document.documentElement.clientWidth || 0;
+        const height = window.innerHeight || document.documentElement.clientHeight || 0;
+
+        const isNarrowScreen = width <= 768;
+        const isTouchDevice =
+          window.matchMedia?.("(pointer: coarse)")?.matches ||
+          navigator.maxTouchPoints > 0;
+        const isPortrait = height > width;
+
+        return isNarrowScreen || (isTouchDevice && isPortrait);
+      }
+
       function isTVMobileScreen() {
-        return window.matchMedia("(max-width: 768px)").matches;
+        return isMobileTvLayout();
       }
 
       function getTVDefaultSettings() {
@@ -11231,7 +11244,7 @@
       window.restoreTVCanceledReservation = restoreTVCanceledReservation;
 
           async function lockMobileTVPortraitMode() {
-            if (!window.matchMedia("(max-width: 768px)").matches) return;
+            if (!isMobileTvLayout()) return;
             if (!document.body.classList.contains("tv-mode-body") && !isTVMode) return;
 
             try {
@@ -11248,7 +11261,7 @@
             if (!document.body.classList.contains("tv-mode-body")) return false;
 
             // 모바일 TV 화면에서만 작동
-            return window.matchMedia("(max-width: 768px)").matches;
+            return isMobileTvLayout();
           }
 
           function toggleTVRowStatus(index) {
@@ -11667,7 +11680,7 @@ ${renderTVCanceledLayer(canceledReservations, tvTargetDate)}
 >
   ▶
 </button>
-${window.matchMedia("(max-width: 768px)").matches ? "" : `<button class="tv-qr-btn" onclick="window.openTVQrModal()" type="button" title="손님 안내 QR">QR</button>`}
+${isMobileTvLayout() ? "" : `<button class="tv-qr-btn" onclick="window.openTVQrModal()" type="button" title="손님 안내 QR">QR</button>`}
 </div>
 <div class="mobile-tv-action-row">
 ${renderTVCancelMobileButton(canceledReservations)}
