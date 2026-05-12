@@ -8199,6 +8199,7 @@
       function subscribeReservations() {
         stopReservationsListener();
         
+        // Firestore 읽기: reservations 전체 컬렉션 실시간 구독(화면 공통 데이터 소스)
         // 인덱스 없이도 동작하도록 정렬 없이 가져오고, 클라이언트에서 정렬합니다.
           unsubscribeReservations = onSnapshot(
           reservationsCollection,
@@ -11578,6 +11579,7 @@
         if (mobileTvSeatOccupancyDate === dateString && mobileTvSeatOccupancyUnsubscribe) return;
         stopMobileTvSeatOccupancySubscription();
         mobileTvSeatOccupancyDate = dateString;
+        // Firestore 읽기: tableOccupancy/{선택날짜} 단일 문서 실시간 구독
         mobileTvSeatOccupancyUnsubscribe = onSnapshot(doc(db, "tableOccupancy", dateString), (snap) => {
           const data = snap.data() || {};
           mobileTvOccupiedTables = Array.isArray(data.occupiedTables) ? data.occupiedTables.map((v) => String(v)) : [];
