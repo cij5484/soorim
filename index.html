@@ -8292,10 +8292,18 @@
         tvReservationsUnsubscribe = onSnapshot(
           tvReservationsQuery,
           (snapshot) => {
-            tvReservations = snapshot.docs.map((docSnap) => ({
+            const previousTvReservations = tvReservations;
+            const isInitialTvSnapshot = !tvReservationsReady;
+            const nextTvReservations = snapshot.docs.map((docSnap) => ({
               id: docSnap.id,
               ...docSnap.data(),
             }));
+
+            updateTVReservationNotices(previousTvReservations, nextTvReservations, {
+              skipDiff: isInitialTvSnapshot,
+            });
+
+            tvReservations = nextTvReservations;
             tvReservationsReady = true;
 
             if (
@@ -11150,13 +11158,20 @@
         scheduleTVReservationNoticeCleanup();
       }
 
-      function updateTVReservationNotices(previousReservations, nextReservations) {
+      function updateTVReservationNotices(previousReservations, nextReservations, options = {}) {
+        const skipDiff = options?.skipDiff === true;
         cleanupExpiredTVReservationNotices();
         cleanupExpiredTVCanceledReservations();
 
         // 앱 첫 로딩 때 기존 예약들을 전부 신규/취소로 표시하지 않기 위한 기준선
         if (!tvReservationNoticeBaselineReady) {
           tvReservationNoticeBaselineReady = true;
+          scheduleTVReservationNoticeCleanup();
+          return;
+        }
+
+        // TV 전용 날짜 구독의 첫 스냅샷은 비교 기준값으로만 사용
+        if (skipDiff) {
           scheduleTVReservationNoticeCleanup();
           return;
         }
