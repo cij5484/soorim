@@ -13720,6 +13720,25 @@ ${
         );
       }
 
+      if (!window.__dayEditActionDelegated) {
+        window.__dayEditActionDelegated = true;
+
+        document.addEventListener(
+          "click",
+          (event) => {
+            const button = event.target.closest(".day-edit-action");
+            if (!button) return;
+
+            event.preventDefault();
+            event.stopPropagation();
+
+            const reservationId = button.dataset.reservationId || "";
+            editReservationById(reservationId);
+          },
+          true,
+        );
+      }
+
       if (!window.__smsTemplateActionDelegated) {
         window.__smsTemplateActionDelegated = true;
 
@@ -13868,6 +13887,15 @@ ${
 
   <div class="day-card-pc-top reservation-icon-actions">
     <button
+      class="day-edit-action"
+      data-reservation-id="${escapeHtml(String(r?.id || ""))}"
+      title="수정"
+      type="button"
+    >
+      ✏️
+    </button>
+
+    <button
       class="day-contact-action"
       data-contact-action="sms"
       data-reservation-id="${escapeHtml(String(r?.id || ""))}"
@@ -13981,6 +14009,15 @@ ${
       </div>
 
       <div class="reservation-icon-actions" onclick="event.stopPropagation();">
+        <button
+          class="day-edit-action"
+          data-reservation-id="${escapeHtml(String(r?.id || ""))}"
+          title="수정"
+          type="button"
+        >
+          ✏️
+        </button>
+
         <button
           class="day-contact-action"
           data-contact-action="sms"
@@ -14634,6 +14671,28 @@ ${
         });
 
         updateRoomTablePreview();
+      }
+
+      function editReservationById(reservationId) {
+        const reservation = getReservationByIdForDayAction(reservationId);
+        const normalizedId =
+          typeof reservation?.id === "string" ? reservation.id.trim() : "";
+
+        if (!normalizedId) {
+          alert("예약 정보를 찾을 수 없습니다.");
+          return;
+        }
+
+        const realIndex = reservations.findIndex(
+          (item) => item && item.id === normalizedId,
+        );
+
+        if (realIndex < 0) {
+          alert("예약 정보를 찾을 수 없습니다.");
+          return;
+        }
+
+        editReservation(realIndex);
       }
 
       function inferRoomFromTableNumbers(tableText) {
@@ -15579,6 +15638,7 @@ ${
       window.closeWeekReservationModal = closeWeekReservationModal;
       window.editReservationFromWeekModal = editReservationFromWeekModal;
       window.editReservation = editReservation;
+      window.editReservationById = editReservationById;
       window.deleteReservation = deleteReservation;
       window.changeStatus = changeStatus;
       window.toggleStatus = toggleStatus;
