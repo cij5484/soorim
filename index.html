@@ -12343,6 +12343,7 @@ ${renderMobileTvSeatMapModal()}
   const header = document.getElementById("day-view-header");
   if (!header) return;
 
+                // [13차 조사메모] 일간 헤더 집계는 선택 날짜 캐시 목록(getReservationsForDateFromCache) 기준입니다.
                 const selectedDateReservations = getReservationsForDateFromCache(selectedDate);
                 const dayReservationCount = selectedDateReservations.length;
                 const dayTVOffCount = selectedDateReservations.filter((r) => r.tvHidden === true).length;
@@ -13536,6 +13537,7 @@ ${
 
         renderDayViewHeader();
 
+        // [13차 조사메모] 일간 카드 렌더링은 selectedDate 1일 목록만 사용합니다.
         const dailyReservations = getReservationsForDateFromCache(selectedDate)
           .sort((a, b) => a.time.localeCompare(b.time));
 
