@@ -13674,14 +13674,17 @@ ${
             const rowClick = canUseRealIndex
               ? `event.stopPropagation(); editReservation(${realIndex})`
               : "event.stopPropagation(); return;";
-            const statusClick = canUseRealIndex
-              ? `event.stopPropagation(); toggleStatus(${realIndex})`
+            const reservationIdJson = JSON.stringify(r?.id || "");
+            const currentStatusJson = JSON.stringify(r?.status || "예약");
+            const currentTvHiddenJson = JSON.stringify(r?.tvHidden === true);
+            const statusClick = r?.id
+              ? `event.stopPropagation(); toggleStatusById(${reservationIdJson}, ${currentStatusJson})`
               : "event.stopPropagation(); return;";
-            const tvClick = canUseRealIndex
-              ? `event.stopPropagation(); toggleTVDisplay(${realIndex})`
+            const tvClick = r?.id
+              ? `event.stopPropagation(); toggleTVDisplayById(${reservationIdJson}, ${currentTvHiddenJson})`
               : "event.stopPropagation(); return;";
-            const nameChange = canUseRealIndex
-              ? `toggleNameDisplayMode(${realIndex}, this.checked, this)`
+            const nameChange = r?.id
+              ? `toggleNameDisplayModeById(${reservationIdJson}, this.checked, this)`
               : "return;";
 
             return `
@@ -14893,6 +14896,25 @@ ${
         }
       }
 
+      async function toggleStatusById(reservationId, currentStatus) {
+        const normalizedId = typeof reservationId === "string" ? reservationId.trim() : "";
+        if (!normalizedId) return;
+
+        const normalizedStatus = currentStatus === "퇴장" ? "도착" : currentStatus;
+        const newStatus = normalizedStatus === "도착" ? "예약" : "도착";
+
+        try {
+          await setDoc(
+            doc(db, "reservations", normalizedId),
+            { status: newStatus },
+            { merge: true },
+          );
+        } catch (error) {
+          console.error("상태 변경 오류:", error);
+          alert("상태 변경 중 오류가 발생했습니다.");
+        }
+      }
+
       async function toggleSettingStatus(index, field, checked) {
         const r = reservations[index];
         if (!r || !r.id) return;
@@ -14947,6 +14969,33 @@ ${
         }
       }
 
+      async function toggleNameDisplayModeById(reservationId, checked, checkboxEl) {
+        if (!requireLogin()) {
+          if (checkboxEl) checkboxEl.checked = !checked;
+          return;
+        }
+
+        const normalizedId = typeof reservationId === "string" ? reservationId.trim() : "";
+        if (!normalizedId) {
+          if (checkboxEl) checkboxEl.checked = !checked;
+          return;
+        }
+
+        try {
+          await setDoc(
+            doc(db, "reservations", normalizedId),
+            { nameDisplayMode: checked },
+            { merge: true },
+          );
+        } catch (error) {
+          console.error("예약자명 표시 변경 오류:", error);
+
+          if (checkboxEl) checkboxEl.checked = !checked;
+
+          alert("예약자명 표시 변경 중 오류가 발생했습니다.");
+        }
+      }
+
       async function toggleTVDisplay(index) {
         if (!requireLogin()) return;
 
@@ -14968,6 +15017,26 @@ ${
           };
 
           refreshCurrentScreen();
+        } catch (error) {
+          console.error("TV 노출 변경 오류:", error);
+          alert("TV 노출 변경 중 오류가 발생했습니다.");
+        }
+      }
+
+      async function toggleTVDisplayById(reservationId, currentTvHidden) {
+        if (!requireLogin()) return;
+
+        const normalizedId = typeof reservationId === "string" ? reservationId.trim() : "";
+        if (!normalizedId) return;
+
+        const nextHidden = !Boolean(currentTvHidden);
+
+        try {
+          await setDoc(
+            doc(db, "reservations", normalizedId),
+            { tvHidden: nextHidden },
+            { merge: true },
+          );
         } catch (error) {
           console.error("TV 노출 변경 오류:", error);
           alert("TV 노출 변경 중 오류가 발생했습니다.");
