@@ -13829,7 +13829,7 @@ ${
         <input
           type="checkbox"
           ${r.basicSetting ? "checked" : ""}
-          onchange="toggleSettingStatus(${realIndex}, 'basicSetting', this.checked)"
+          onchange="event.stopPropagation(); toggleSettingStatusById(${reservationIdArg}, 'basicSetting', this.checked, this)"
         />
         기본
       </label>
@@ -13838,7 +13838,7 @@ ${
         <input
           type="checkbox"
           ${r.fullSetting ? "checked" : ""}
-          onchange="toggleSettingStatus(${realIndex}, 'fullSetting', this.checked)"
+          onchange="event.stopPropagation(); toggleSettingStatusById(${reservationIdArg}, 'fullSetting', this.checked, this)"
         />
         전체
       </label>
@@ -13960,7 +13960,7 @@ ${
                   <input
                     type="checkbox"
                     ${r.basicSetting ? "checked" : ""}
-                    onchange="toggleSettingStatus(${realIndex}, 'basicSetting', this.checked)"
+                    onchange="event.stopPropagation(); toggleSettingStatusById(${reservationIdArg}, 'basicSetting', this.checked, this)"
                   />
                   기본
                 </label>
@@ -13969,7 +13969,7 @@ ${
                   <input
                     type="checkbox"
                     ${r.fullSetting ? "checked" : ""}
-                    onchange="toggleSettingStatus(${realIndex}, 'fullSetting', this.checked)"
+                    onchange="event.stopPropagation(); toggleSettingStatusById(${reservationIdArg}, 'fullSetting', this.checked, this)"
                   />
                   전체
                 </label>
@@ -14973,6 +14973,26 @@ ${
         }
       }
 
+      async function toggleSettingStatusById(reservationId, field, checked, checkboxEl) {
+        const normalizedId = typeof reservationId === "string" ? reservationId.trim() : "";
+        if (!normalizedId || !["basicSetting", "fullSetting"].includes(field)) {
+          if (checkboxEl) checkboxEl.checked = !checked;
+          return;
+        }
+
+        try {
+          await setDoc(
+            doc(db, "reservations", normalizedId),
+            { [field]: checked },
+            { merge: true },
+          );
+        } catch (error) {
+          console.error("세팅 변경 오류:", error);
+          if (checkboxEl) checkboxEl.checked = !checked;
+          alert("세팅 변경 중 오류가 발생했습니다.");
+        }
+      }
+
       async function toggleNameDisplayMode(index, checked, checkboxEl) {
         if (!requireLogin()) {
           if (checkboxEl) checkboxEl.checked = !checked;
@@ -15325,6 +15345,7 @@ ${
       window.toggleStatus = toggleStatus;
       window.toggleStatusById = toggleStatusById;
       window.toggleSettingStatus = toggleSettingStatus;
+      window.toggleSettingStatusById = toggleSettingStatusById;
       window.toggleNameDisplayMode = toggleNameDisplayMode;
       window.toggleNameDisplayModeById = toggleNameDisplayModeById;
       window.toggleTVDisplay = toggleTVDisplay;
