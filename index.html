@@ -13668,12 +13668,25 @@ ${
 
         list.innerHTML = dailyReservations
           .map((r) => {
-            const realIndex = reservations.indexOf(r);
+            const realIndex = reservations.findIndex((item) => item?.id === r?.id);
+            const canUseRealIndex = realIndex >= 0;
+            const rowClick = canUseRealIndex
+              ? `event.stopPropagation(); editReservation(${realIndex})`
+              : "event.stopPropagation(); return;";
+            const statusClick = canUseRealIndex
+              ? `event.stopPropagation(); toggleStatus(${realIndex})`
+              : "event.stopPropagation(); return;";
+            const tvClick = canUseRealIndex
+              ? `event.stopPropagation(); toggleTVDisplay(${realIndex})`
+              : "event.stopPropagation(); return;";
+            const nameChange = canUseRealIndex
+              ? `toggleNameDisplayMode(${realIndex}, this.checked, this)`
+              : "return;";
 
             return `
           <div
             class="reservation status-${getDisplayStatus(r.status)} ${isReservationUnconfirmed(r) ? "reservation-unconfirmed" : ""}"
-            onclick="event.stopPropagation(); editReservation(${realIndex})"
+            onclick="${rowClick}"
             style="cursor:pointer;"
           >
             <div class="reservation-top">
@@ -13685,7 +13698,7 @@ ${
       <div style="display:flex; align-items:center; flex-wrap:wrap; gap:8px; min-width:0;">
         <span
           class="status-badge badge-${getDisplayStatus(r.status)}"
-          onclick="event.stopPropagation(); toggleStatus(${realIndex})"
+          onclick="${statusClick}"
           style="cursor:pointer; font-size:11px; padding:3px 7px;"
         >
           ${getDisplayStatus(r.status)}
@@ -13693,7 +13706,7 @@ ${
 
         <span
           class="tv-display-badge ${r.tvHidden ? "off" : "on"}"
-          onclick="event.stopPropagation(); toggleTVDisplay(${realIndex})"
+          onclick="${tvClick}"
           title="${r.tvHidden ? "TV 화면 제외됨" : "TV 화면 노출됨"}"
         >
           TV
@@ -13708,7 +13721,7 @@ ${
           class="name-display-check"
           ${r.nameDisplayMode ? "checked" : ""}
           onclick="event.stopPropagation();"
-          onchange="toggleNameDisplayMode(${realIndex}, this.checked, this)"
+          onchange="${nameChange}"
           title="예약자명 님 표시"
         />
 
@@ -13810,7 +13823,7 @@ ${
         <div class="reservation-card-first-line">
           <span
             class="status-badge badge-${getDisplayStatus(r.status)}"
-            onclick="event.stopPropagation(); toggleStatus(${realIndex})"
+            onclick="${statusClick}"
             style="cursor:pointer; font-size:11px; padding:3px 7px;"
           >
             ${getDisplayStatus(r.status)}
@@ -13818,7 +13831,7 @@ ${
 
           <span
             class="tv-display-badge ${r.tvHidden ? "off" : "on"}"
-            onclick="event.stopPropagation(); toggleTVDisplay(${realIndex})"
+            onclick="${tvClick}"
             title="${r.tvHidden ? "TV 화면 제외됨" : "TV 화면 노출됨"}"
           >
             TV
@@ -13833,7 +13846,7 @@ ${
             class="name-display-check"
             ${r.nameDisplayMode ? "checked" : ""}
             onclick="event.stopPropagation();"
-            onchange="toggleNameDisplayMode(${realIndex}, this.checked, this)"
+            onchange="${nameChange}"
             title="예약자명 님 표시"
           />
 
