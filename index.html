@@ -13642,6 +13642,7 @@ ${
       function handleDayActionClick(event) {
         const statusTarget = event.target.closest('[data-day-status-toggle="true"]');
         if (statusTarget) {
+          event.preventDefault();
           event.stopPropagation();
 
           const reservationId = statusTarget.dataset.reservationId || "";
@@ -13653,19 +13654,21 @@ ${
 
         const tvTarget = event.target.closest('[data-day-tv-toggle="true"]');
         if (tvTarget) {
+          event.preventDefault();
           event.stopPropagation();
 
           const reservationId = tvTarget.dataset.reservationId || "";
           const currentTvHidden = tvTarget.dataset.currentTvHidden === "true";
 
           toggleTVDisplayById(reservationId, currentTvHidden);
+          return;
         }
       }
 
       function ensureDayActionClickHandler() {
         if (dayActionClickHandlerBound) return;
         dayActionClickHandlerBound = true;
-        document.addEventListener("click", handleDayActionClick);
+        document.addEventListener("click", handleDayActionClick, true);
       }
 
       function renderDayView() {
