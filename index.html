@@ -11572,6 +11572,26 @@
 
           window.toggleTVRowStatus = toggleTVRowStatus;
 
+          let tvRowStatusClickHandlerBound = false;
+
+          function handleTVRowStatusClick(event) {
+            const row = event.target.closest('[data-tv-status-toggle-row="true"]');
+            if (!row) return;
+
+            if (event.target.closest("button, a, input, select, textarea")) return;
+            if (!isMobileTVRowStatusToggleAllowed()) return;
+
+            const reservationId = row.dataset.reservationId || "";
+            const currentStatus = row.dataset.currentStatus || "예약";
+            window.toggleTVRowStatus(reservationId, currentStatus);
+          }
+
+          function ensureTVRowStatusClickHandler() {
+            if (tvRowStatusClickHandlerBound) return;
+            tvRowStatusClickHandlerBound = true;
+            document.addEventListener("click", handleTVRowStatusClick);
+          }
+
       function openTVQrModal() {
         const modal = document.getElementById("tv-qr-modal");
         if (modal) modal.classList.add("show");
@@ -11907,6 +11927,7 @@
             // reservations 사용: 선택 날짜 + 상태 조건으로 TV 실시간 목록 표시
             loadTVSettingsForCurrentScreen();
             applyAllTVSettings();
+            ensureTVRowStatusClickHandler();
 
             document.body.classList.add("tv-mode-body");
             syncMobileTvLayoutClass();
@@ -11988,7 +12009,9 @@
                 return `
                   <tr
                     class="${rowClasses}"
-                    onclick="window.toggleTVRowStatus(${JSON.stringify(r.id || "")}, ${JSON.stringify(r.status || "예약")})"
+                    data-tv-status-toggle-row="true"
+                    data-reservation-id="${escapeHtml(String(r.id || ""))}"
+                    data-current-status="${escapeHtml(String(r.status || "예약"))}"
                   >
                     <td>
                       ${wrapTVNoticeContent(escapeHtml(formatTVTime(r.time || "")), r, "time")}
