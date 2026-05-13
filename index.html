@@ -11840,6 +11840,7 @@
 
             list.style.display = "block";
 
+            // NOTE(7차 조사): TV 화면 목록은 현재 전역 reservations 캐시(getReservationsForDateFromCache) 기반입니다.
             const todayReservations = getReservationsForDateFromCache(tvTargetDate)
               .filter((r) => r.tvHidden !== true)
               .sort((a, b) =>
