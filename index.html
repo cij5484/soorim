@@ -10990,7 +10990,6 @@
       }
 
       window.changeTVDateOffset = changeTVDateOffset;
-      window.toggleTVRowStatus = toggleTVRowStatus;
 
       const TV_RESERVATION_NOTICE_DURATION = 5 * 60 * 1000; // 5분
 
@@ -11567,6 +11566,8 @@
               alert("상태 변경에 실패했습니다.");
             }
           }
+
+          window.toggleTVRowStatus = toggleTVRowStatus;
 
       function openTVQrModal() {
         const modal = document.getElementById("tv-qr-modal");
