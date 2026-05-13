@@ -6272,6 +6272,7 @@
         onSnapshot,
         serverTimestamp,
         query,
+        where,
         orderBy,
       } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-firestore.js";
 
@@ -8200,6 +8201,54 @@
         tvReservations = [];
         tvReservationsDate = "";
         tvReservationsReady = false;
+      }
+
+
+      function subscribeTvReservationsForDate(dateString) {
+        if (!dateString) {
+          stopTvReservationsListener();
+          return;
+        }
+
+        if (
+          tvReservationsDate === dateString &&
+          typeof tvReservationsUnsubscribe === "function"
+        ) {
+          return;
+        }
+
+        stopTvReservationsListener();
+
+        tvReservationsDate = dateString;
+        tvReservationsReady = false;
+
+        const tvReservationsQuery = query(
+          reservationsCollection,
+          where("date", "==", dateString),
+        );
+
+        tvReservationsUnsubscribe = onSnapshot(
+          tvReservationsQuery,
+          (snapshot) => {
+            tvReservations = snapshot.docs.map((docSnap) => ({
+              id: docSnap.id,
+              ...docSnap.data(),
+            }));
+            tvReservationsReady = true;
+
+            if (
+              document.body.classList.contains("tv-mode-body") &&
+              getTVTargetDateString() === dateString
+            ) {
+              renderTVView();
+            }
+          },
+          (error) => {
+            console.error("TV 예약 구독 실패:", error);
+            tvReservationsReady = false;
+            tvReservations = [];
+          },
+        );
       }
 
       function hideAppLoading() {
@@ -11828,6 +11877,7 @@
             lockMobileTVPortraitMode();
 
             const tvTargetDate = getTVTargetDateString();
+            subscribeTvReservationsForDate(tvTargetDate);
             const tvTitleText = getTVReservationTitleText();
             const monthView = document.getElementById("month-view");
             const weekView = document.getElementById("week-view");
@@ -11855,8 +11905,7 @@
 
             list.style.display = "block";
 
-            // NOTE(7차 조사): TV 화면 목록은 현재 전역 reservations 캐시(getReservationsForDateFromCache) 기반입니다.
-            const todayReservations = getReservationsForDateFromCache(tvTargetDate)
+            const todayReservations = getTvReservationsForCurrentDate(tvTargetDate)
               .filter((r) => r.tvHidden !== true)
               .sort((a, b) =>
                 String(a.time || "").localeCompare(String(b.time || "")),
@@ -12252,6 +12301,7 @@ ${renderMobileTvSeatMapModal()}
 
         stopPcTvSmallPhotoRotation();
         stopMobileTvSeatOccupancySubscription();
+        stopTvReservationsListener();
         document.body.classList.remove("tv-mode-body", "mobile-tv-layout");
 
         updateViewButtons();
