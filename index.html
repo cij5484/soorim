@@ -11547,13 +11547,25 @@
             return isMobileTvLayout();
           }
 
-          function toggleTVRowStatus(index) {
+          function findReservationIndexForTVStatusToggle(index, reservationId) {
+            const realIndex = Number(index);
+            if (Number.isInteger(realIndex) && realIndex >= 0 && reservations[realIndex]?.id) {
+              return realIndex;
+            }
+
+            const normalizedId = typeof reservationId === "string" ? reservationId.trim() : "";
+            if (!normalizedId) return -1;
+
+            return reservations.findIndex((item) => item?.id === normalizedId);
+          }
+
+          function toggleTVRowStatus(index, reservationId) {
             if (!isMobileTVRowStatusToggleAllowed()) return;
 
-            const realIndex = Number(index);
-            if (!Number.isInteger(realIndex) || realIndex < 0) return;
+            const targetIndex = findReservationIndexForTVStatusToggle(index, reservationId);
+            if (targetIndex < 0) return;
 
-            toggleStatus(realIndex);
+            toggleStatus(targetIndex);
           }
 
       function openTVQrModal() {
@@ -11972,7 +11984,7 @@
                 return `
                   <tr
                     class="${rowClasses}"
-                    onclick="window.toggleTVRowStatus(${realIndex})"
+                    onclick="window.toggleTVRowStatus(${realIndex}, ${JSON.stringify(r.id || "")})"
                   >
                     <td>
                       ${wrapTVNoticeContent(escapeHtml(formatTVTime(r.time || "")), r, "time")}
