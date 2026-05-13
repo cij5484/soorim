@@ -13668,6 +13668,7 @@ ${
 
         list.innerHTML = dailyReservations
           .map((r) => {
+            // [17차 조사메모] 일간 표시는 dayReservations 기반이지만, 클릭 동작(수정/상태/TV/이름표시)은 전체 reservations의 realIndex를 사용합니다.
             const realIndex = reservations.findIndex((item) => item?.id === r?.id);
             const canUseRealIndex = realIndex >= 0;
             const rowClick = canUseRealIndex
