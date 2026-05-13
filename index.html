@@ -10990,7 +10990,6 @@
       }
 
       window.changeTVDateOffset = changeTVDateOffset;
-      window.toggleTVRowStatus = toggleTVRowStatus;
 
       const TV_RESERVATION_NOTICE_DURATION = 5 * 60 * 1000; // 5분
 
@@ -11544,7 +11543,10 @@
             if (!document.body.classList.contains("tv-mode-body")) return false;
 
             // 모바일 TV 화면에서만 작동
-            return isMobileTvLayout();
+            return (
+              document.body.classList.contains("mobile-tv-layout") ||
+              isMobileTvLayout()
+            );
           }
 
           async function toggleTVRowStatus(reservationId, currentStatus) {
@@ -11567,6 +11569,8 @@
               alert("상태 변경에 실패했습니다.");
             }
           }
+
+          window.toggleTVRowStatus = toggleTVRowStatus;
 
       function openTVQrModal() {
         const modal = document.getElementById("tv-qr-modal");
