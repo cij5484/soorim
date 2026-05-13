@@ -13674,17 +13674,17 @@ ${
             const rowClick = canUseRealIndex
               ? `event.stopPropagation(); editReservation(${realIndex})`
               : "event.stopPropagation(); return;";
-            const reservationIdJson = JSON.stringify(r?.id || "");
-            const currentStatusJson = JSON.stringify(r?.status || "예약");
-            const currentTvHiddenJson = JSON.stringify(r?.tvHidden === true);
+            const reservationIdArg = escapeHtml(JSON.stringify(r?.id || ""));
+            const currentStatusArg = escapeHtml(JSON.stringify(r?.status || "예약"));
+            const currentTvHiddenArg = JSON.stringify(r?.tvHidden === true);
             const statusClick = r?.id
-              ? `event.stopPropagation(); toggleStatusById(${reservationIdJson}, ${currentStatusJson})`
+              ? `event.stopPropagation(); toggleStatusById(${reservationIdArg}, ${currentStatusArg})`
               : "event.stopPropagation(); return;";
             const tvClick = r?.id
-              ? `event.stopPropagation(); toggleTVDisplayById(${reservationIdJson}, ${currentTvHiddenJson})`
+              ? `event.stopPropagation(); toggleTVDisplayById(${reservationIdArg}, ${currentTvHiddenArg})`
               : "event.stopPropagation(); return;";
             const nameChange = r?.id
-              ? `toggleNameDisplayModeById(${reservationIdJson}, this.checked, this)`
+              ? `toggleNameDisplayModeById(${reservationIdArg}, this.checked, this)`
               : "return;";
 
             return `
