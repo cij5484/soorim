@@ -10288,9 +10288,7 @@
 
       // 특정 날짜에 모든 룸이 만석인지 확인
       function isRoomFullyBooked(dateString) {
-        const dayReservations = reservations.filter(
-          (r) => r.date === dateString,
-        );
+        const dayReservations = getReservationsForDateFromCache(dateString);
         if (!dayReservations.length) return false;
 
         const roomStatus = {};
@@ -10345,6 +10343,17 @@
 
         const monthStart = getMonthStart(selectedDate);
         const monthEnd = getMonthEnd(selectedDate);
+        const monthReservations = getReservationsForMonthFromCache(
+          monthStart.getFullYear(),
+          monthStart.getMonth(),
+        );
+        const monthReservationMap = monthReservations.reduce((acc, reservation) => {
+          const key = reservation.date || "";
+          if (!key) return acc;
+          if (!acc[key]) acc[key] = [];
+          acc[key].push(reservation);
+          return acc;
+        }, {});
 
         const startDay = monthStart.getDay(); // 0=일
         const daysInMonth = monthEnd.getDate();
@@ -10410,7 +10419,7 @@
             day,
           );
           const dateString = formatDateString(dateObj);
-          const dayReservations = getReservationsByDate(dateString);
+          const dayReservations = monthReservationMap[dateString] || [];
 
           const totalPeople = dayReservations.reduce(
             (sum, r) => sum + (Number(r.people) || 0),
@@ -11831,8 +11840,8 @@
 
             list.style.display = "block";
 
-            const todayReservations = reservations
-              .filter((r) => (r.date || "") === tvTargetDate && r.tvHidden !== true)
+            const todayReservations = getReservationsForDateFromCache(tvTargetDate)
+              .filter((r) => r.tvHidden !== true)
               .sort((a, b) =>
                 String(a.time || "").localeCompare(String(b.time || "")),
               );
@@ -12263,13 +12272,9 @@ ${renderMobileTvSeatMapModal()}
   const header = document.getElementById("day-view-header");
   if (!header) return;
 
-                const dayReservationCount = reservations.filter(
-                  (r) => (r.date || "") === selectedDate
-                ).length;
+                const dayReservationCount = getReservationsForDateFromCache(selectedDate).length;
 
-                const dayTVOffCount = reservations.filter(
-                  (r) => (r.date || "") === selectedDate && r.tvHidden === true
-                ).length;
+                const dayTVOffCount = getReservationsForDateFromCache(selectedDate).filter((r) => r.tvHidden === true).length;
 
   header.style.display = "block";
   header.innerHTML = `
@@ -13460,8 +13465,7 @@ ${
 
         renderDayViewHeader();
 
-        const dailyReservations = reservations
-          .filter((r) => (r.date || "") === selectedDate)
+        const dailyReservations = getReservationsForDateFromCache(selectedDate)
           .sort((a, b) => a.time.localeCompare(b.time));
 
         if (dailyReservations.length === 0) {
@@ -13983,8 +13987,33 @@ ${
         render();
       }
 
-      function getReservationsByDate(dateString) {
+      function getReservationsForDateFromCache(dateString) {
+        if (!dateString) return [];
         return reservations.filter((r) => (r.date || "") === dateString);
+      }
+
+      function getReservationsForDateRangeFromCache(
+        startDateString,
+        endDateString,
+      ) {
+        if (!startDateString || !endDateString) return [];
+        return reservations.filter((r) => {
+          const dateValue = r.date || "";
+          return dateValue >= startDateString && dateValue <= endDateString;
+        });
+      }
+
+      function getReservationsForMonthFromCache(year, month) {
+        const monthStart = new Date(year, month, 1);
+        const monthEnd = new Date(year, month + 1, 0);
+        return getReservationsForDateRangeFromCache(
+          formatDateString(monthStart),
+          formatDateString(monthEnd),
+        );
+      }
+
+      function getReservationsByDate(dateString) {
+        return getReservationsForDateFromCache(dateString);
       }
 
       function getStartOfWeek(dateString) {
