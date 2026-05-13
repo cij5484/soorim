@@ -15274,6 +15274,7 @@ ${
           if (logoutBtn) logoutBtn.style.display = "none";
         }
 
+        // [18차 운영 안정성 점검] ?tv=1 전용 접속은 전체 reservations 구독을 생략하고 TV 전용 날짜 구독 흐름만 사용
         // ?tv=1 전용 접속에서는 전체 reservations 구독을 시작하지 않고 TV 전용 구독 흐름(renderTVView)만 사용
         if (isTvOnlyUrlMode()) {
           stopReservationsListener();
