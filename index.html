@@ -12272,9 +12272,9 @@ ${renderMobileTvSeatMapModal()}
   const header = document.getElementById("day-view-header");
   if (!header) return;
 
-                const dayReservationCount = getReservationsForDateFromCache(selectedDate).length;
-
-                const dayTVOffCount = getReservationsForDateFromCache(selectedDate).filter((r) => r.tvHidden === true).length;
+                const selectedDateReservations = getReservationsForDateFromCache(selectedDate);
+                const dayReservationCount = selectedDateReservations.length;
+                const dayTVOffCount = selectedDateReservations.filter((r) => r.tvHidden === true).length;
 
   header.style.display = "block";
   header.innerHTML = `
