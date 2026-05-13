@@ -7708,8 +7708,11 @@
       let modalSeatPickMode = false;
       let modalSeatPickSelectedTables = [];
       let isLoggedIn = false;
-      const isTVMode =
-        new URLSearchParams(window.location.search).get("tv") === "1";
+      function isTvOnlyUrlMode() {
+        return new URLSearchParams(window.location.search).get("tv") === "1";
+      }
+
+      const isTVMode = isTvOnlyUrlMode();
 
       function requireLogin() {
         if (!isLoggedIn) {
@@ -15128,8 +15131,16 @@ ${
           if (logoutBtn) logoutBtn.style.display = "none";
         }
 
-        // 🔥 이게 핵심 (데이터 다시 불러오기)
-        subscribeReservations();
+        // ?tv=1 전용 접속에서는 전체 reservations 구독을 시작하지 않고 TV 전용 구독 흐름(renderTVView)만 사용
+        if (isTvOnlyUrlMode()) {
+          stopReservationsListener();
+          reservations = [];
+          hideAppLoading();
+          render();
+        } else {
+          // 🔥 이게 핵심 (데이터 다시 불러오기)
+          subscribeReservations();
+        }
       });
 
       updateTotalPeople();
