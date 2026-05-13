@@ -13692,6 +13692,55 @@ ${
         );
       }
 
+      if (!window.__dayContactActionDelegated) {
+        window.__dayContactActionDelegated = true;
+
+        document.addEventListener(
+          "click",
+          (event) => {
+            const button = event.target.closest(".day-contact-action");
+            if (!button) return;
+
+            event.preventDefault();
+            event.stopPropagation();
+
+            const reservationId = button.dataset.reservationId || "";
+            const action = button.dataset.contactAction || "";
+
+            if (action === "sms") {
+              openSmsTemplatePopupById(reservationId);
+              return;
+            }
+
+            if (action === "call") {
+              callReservationById(reservationId);
+            }
+          },
+          true,
+        );
+      }
+
+      if (!window.__smsTemplateActionDelegated) {
+        window.__smsTemplateActionDelegated = true;
+
+        document.addEventListener(
+          "click",
+          (event) => {
+            const item = event.target.closest(".sms-template-action");
+            if (!item) return;
+
+            event.preventDefault();
+            event.stopPropagation();
+
+            const reservationId = item.dataset.reservationId || "";
+            const type = item.dataset.smsType || "today";
+
+            sendReservationMessageById(reservationId, type);
+          },
+          true,
+        );
+      }
+
       function renderDayView() {
         // reservations 사용: 선택 날짜 1일 예약 목록 + 상태/세팅/연락 버튼 표시
         const monthView = document.getElementById("month-view");
@@ -13819,7 +13868,9 @@ ${
 
   <div class="day-card-pc-top reservation-icon-actions">
     <button
-      onclick="event.stopPropagation(); openSmsTemplatePopupById(${reservationIdArg})"
+      class="day-contact-action"
+      data-contact-action="sms"
+      data-reservation-id="${escapeHtml(String(r?.id || ""))}"
       title="문자"
       type="button"
     >
@@ -13827,7 +13878,9 @@ ${
     </button>
 
     <button
-      onclick="event.stopPropagation(); callReservationById(${reservationIdArg})"
+      class="day-contact-action"
+      data-contact-action="call"
+      data-reservation-id="${escapeHtml(String(r?.id || ""))}"
       title="전화"
       type="button"
     >
@@ -13929,7 +13982,9 @@ ${
 
       <div class="reservation-icon-actions" onclick="event.stopPropagation();">
         <button
-          onclick="event.stopPropagation(); openSmsTemplatePopupById(${reservationIdArg})"
+          class="day-contact-action"
+          data-contact-action="sms"
+          data-reservation-id="${escapeHtml(String(r?.id || ""))}"
           title="문자"
           type="button"
         >
@@ -13937,7 +13992,9 @@ ${
         </button>
 
         <button
-          onclick="event.stopPropagation(); callReservationById(${reservationIdArg})"
+          class="day-contact-action"
+          data-contact-action="call"
+          data-reservation-id="${escapeHtml(String(r?.id || ""))}"
           title="전화"
           type="button"
         >
@@ -15206,13 +15263,20 @@ ${
           return;
         }
 
-        const reservationIdArg = escapeHtml(JSON.stringify(reservation.id));
         title.textContent = "문자 선택";
         list.innerHTML = `
-        <div class="table-select-item" onclick="sendReservationMessageById(${reservationIdArg}, 'today')">
+        <div
+          class="table-select-item sms-template-action"
+          data-reservation-id="${escapeHtml(String(reservation.id || ""))}"
+          data-sms-type="today"
+        >
           오늘 예약 확인
         </div>
-        <div class="table-select-item" onclick="sendReservationMessageById(${reservationIdArg}, 'tomorrow')">
+        <div
+          class="table-select-item sms-template-action"
+          data-reservation-id="${escapeHtml(String(reservation.id || ""))}"
+          data-sms-type="tomorrow"
+        >
           내일 예약 확인
         </div>
       `;
