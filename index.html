@@ -13720,25 +13720,6 @@ ${
         );
       }
 
-      if (!window.__dayEditActionDelegated) {
-        window.__dayEditActionDelegated = true;
-
-        document.addEventListener(
-          "click",
-          (event) => {
-            const button = event.target.closest(".day-edit-action");
-            if (!button) return;
-
-            event.preventDefault();
-            event.stopPropagation();
-
-            const reservationId = button.dataset.reservationId || "";
-            editReservationById(reservationId);
-          },
-          true,
-        );
-      }
-
       if (!window.__smsTemplateActionDelegated) {
         window.__smsTemplateActionDelegated = true;
 
@@ -13795,10 +13776,10 @@ ${
             // [17차 조사메모] 일간 표시는 dayReservations 기반이지만, 클릭 동작(수정/상태/TV/이름표시)은 전체 reservations의 realIndex를 사용합니다.
             const realIndex = reservations.findIndex((item) => item?.id === r?.id);
             const canUseRealIndex = realIndex >= 0;
-            const rowClick = canUseRealIndex
-              ? `event.stopPropagation(); editReservation(${realIndex})`
-              : "event.stopPropagation(); return;";
             const reservationIdArg = escapeHtml(JSON.stringify(r?.id || ""));
+            const rowClick = canUseRealIndex
+              ? `event.stopPropagation(); editReservationById(${reservationIdArg})`
+              : "event.stopPropagation(); return;";
             const nameChange = r?.id
               ? `toggleNameDisplayModeById(${reservationIdArg}, this.checked, this)`
               : "return;";
@@ -13886,15 +13867,6 @@ ${
       <div class="day-card-pc-right" onclick="event.stopPropagation();">
 
   <div class="day-card-pc-top reservation-icon-actions">
-    <button
-      class="day-edit-action"
-      data-reservation-id="${escapeHtml(String(r?.id || ""))}"
-      title="수정"
-      type="button"
-    >
-      ✏️
-    </button>
-
     <button
       class="day-contact-action"
       data-contact-action="sms"
@@ -14009,15 +13981,6 @@ ${
       </div>
 
       <div class="reservation-icon-actions" onclick="event.stopPropagation();">
-        <button
-          class="day-edit-action"
-          data-reservation-id="${escapeHtml(String(r?.id || ""))}"
-          title="수정"
-          type="button"
-        >
-          ✏️
-        </button>
-
         <button
           class="day-contact-action"
           data-contact-action="sms"
