@@ -13653,7 +13653,7 @@ ${
         renderDayViewHeader();
 
         // [13차 조사메모] 일간 카드 렌더링은 selectedDate 1일 목록만 사용합니다.
-        const dailyReservations = getDayReservationsForCurrentDate(selectedDate)
+        const dailyReservations = [...getDayReservationsForCurrentDate(selectedDate)]
           .sort((a, b) => a.time.localeCompare(b.time));
 
         if (dailyReservations.length === 0) {
