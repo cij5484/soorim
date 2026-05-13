@@ -13637,6 +13637,37 @@ ${
 
       window.toggleSeatMap = toggleSeatMap;
 
+      let dayActionClickHandlerBound = false;
+
+      function handleDayActionClick(event) {
+        const statusTarget = event.target.closest('[data-day-status-toggle="true"]');
+        if (statusTarget) {
+          event.stopPropagation();
+
+          const reservationId = statusTarget.dataset.reservationId || "";
+          const currentStatus = statusTarget.dataset.currentStatus || "예약";
+
+          toggleStatusById(reservationId, currentStatus);
+          return;
+        }
+
+        const tvTarget = event.target.closest('[data-day-tv-toggle="true"]');
+        if (tvTarget) {
+          event.stopPropagation();
+
+          const reservationId = tvTarget.dataset.reservationId || "";
+          const currentTvHidden = tvTarget.dataset.currentTvHidden === "true";
+
+          toggleTVDisplayById(reservationId, currentTvHidden);
+        }
+      }
+
+      function ensureDayActionClickHandler() {
+        if (dayActionClickHandlerBound) return;
+        dayActionClickHandlerBound = true;
+        document.addEventListener("click", handleDayActionClick);
+      }
+
       function renderDayView() {
         // reservations 사용: 선택 날짜 1일 예약 목록 + 상태/세팅/연락 버튼 표시
         const monthView = document.getElementById("month-view");
@@ -13649,6 +13680,7 @@ ${
         if (dayHeader) dayHeader.style.display = "block";
         list.style.display = "block";
 
+        ensureDayActionClickHandler();
         subscribeDayReservationsForDate(selectedDate);
         renderDayViewHeader();
 
@@ -13675,14 +13707,6 @@ ${
               ? `event.stopPropagation(); editReservation(${realIndex})`
               : "event.stopPropagation(); return;";
             const reservationIdArg = escapeHtml(JSON.stringify(r?.id || ""));
-            const currentStatusArg = escapeHtml(JSON.stringify(r?.status || "예약"));
-            const currentTvHiddenArg = JSON.stringify(r?.tvHidden === true);
-            const statusClick = r?.id
-              ? `event.stopPropagation(); toggleStatusById(${reservationIdArg}, ${currentStatusArg})`
-              : "event.stopPropagation(); return;";
-            const tvClick = r?.id
-              ? `event.stopPropagation(); toggleTVDisplayById(${reservationIdArg}, ${currentTvHiddenArg})`
-              : "event.stopPropagation(); return;";
             const nameChange = r?.id
               ? `toggleNameDisplayModeById(${reservationIdArg}, this.checked, this)`
               : "return;";
@@ -13702,7 +13726,9 @@ ${
       <div style="display:flex; align-items:center; flex-wrap:wrap; gap:8px; min-width:0;">
         <span
           class="status-badge badge-${getDisplayStatus(r.status)}"
-          onclick="${statusClick}"
+          data-day-status-toggle="true"
+          data-reservation-id="${escapeHtml(String(r?.id || ""))}"
+          data-current-status="${escapeHtml(String(r?.status || "예약"))}"
           style="cursor:pointer; font-size:11px; padding:3px 7px;"
         >
           ${getDisplayStatus(r.status)}
@@ -13710,7 +13736,9 @@ ${
 
         <span
           class="tv-display-badge ${r.tvHidden ? "off" : "on"}"
-          onclick="${tvClick}"
+          data-day-tv-toggle="true"
+          data-reservation-id="${escapeHtml(String(r?.id || ""))}"
+          data-current-tv-hidden="${r?.tvHidden === true ? "true" : "false"}"
           title="${r.tvHidden ? "TV 화면 제외됨" : "TV 화면 노출됨"}"
         >
           TV
@@ -13827,7 +13855,9 @@ ${
         <div class="reservation-card-first-line">
           <span
             class="status-badge badge-${getDisplayStatus(r.status)}"
-            onclick="${statusClick}"
+            data-day-status-toggle="true"
+            data-reservation-id="${escapeHtml(String(r?.id || ""))}"
+            data-current-status="${escapeHtml(String(r?.status || "예약"))}"
             style="cursor:pointer; font-size:11px; padding:3px 7px;"
           >
             ${getDisplayStatus(r.status)}
@@ -13835,7 +13865,9 @@ ${
 
           <span
             class="tv-display-badge ${r.tvHidden ? "off" : "on"}"
-            onclick="${tvClick}"
+            data-day-tv-toggle="true"
+            data-reservation-id="${escapeHtml(String(r?.id || ""))}"
+            data-current-tv-hidden="${r?.tvHidden === true ? "true" : "false"}"
             title="${r.tvHidden ? "TV 화면 제외됨" : "TV 화면 노출됨"}"
           >
             TV
