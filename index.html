@@ -6937,6 +6937,10 @@
       // ====== 데이터 (브라우저에 저장) ======
       // 전역 reservations: 월/주/일/검색/TV/테이블맵/불러오기 미리보기가 함께 참조하는 공통 메모리 캐시
       let reservations = [];
+      let tvReservations = [];
+      let tvReservationsDate = "";
+      let tvReservationsUnsubscribe = null;
+      let tvReservationsReady = false;
 
       const TV_DESKTOP_DEFAULT_SETTINGS = {
         fontSize: 24,
@@ -8185,6 +8189,17 @@
           unsubscribeReservations();
           unsubscribeReservations = null;
         }
+      }
+
+      function stopTvReservationsListener() {
+        if (typeof tvReservationsUnsubscribe === "function") {
+          tvReservationsUnsubscribe();
+        }
+
+        tvReservationsUnsubscribe = null;
+        tvReservations = [];
+        tvReservationsDate = "";
+        tvReservationsReady = false;
       }
 
       function hideAppLoading() {
@@ -13991,6 +14006,18 @@ ${
       function getReservationsForDateFromCache(dateString) {
         if (!dateString) return [];
         return reservations.filter((r) => (r.date || "") === dateString);
+      }
+
+      function getTvReservationsForCurrentDate(dateString) {
+        if (
+          tvReservationsReady &&
+          tvReservationsDate === dateString &&
+          Array.isArray(tvReservations)
+        ) {
+          return tvReservations;
+        }
+
+        return getReservationsForDateFromCache(dateString);
       }
 
       function getReservationsForDateRangeFromCache(
