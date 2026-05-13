@@ -13671,6 +13671,27 @@ ${
         document.addEventListener("click", handleDayActionClick, true);
       }
 
+      if (!window.__daySettingCheckboxDelegated) {
+        window.__daySettingCheckboxDelegated = true;
+
+        document.addEventListener(
+          "change",
+          (event) => {
+            const checkbox = event.target.closest(".day-setting-checkbox");
+            if (!checkbox) return;
+
+            event.preventDefault();
+            event.stopPropagation();
+
+            const reservationId = checkbox.dataset.reservationId || "";
+            const field = checkbox.dataset.settingField || "";
+
+            toggleSettingStatusById(reservationId, field, checkbox.checked, checkbox);
+          },
+          true,
+        );
+      }
+
       function renderDayView() {
         // reservations 사용: 선택 날짜 1일 예약 목록 + 상태/세팅/연락 버튼 표시
         const monthView = document.getElementById("month-view");
@@ -13829,7 +13850,9 @@ ${
         <input
           type="checkbox"
           ${r.basicSetting ? "checked" : ""}
-          onchange="event.stopPropagation(); toggleSettingStatusById(${reservationIdArg}, 'basicSetting', this.checked, this)"
+          class="day-setting-checkbox"
+          data-reservation-id="${escapeHtml(String(r?.id || ""))}"
+          data-setting-field="basicSetting"
         />
         기본
       </label>
@@ -13838,7 +13861,9 @@ ${
         <input
           type="checkbox"
           ${r.fullSetting ? "checked" : ""}
-          onchange="event.stopPropagation(); toggleSettingStatusById(${reservationIdArg}, 'fullSetting', this.checked, this)"
+          class="day-setting-checkbox"
+          data-reservation-id="${escapeHtml(String(r?.id || ""))}"
+          data-setting-field="fullSetting"
         />
         전체
       </label>
@@ -13960,7 +13985,9 @@ ${
                   <input
                     type="checkbox"
                     ${r.basicSetting ? "checked" : ""}
-                    onchange="event.stopPropagation(); toggleSettingStatusById(${reservationIdArg}, 'basicSetting', this.checked, this)"
+                    class="day-setting-checkbox"
+          data-reservation-id="${escapeHtml(String(r?.id || ""))}"
+          data-setting-field="basicSetting"
                   />
                   기본
                 </label>
@@ -13969,7 +13996,9 @@ ${
                   <input
                     type="checkbox"
                     ${r.fullSetting ? "checked" : ""}
-                    onchange="event.stopPropagation(); toggleSettingStatusById(${reservationIdArg}, 'fullSetting', this.checked, this)"
+                    class="day-setting-checkbox"
+          data-reservation-id="${escapeHtml(String(r?.id || ""))}"
+          data-setting-field="fullSetting"
                   />
                   전체
                 </label>
@@ -14977,6 +15006,7 @@ ${
         const normalizedId = typeof reservationId === "string" ? reservationId.trim() : "";
         if (!normalizedId || !["basicSetting", "fullSetting"].includes(field)) {
           if (checkboxEl) checkboxEl.checked = !checked;
+          console.warn("세팅 변경 실패: 잘못된 예약 ID 또는 필드", { reservationId, field });
           return;
         }
 
@@ -14986,6 +15016,16 @@ ${
             { [field]: checked },
             { merge: true },
           );
+
+          const updateLocalReservation = (item) => {
+            if (item && item.id === normalizedId) {
+              item[field] = checked;
+            }
+          };
+
+          reservations.forEach(updateLocalReservation);
+          dayReservations.forEach(updateLocalReservation);
+          tvReservations.forEach(updateLocalReservation);
         } catch (error) {
           console.error("세팅 변경 오류:", error);
           if (checkboxEl) checkboxEl.checked = !checked;
