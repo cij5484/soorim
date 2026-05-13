@@ -6942,6 +6942,10 @@
       let tvReservationsDate = "";
       let tvReservationsUnsubscribe = null;
       let tvReservationsReady = false;
+      let dayReservations = [];
+      let dayReservationsDate = "";
+      let dayReservationsUnsubscribe = null;
+      let dayReservationsReady = false;
 
       const TV_DESKTOP_DEFAULT_SETTINGS = {
         fontSize: 24,
@@ -8204,6 +8208,17 @@
         tvReservations = [];
         tvReservationsDate = "";
         tvReservationsReady = false;
+      }
+
+      function stopDayReservationsListener() {
+        if (typeof dayReservationsUnsubscribe === "function") {
+          dayReservationsUnsubscribe();
+        }
+
+        dayReservationsUnsubscribe = null;
+        dayReservations = [];
+        dayReservationsDate = "";
+        dayReservationsReady = false;
       }
 
 
@@ -14072,6 +14087,18 @@ ${
           Array.isArray(tvReservations)
         ) {
           return tvReservations;
+        }
+
+        return getReservationsForDateFromCache(dateString);
+      }
+
+      function getDayReservationsForCurrentDate(dateString) {
+        if (
+          dayReservationsReady &&
+          dayReservationsDate === dateString &&
+          Array.isArray(dayReservations)
+        ) {
+          return dayReservations;
         }
 
         return getReservationsForDateFromCache(dateString);
