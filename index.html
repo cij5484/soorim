@@ -8221,6 +8221,49 @@
         dayReservationsReady = false;
       }
 
+      function subscribeDayReservationsForDate(dateString) {
+        if (!dateString) {
+          stopDayReservationsListener();
+          return;
+        }
+
+        if (
+          dayReservationsDate === dateString &&
+          typeof dayReservationsUnsubscribe === "function"
+        ) {
+          return;
+        }
+
+        stopDayReservationsListener();
+
+        dayReservationsDate = dateString;
+        dayReservationsReady = false;
+
+        const dayReservationsQuery = query(
+          reservationsCollection,
+          where("date", "==", dateString),
+        );
+
+        dayReservationsUnsubscribe = onSnapshot(
+          dayReservationsQuery,
+          (snapshot) => {
+            dayReservations = snapshot.docs.map((docSnap) => ({
+              id: docSnap.id,
+              ...docSnap.data(),
+            }));
+            dayReservationsReady = true;
+
+            if (currentView === "day" && selectedDate === dateString) {
+              renderDayView();
+            }
+          },
+          (error) => {
+            console.error("일간 예약 구독 실패:", error);
+            dayReservationsReady = false;
+            dayReservations = [];
+          },
+        );
+      }
 
       function subscribeTvReservationsForDate(dateString) {
         if (!dateString) {
@@ -12367,11 +12410,13 @@ ${renderMobileTvSeatMapModal()}
         updateViewVisibility();
 
         if (currentView === "month") {
+          stopDayReservationsListener();
           renderMonthView();
           return;
         }
 
         if (currentView === "week") {
+          stopDayReservationsListener();
           renderWeekView();
           return;
         }
@@ -12398,7 +12443,7 @@ ${renderMobileTvSeatMapModal()}
   if (!header) return;
 
                 // [13차 조사메모] 일간 헤더 집계는 선택 날짜 캐시 목록(getReservationsForDateFromCache) 기준입니다.
-                const selectedDateReservations = getReservationsForDateFromCache(selectedDate);
+                const selectedDateReservations = getDayReservationsForCurrentDate(selectedDate);
                 const dayReservationCount = selectedDateReservations.length;
                 const dayTVOffCount = selectedDateReservations.filter((r) => r.tvHidden === true).length;
 
@@ -13589,10 +13634,11 @@ ${
         if (dayHeader) dayHeader.style.display = "block";
         list.style.display = "block";
 
+        subscribeDayReservationsForDate(selectedDate);
         renderDayViewHeader();
 
         // [13차 조사메모] 일간 카드 렌더링은 selectedDate 1일 목록만 사용합니다.
-        const dailyReservations = getReservationsForDateFromCache(selectedDate)
+        const dailyReservations = getDayReservationsForCurrentDate(selectedDate)
           .sort((a, b) => a.time.localeCompare(b.time));
 
         if (dailyReservations.length === 0) {
