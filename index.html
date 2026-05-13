@@ -11547,13 +11547,25 @@
             return isMobileTvLayout();
           }
 
-          function toggleTVRowStatus(index) {
+          async function toggleTVRowStatus(reservationId, currentStatus) {
             if (!isMobileTVRowStatusToggleAllowed()) return;
 
-            const realIndex = Number(index);
-            if (!Number.isInteger(realIndex) || realIndex < 0) return;
+            const normalizedId = typeof reservationId === "string" ? reservationId.trim() : "";
+            if (!normalizedId) return;
 
-            toggleStatus(realIndex);
+            const normalizedStatus = currentStatus === "퇴장" ? "도착" : String(currentStatus || "예약");
+            const nextStatus = normalizedStatus === "도착" ? "예약" : "도착";
+
+            try {
+              await setDoc(
+                doc(db, "reservations", normalizedId),
+                { status: nextStatus },
+                { merge: true },
+              );
+            } catch (error) {
+              console.error("TV 상태 변경 오류:", error);
+              alert("상태 변경에 실패했습니다.");
+            }
           }
 
       function openTVQrModal() {
@@ -11972,7 +11984,7 @@
                 return `
                   <tr
                     class="${rowClasses}"
-                    onclick="window.toggleTVRowStatus(${realIndex})"
+                    onclick="window.toggleTVRowStatus(${JSON.stringify(r.id || "")}, ${JSON.stringify(r.status || "예약")})"
                   >
                     <td>
                       ${wrapTVNoticeContent(escapeHtml(formatTVTime(r.time || "")), r, "time")}
