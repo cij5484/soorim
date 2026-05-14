@@ -13777,7 +13777,7 @@ ${
             const realIndex = reservations.findIndex((item) => item?.id === r?.id);
             const canUseRealIndex = realIndex >= 0;
             const reservationIdArg = escapeHtml(JSON.stringify(r?.id || ""));
-            const rowClick = canUseRealIndex
+            const rowClick = r?.id
               ? `event.stopPropagation(); editReservationById(${reservationIdArg})`
               : "event.stopPropagation(); return;";
             const nameChange = r?.id
