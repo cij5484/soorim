@@ -11821,7 +11821,11 @@
       function getMobileTvReservedByTable() {
         const tvTargetDate = String(getTVTargetDateString() || "");
         const reservedByTable = {};
-        (Array.isArray(reservations) ? reservations : []).forEach((r) => {
+        const sourceReservations =
+          Array.isArray(tvReservations) && tvReservations.length > 0
+            ? tvReservations
+            : reservations;
+        (Array.isArray(sourceReservations) ? sourceReservations : []).forEach((r) => {
           if (!r) return;
           if (String(r.date || "") !== tvTargetDate) return;
           if (isMobileTvSeatCanceledReservation(r)) return;
