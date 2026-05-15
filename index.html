@@ -14654,6 +14654,45 @@ ${
         }
       }
 
+      function captureDayReservationScrollState() {
+        if (currentView !== "day") return null;
+
+        const list = document.getElementById("reservation-list");
+
+        return {
+          windowX: window.scrollX || 0,
+          windowY:
+            window.scrollY ||
+            document.documentElement.scrollTop ||
+            document.body.scrollTop ||
+            0,
+          listScrollTop: list ? list.scrollTop || 0 : 0,
+        };
+      }
+
+      function restoreDayReservationScrollState(scrollState) {
+        if (!scrollState) return;
+        if (currentView !== "day") return;
+
+        const restore = () => {
+          const list = document.getElementById("reservation-list");
+
+          if (list && typeof scrollState.listScrollTop === "number") {
+            list.scrollTop = scrollState.listScrollTop;
+          }
+
+          window.scrollTo(
+            Number(scrollState.windowX) || 0,
+            Number(scrollState.windowY) || 0,
+          );
+        };
+
+        requestAnimationFrame(() => {
+          restore();
+          requestAnimationFrame(restore);
+        });
+      }
+
       function editReservation(index) {
         if (!requireLogin()) return;
         const r = reservations[index];
@@ -15001,6 +15040,16 @@ ${
         }
 
         try {
+          const shouldRestoreDayScroll =
+            currentView === "day" &&
+            editingReservationId &&
+            editingPreviewIndex === null &&
+            selectedDate === date;
+
+          const dayScrollState = shouldRestoreDayScroll
+            ? captureDayReservationScrollState()
+            : null;
+
           if (editingReservationId) {
             await setDoc(
               doc(db, "reservations", editingReservationId),
@@ -15032,6 +15081,10 @@ ${
           syncSelectedDateUI();
           closeModal();
           refreshCurrentScreen();
+
+          if (shouldRestoreDayScroll) {
+            restoreDayReservationScrollState(dayScrollState);
+          }
 
           // TV 모드 메뉴 표시 시 빈 칸 처리
           // menuCell.textContent = reservationData.menu || '';
