@@ -1,4 +1,4 @@
-const CACHE_NAME = 'soorim-reservation-v55';
+const CACHE_NAME = 'soorim-reservation-v56';
 
 const FILES_TO_CACHE = [
   '/soorim/',
