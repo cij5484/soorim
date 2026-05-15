@@ -13692,6 +13692,25 @@ ${
         );
       }
 
+      if (!window.__dayNameDisplayCheckboxDelegated) {
+        window.__dayNameDisplayCheckboxDelegated = true;
+
+        document.addEventListener(
+          "change",
+          (event) => {
+            const checkbox = event.target.closest(".day-name-display-checkbox");
+            if (!checkbox) return;
+
+            event.preventDefault();
+            event.stopPropagation();
+
+            const reservationId = checkbox.dataset.reservationId || "";
+            toggleNameDisplayModeById(reservationId, checkbox.checked, checkbox);
+          },
+          true,
+        );
+      }
+
       if (!window.__dayContactActionDelegated) {
         window.__dayContactActionDelegated = true;
 
@@ -13776,13 +13795,9 @@ ${
             // [17차 조사메모] 일간 표시는 dayReservations 기반이지만, 클릭 동작(수정/상태/TV/이름표시)은 전체 reservations의 realIndex를 사용합니다.
             const realIndex = reservations.findIndex((item) => item?.id === r?.id);
             const canUseRealIndex = realIndex >= 0;
-            const reservationIdArg = escapeHtml(JSON.stringify(r?.id || ""));
             const rowClick = canUseRealIndex
               ? `event.stopPropagation(); editReservation(${realIndex})`
               : "event.stopPropagation(); return;";
-            const nameChange = r?.id
-              ? `toggleNameDisplayModeById(${reservationIdArg}, this.checked, this)`
-              : "return;";
 
             return `
           <div
@@ -13823,10 +13838,10 @@ ${
 
         <input
           type="checkbox"
-          class="name-display-check"
+          class="name-display-check day-name-display-checkbox"
           ${r.nameDisplayMode ? "checked" : ""}
+          data-reservation-id="${escapeHtml(String(r?.id || ""))}"
           onclick="event.stopPropagation();"
-          onchange="${nameChange}"
           title="예약자명 님 표시"
         />
 
@@ -13960,10 +13975,10 @@ ${
 
           <input
             type="checkbox"
-            class="name-display-check"
+            class="name-display-check day-name-display-checkbox"
             ${r.nameDisplayMode ? "checked" : ""}
+            data-reservation-id="${escapeHtml(String(r?.id || ""))}"
             onclick="event.stopPropagation();"
-            onchange="${nameChange}"
             title="예약자명 님 표시"
           />
 
@@ -15161,6 +15176,18 @@ ${
             { nameDisplayMode: checked },
             { merge: true },
           );
+
+          const updateLocalReservation = (item) => {
+            if (item && item.id === normalizedId) {
+              item.nameDisplayMode = checked;
+            }
+          };
+
+          reservations.forEach(updateLocalReservation);
+          dayReservations.forEach(updateLocalReservation);
+          tvReservations.forEach(updateLocalReservation);
+
+          refreshCurrentScreen();
         } catch (error) {
           console.error("예약자명 표시 변경 오류:", error);
 
