@@ -11735,15 +11735,52 @@
       }
 
       function getMobileTvSeatMappedTables(reservation) {
-        const rawText = [reservation?.table, reservation?.room, reservation?.seat, reservation?.tableText]
+        const tableText = String(reservation?.table || "").trim();
+        const tableNumbers = new Set();
+
+        (tableText.match(/\d+/g) || []).forEach((numText) => {
+          const num = Number(numText);
+          if (num >= 3 && num <= 19) tableNumbers.add(String(num));
+          if (num >= 21 && num <= 64) tableNumbers.add(String(num));
+        });
+
+        if (tableNumbers.size > 0) {
+          return Array.from(tableNumbers);
+        }
+
+        const fallbackText = [
+          reservation?.table,
+          reservation?.room,
+          reservation?.seat,
+          reservation?.tableText,
+        ]
           .filter(Boolean)
           .map(String)
           .join(" ");
 
         const result = new Set();
-        const roomMatches = [...rawText.matchAll(/(?:예약\s*)?(?:룸\s*)?([1-5])\s*실/g)];
+
+        const hasExplicitWholeRoomText =
+          /룸\s*전체/.test(fallbackText) ||
+          /전체\s*룸/.test(fallbackText) ||
+          /예약\s*[1-5]\s*실/.test(fallbackText);
+
+        const roomMatches = [
+          ...fallbackText.matchAll(/(?:예약\s*)?(?:룸\s*)?([1-5])\s*실/g),
+        ];
+
         roomMatches.forEach((match) => {
+          const matchedText = match[0] || "";
           const roomNo = Number(match[1]);
+
+          const shouldExpandWholeRoom =
+            hasExplicitWholeRoomText ||
+            /예약/.test(matchedText) ||
+            /룸\s*전체/.test(fallbackText) ||
+            tableText === "";
+
+          if (!shouldExpandWholeRoom) return;
+
           const base = roomNo * 10 + 10;
           result.add(String(base + 1));
           result.add(String(base + 2));
@@ -11751,7 +11788,7 @@
           result.add(String(base + 4));
         });
 
-        (rawText.match(/\d+/g) || []).forEach((numText) => {
+        (fallbackText.match(/\d+/g) || []).forEach((numText) => {
           const num = Number(numText);
           if (num >= 3 && num <= 19) result.add(String(num));
           if (num >= 21 && num <= 64) result.add(String(num));
