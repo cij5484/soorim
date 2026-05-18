@@ -11736,13 +11736,16 @@
 
       function getMobileTvSeatMappedTables(reservation) {
         const tableText = String(reservation?.table || "").trim();
+        const tableTextIsRoomLabelOnly = /^[1-5]\s*실$/.test(tableText);
         const tableNumbers = new Set();
 
-        (tableText.match(/\d+/g) || []).forEach((numText) => {
-          const num = Number(numText);
-          if (num >= 3 && num <= 19) tableNumbers.add(String(num));
-          if (num >= 21 && num <= 64) tableNumbers.add(String(num));
-        });
+        if (!tableTextIsRoomLabelOnly) {
+          (tableText.match(/\d+/g) || []).forEach((numText) => {
+            const num = Number(numText);
+            if (num >= 3 && num <= 19) tableNumbers.add(String(num));
+            if (num >= 21 && num <= 64) tableNumbers.add(String(num));
+          });
+        }
 
         if (tableNumbers.size > 0) {
           return Array.from(tableNumbers);
@@ -11788,7 +11791,12 @@
           result.add(String(base + 4));
         });
 
-        (fallbackText.match(/\d+/g) || []).forEach((numText) => {
+        const fallbackTableNumberText = fallbackText.replace(
+          /(?:예약\s*)?(?:룸\s*)?[1-5]\s*실/g,
+          " ",
+        );
+
+        (fallbackTableNumberText.match(/\d+/g) || []).forEach((numText) => {
           const num = Number(numText);
           if (num >= 3 && num <= 19) result.add(String(num));
           if (num >= 21 && num <= 64) result.add(String(num));
