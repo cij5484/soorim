@@ -7711,6 +7711,7 @@
       let movingFromTable = null;
       let modalSeatPickMode = false;
       let modalSeatPickSelectedTables = [];
+      let modalSeatPickReturnScrollState = null;
       let isLoggedIn = false;
       function isTvOnlyUrlMode() {
         return new URLSearchParams(window.location.search).get("tv") === "1";
@@ -12805,6 +12806,9 @@ ${getModalSeatPickGuideHtml()}
 
         modalSeatPickSelectedTables = currentTables;
 
+        modalSeatPickReturnScrollState =
+          currentView === "day" ? captureDayReservationScrollState() : null;
+
         const modal = document.getElementById("modal");
         const importPreviewModal = document.getElementById("import-preview-modal");
         const weekReservationModal = document.getElementById("week-reservation-modal");
@@ -12909,6 +12913,12 @@ ${getModalSeatPickGuideHtml()}
         }
 
         render();
+
+        if (modalSeatPickReturnScrollState) {
+          restoreDayReservationScrollState(modalSeatPickReturnScrollState);
+        }
+
+        modalSeatPickReturnScrollState = null;
       }
 
       function abandonModalSeatPick() {
@@ -12916,6 +12926,7 @@ ${getModalSeatPickGuideHtml()}
 
         modalSeatPickMode = false;
         modalSeatPickSelectedTables = [];
+        modalSeatPickReturnScrollState = null;
         isSeatMapVisible = false;
 
         const mapView = document.getElementById("seat-map-view");
@@ -13060,6 +13071,12 @@ ${getModalSeatPickGuideHtml()}
         }
 
         render();
+
+        if (modalSeatPickReturnScrollState) {
+          restoreDayReservationScrollState(modalSeatPickReturnScrollState);
+        }
+
+        modalSeatPickReturnScrollState = null;
       }
 
       function openTableReservation(tableNumber) {
