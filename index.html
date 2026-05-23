@@ -6132,17 +6132,15 @@
         ></textarea>
         <div class="import-full-compare-box">
           <div class="import-full-compare-row">
-            <input type="checkbox" id="import-full-compare-toggle" />
             <label
               for="import-full-compare-toggle"
               class="import-full-compare-text"
             >
-              이 날짜의 전체 예약 목록으로 비교하기
+              <input type="checkbox" id="import-full-compare-toggle" />
+              <span>전체예약 비교</span>
             </label>
           </div>
-          <div class="import-full-compare-desc">
-            체크하면 앱에는 있지만 이번 불러오기 목록에는 없는 예약을 취소 의심으로 보여줍니다.
-          </div>
+          <div class="import-full-compare-desc">취소 의심 예약을 구분할 때 사용</div>
         </div>
 
         <div class="modal-actions" style="justify-content: space-between">
@@ -8627,14 +8625,49 @@
       }
 
       async function cancelImportSuspectReservation(index) {
+        if (!requireLogin()) return;
+
         const suspect = importCancelSuspectList[index];
         const r = suspect?.reservation;
-        if (!r?.id) return;
-        const targetIndex = reservations.findIndex((item) => item.id === r.id);
-        if (targetIndex === -1) return;
-        await changeStatus(targetIndex, "취소");
-        importCancelSuspectList.splice(index, 1);
-        renderImportPreview();
+
+        const targetId = String(r?.id || "").trim();
+        if (!targetId) {
+          alert("취소처리할 예약을 찾을 수 없습니다.");
+          return;
+        }
+
+        const summary = [
+          `예약자: ${r.name || "이름없음"}`,
+          `날짜: ${r.date || "-"}`,
+          `시간: ${r.time || "-"}`,
+          `인원: ${getPeopleDisplayText(r)}`,
+        ]
+          .filter(Boolean)
+          .join("\n");
+
+        const ok = confirm(`아래 취소 의심 예약을 실제로 취소처리하시겠습니까?
+
+${summary}
+
+처리 후 일간 예약 목록에서 제거됩니다.`);
+        if (!ok) return;
+
+        try {
+          await deleteDoc(doc(db, "reservations", targetId));
+
+          const removeLocalReservation = (item) => item && item.id !== targetId;
+          reservations = reservations.filter(removeLocalReservation);
+          dayReservations = dayReservations.filter(removeLocalReservation);
+          tvReservations = tvReservations.filter(removeLocalReservation);
+
+          importCancelSuspectList.splice(index, 1);
+
+          renderImportPreview();
+          refreshCurrentScreen();
+        } catch (error) {
+          console.error("취소 의심 예약 취소처리 오류:", error);
+          alert("취소처리 중 오류가 발생했습니다. 실제 예약은 변경되지 않았습니다.");
+        }
       }
 
       function removePreviewItem(index) {
