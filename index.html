@@ -856,7 +856,9 @@
         display: block !important;
       }
       .import-full-compare-text {
-        display: block !important;
+        display: inline-flex !important;
+        align-items: center !important;
+        gap: 6px !important;
         width: auto !important;
         max-width: none !important;
         margin: 0 !important;
@@ -867,7 +869,7 @@
         font-weight: 700 !important;
         color: #333 !important;
         cursor: pointer !important;
-        white-space: normal !important;
+        white-space: nowrap !important;
         word-break: keep-all !important;
       }
       .import-full-compare-desc {
@@ -6137,10 +6139,9 @@
               class="import-full-compare-text"
             >
               <input type="checkbox" id="import-full-compare-toggle" />
-              <span>전체예약 비교</span>
+              <span>전체예약 비교 (취소 의심 예약을 구분할 때 사용)</span>
             </label>
           </div>
-          <div class="import-full-compare-desc">취소 의심 예약을 구분할 때 사용</div>
         </div>
 
         <div class="modal-actions" style="justify-content: space-between">
