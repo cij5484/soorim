@@ -15438,6 +15438,9 @@ ${
         <div class="table-select-item" onclick="smsReservationCustomer(${index}, 'tomorrow')">
           내일 예약 확인
         </div>
+        <div class="table-select-item" onclick="smsReservationCustomer(${index}, 'deposit')">
+          예약금 요청
+        </div>
       `;
 
         popup.classList.remove("hidden");
@@ -15481,9 +15484,59 @@ ${
         >
           내일 예약 확인
         </div>
+        <div
+          class="table-select-item sms-template-action"
+          data-reservation-id="${escapeHtml(String(reservation.id || ""))}"
+          data-sms-type="deposit"
+        >
+          예약금 요청
+        </div>
       `;
 
         popup.classList.remove("hidden");
+      }
+
+      function formatDepositRequestDateTime(r) {
+        const dateValue = String(r?.date || "").trim();
+        const timeValue = String(r?.time || "").trim();
+
+        let dateText = "";
+
+        if (dateValue) {
+          const d = parseLocalDate(dateValue);
+          dateText = `${d.getMonth() + 1}월 ${d.getDate()}일`;
+        }
+
+        return [dateText, timeValue].filter(Boolean).join(" ") || "-";
+      }
+
+      function buildDepositRequestMessage(r) {
+        const dateTimeText = formatDepositRequestDateTime(r);
+        const peopleText = getPeopleDisplayText(r);
+        const menuText = String(r?.menu || "").trim();
+        const nameText = getReservationDisplayName(r) || String(r?.name || "").trim();
+
+        return (
+          "안녕하세요 고객님, 해운대 수림횟집 입니다.\n" +
+          "예약금 관련하여 안내드리고자 연락 드립니다.\n\n" +
+          "*예약일시 - " +
+          dateTimeText +
+          "\n" +
+          "*예약인원 - " +
+          peopleText +
+          "\n" +
+          "*예약메뉴 - " +
+          menuText +
+          "\n" +
+          "*예약자명 - " +
+          nameText +
+          "\n\n" +
+          "*예약금 - \n" +
+          "*입금계좌 - 1001-4876-8292 토스뱅크 (최상수)\n" +
+          "*입금자명은 예약하신분 성함이나 단체명으로 입금 부탁드립니다.\n\n" +
+          "당일 카드결제 후 계좌로 예약금 환급도 가능합니다.\n\n" +
+          "감사합니다."
+        );
       }
 
       function smsReservationCustomer(index, type) {
@@ -15495,6 +15548,22 @@ ${
         }
 
         const phone = String(r.phone || "").trim();
+
+        if (type === "deposit") {
+          const message = buildDepositRequestMessage(r);
+
+          const popup = document.getElementById("table-select-popup");
+          if (popup) popup.classList.add("hidden");
+
+          window.location.href =
+            "sms:" +
+            phone.replace(/[^0-9+]/g, "") +
+            "?body=" +
+            encodeURIComponent(message);
+
+          return;
+        }
+
         const name = getReservationDisplayName(r) || "고객";
         const time = r.time || "-";
         const people = getPeopleDisplayText(r);
@@ -15582,6 +15651,22 @@ ${
         }
 
         const phone = String(r.phone || "").trim();
+
+        if (type === "deposit") {
+          const message = buildDepositRequestMessage(r);
+
+          const popup = document.getElementById("table-select-popup");
+          if (popup) popup.classList.add("hidden");
+
+          window.location.href =
+            "sms:" +
+            phone.replace(/[^0-9+]/g, "") +
+            "?body=" +
+            encodeURIComponent(message);
+
+          return;
+        }
+
         const name = getReservationDisplayName(r) || "고객";
         const time = r.time || "-";
         const people = getPeopleDisplayText(r);
