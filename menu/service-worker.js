@@ -6,6 +6,8 @@ const MENU_FILES_TO_CACHE = [
   "./manifest.json",
   "./icons/menu-icon.svg",
   "./images/b-course.JPG"
+  "./icons/icon-192.png",
+  "./icons/icon-512.png",
 ];
 
 self.addEventListener("install", (event) => {
