@@ -1,4 +1,4 @@
-const MENU_CACHE_NAME = "soorim-menu-v2";
+const MENU_CACHE_NAME = "soorim-menu-v3";
 
 const MENU_FILES_TO_CACHE = [
   "./",
