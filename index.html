@@ -5521,19 +5521,80 @@
         line-height: 1.4;
       }
 
-      body.tv-mode-body.mobile-tv-layout .mobile-tv-action-row { display:flex !important; align-items:center !important; justify-content:flex-end !important; gap:6px !important; width:100% !important; margin:4px 0 6px 0 !important; padding:0 4px !important; position:static !important; }
-      body.tv-mode-body.mobile-tv-layout .mobile-tv-seat-map-btn { display:inline-flex; align-items:center; justify-content:center; border:2px solid #111; border-radius:9px; background:#dbeafe; color:#111; font-size:14px; font-weight:900; width:38px; height:34px; }
-      body.tv-mode-body.mobile-tv-layout .mobile-tv-action-row .tv-qr-btn,
-      body.tv-mode-body.mobile-tv-layout .mobile-tv-action-row .tv-cancel-mobile-btn {
+      body.tv-mode-body.mobile-tv-layout .tv-title > .tv-qr-btn {
+        display: none !important;
+      }
+
+      body.tv-mode-body.mobile-tv-layout .mobile-tv-action-row {
+        display: flex !important;
+        align-items: center !important;
+        justify-content: flex-end !important;
+        gap: 6px !important;
+        width: 100% !important;
+        margin: 4px 0 6px !important;
+        padding: 0 6px !important;
+        box-sizing: border-box !important;
+        position: relative !important;
+        z-index: 20 !important;
+      }
+
+      body.tv-mode-body:not(.mobile-tv-layout) .mobile-tv-action-row {
+        display: none !important;
+      }
+
+      body.tv-mode-body.mobile-tv-layout .tv-cancel-mobile-btn {
         position: static !important;
         right: auto !important;
         top: auto !important;
         transform: none !important;
+
+        display: inline-flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        flex: 0 0 auto !important;
+
+        height: 26px !important;
+        padding: 0 8px !important;
+        border: 1px solid #ef4444 !important;
+        border-radius: 999px !important;
+
+        background: #fee2e2 !important;
+        color: #b91c1c !important;
+
+        font-size: 12px !important;
+        font-weight: 900 !important;
+        line-height: 1 !important;
+        cursor: pointer !important;
+        white-space: nowrap !important;
       }
-      body.tv-mode-body.mobile-tv-layout .mobile-tv-action-row .tv-qr-btn {
-        display:inline-flex !important;
-        align-items:center;
-        justify-content:center;
+
+      body.tv-mode-body:not(.mobile-tv-layout) .tv-cancel-mobile-btn {
+        display: none !important;
+      }
+
+      body.tv-mode-body.mobile-tv-layout .mobile-tv-action-row .tv-qr-btn,
+      body.tv-mode-body.mobile-tv-layout .mobile-tv-action-row .mobile-tv-seat-map-btn {
+        position: static !important;
+        flex: 0 0 auto !important;
+        width: auto !important;
+        min-width: 38px !important;
+        height: 34px !important;
+        padding: 0 10px !important;
+        margin: 0 !important;
+        display: inline-flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        box-sizing: border-box !important;
+        white-space: nowrap !important;
+      }
+
+      body.tv-mode-body.mobile-tv-layout .mobile-tv-action-row .mobile-tv-seat-map-btn {
+        border: 2px solid #111;
+        border-radius: 9px;
+        background: #dbeafe;
+        color: #111;
+        font-size: 14px;
+        font-weight: 900;
       }
 
       @media (max-width: 768px) {
@@ -5546,16 +5607,16 @@
           align-items: center;
           justify-content: center;
         }
-        body.tv-mode-body .mobile-tv-action-row { display:flex !important; align-items:center !important; justify-content:flex-end !important; gap:6px !important; width:100% !important; margin:4px 0 6px 0 !important; padding:0 4px !important; position:static !important; }
-        body.tv-mode-body .mobile-tv-seat-map-btn { display:inline-flex; align-items:center; justify-content:center; border:2px solid #111; border-radius:9px; background:#dbeafe; color:#111; font-size:14px; font-weight:900; width:38px; height:34px; }
-        body.tv-mode-body .mobile-tv-action-row .tv-qr-btn,
-        body.tv-mode-body .mobile-tv-action-row .tv-cancel-mobile-btn {
+        body.tv-mode-body.mobile-tv-layout .mobile-tv-action-row { display:flex !important; align-items:center !important; justify-content:flex-end !important; gap:6px !important; width:100% !important; margin:4px 0 6px !important; padding:0 6px !important; box-sizing:border-box !important; position:relative !important; z-index:20 !important; }
+        body.tv-mode-body.mobile-tv-layout .mobile-tv-seat-map-btn { display:inline-flex; align-items:center; justify-content:center; border:2px solid #111; border-radius:9px; background:#dbeafe; color:#111; font-size:14px; font-weight:900; width:38px; height:34px; }
+        body.tv-mode-body.mobile-tv-layout .mobile-tv-action-row .tv-qr-btn,
+        body.tv-mode-body.mobile-tv-layout .mobile-tv-action-row .tv-cancel-mobile-btn {
           position: static !important;
           right: auto !important;
           top: auto !important;
           transform: none !important;
         }
-        body.tv-mode-body .mobile-tv-action-row .tv-qr-btn {
+        body.tv-mode-body.mobile-tv-layout .mobile-tv-action-row .tv-qr-btn {
           display:inline-flex !important;
           align-items:center;
           justify-content:center;
@@ -12057,9 +12118,34 @@ ${summary}
         }
       }
 
+      let lastTVMobileLayoutState = null;
+      let tvViewportRenderTimer = null;
+
       function handleTVViewportChange() {
         if (!document.body.classList.contains("tv-mode-body")) return;
+
+        const wasMobileLayout = document.body.classList.contains("mobile-tv-layout");
+
         syncMobileTvLayoutClass();
+
+        const isMobileLayoutNow = document.body.classList.contains("mobile-tv-layout");
+
+        if (lastTVMobileLayoutState === null) {
+          lastTVMobileLayoutState = isMobileLayoutNow;
+          return;
+        }
+
+        if (wasMobileLayout === isMobileLayoutNow && lastTVMobileLayoutState === isMobileLayoutNow) {
+          return;
+        }
+
+        lastTVMobileLayoutState = isMobileLayoutNow;
+
+        clearTimeout(tvViewportRenderTimer);
+        tvViewportRenderTimer = setTimeout(() => {
+          if (!document.body.classList.contains("tv-mode-body")) return;
+          renderTVView();
+        }, 80);
       }
 
       window.addEventListener("resize", handleTVViewportChange);
@@ -12073,6 +12159,7 @@ ${summary}
 
             document.body.classList.add("tv-mode-body");
             syncMobileTvLayoutClass();
+            lastTVMobileLayoutState = document.body.classList.contains("mobile-tv-layout");
             lockMobileTVPortraitMode();
 
             const tvTargetDate = getTVTargetDateString();
