@@ -1816,6 +1816,31 @@
       .modal-bg.show {
         display: flex;
       }
+
+      #new-reservation-conflict-modal {
+        z-index: 2001;
+        align-items: center;
+      }
+
+      #new-reservation-conflict-modal .modal {
+        max-width: 420px;
+      }
+
+      #new-reservation-conflict-message {
+        margin: 0 0 12px;
+        color: #111827;
+        font-size: 15px;
+        font-weight: 700;
+        line-height: 1.5;
+      }
+
+      .new-reservation-conflict-guide {
+        margin: 0;
+        color: #555;
+        font-size: 14px;
+        line-height: 1.5;
+      }
+
       .modal {
         background: white;
         width: 100%;
@@ -6225,6 +6250,39 @@
       </div>
     </div>
 
+    <!-- 일반 새 예약 충돌 모달 -->
+    <div class="modal-bg" id="new-reservation-conflict-modal">
+      <div
+        class="modal"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="new-reservation-conflict-title"
+      >
+        <h2 id="new-reservation-conflict-title">예약 시간 충돌</h2>
+        <p id="new-reservation-conflict-message"></p>
+        <p class="new-reservation-conflict-guide">
+          기존 예약은 그대로 유지하고 테이블만 사용 종료 처리할 수 있습니다.
+        </p>
+        <div class="modal-actions">
+          <button
+            class="cancel-btn"
+            onclick="closeNewReservationConflictModal()"
+            type="button"
+          >
+            취소
+          </button>
+          <button
+            class="save-btn"
+            id="new-reservation-conflict-release-btn"
+            onclick="releaseNewReservationConflictAndRetry()"
+            type="button"
+          >
+            기존 손님 퇴실 처리
+          </button>
+        </div>
+      </div>
+    </div>
+
     <div class="modal-bg" id="import-modal">
       <div class="modal">
         <h2 style="margin: 0 0 12px 0">불러오기</h2>
@@ -7806,6 +7864,8 @@
       window.changeMobileTVSetting = changeMobileTVSetting;
       let editingIndex = null;
       let editingReservationId = null;
+      let newReservationConflictReservationId = null;
+      let newReservationConflictProcessing = false;
       let importPreviewList = [];
       let importCancelSuspectList = [];
       let editingPreviewIndex = null;
@@ -8820,6 +8880,117 @@ ${summary}
         } catch (error) {
           console.error("테이블 사용 종료 처리 오류:", error);
           alert("테이블 사용 종료 처리 중 오류가 발생했습니다.");
+        }
+      }
+
+      function openNewReservationConflictModal(conflictReservation) {
+        const reservationId = String(conflictReservation?.id || "").trim();
+        if (!reservationId) {
+          alert("충돌한 기존 예약 정보를 찾을 수 없습니다.");
+          return;
+        }
+
+        const modal = document.getElementById("new-reservation-conflict-modal");
+        const message = document.getElementById(
+          "new-reservation-conflict-message",
+        );
+        const releaseButton = document.getElementById(
+          "new-reservation-conflict-release-btn",
+        );
+        if (!modal || !message || !releaseButton) return;
+
+        newReservationConflictReservationId = reservationId;
+        newReservationConflictProcessing = false;
+        releaseButton.disabled = false;
+        releaseButton.textContent = "기존 손님 퇴실 처리";
+
+        const time = String(conflictReservation.time || "-").trim() || "-";
+        const name = getReservationDisplayName(conflictReservation) || "이름없음";
+        const seat = getSeatDisplayText(conflictReservation);
+        message.textContent = `${time} ${name} / ${seat} 예약이 이미 사용 중입니다.`;
+        modal.classList.add("show");
+      }
+
+      function closeNewReservationConflictModal() {
+        const modal = document.getElementById("new-reservation-conflict-modal");
+        const message = document.getElementById(
+          "new-reservation-conflict-message",
+        );
+        const releaseButton = document.getElementById(
+          "new-reservation-conflict-release-btn",
+        );
+
+        modal?.classList.remove("show");
+        newReservationConflictReservationId = null;
+        newReservationConflictProcessing = false;
+        if (releaseButton) {
+          releaseButton.disabled = false;
+          releaseButton.textContent = "기존 손님 퇴실 처리";
+        }
+        if (message) message.textContent = "";
+      }
+
+      async function releaseNewReservationConflictAndRetry() {
+        if (!requireLogin()) return;
+        if (newReservationConflictProcessing) return;
+
+        const reservationId = newReservationConflictReservationId;
+        if (!reservationId) return;
+
+        const releaseButton = document.getElementById(
+          "new-reservation-conflict-release-btn",
+        );
+        const reservation = reservations.find(
+          (item) => item.id === reservationId,
+        );
+        if (!reservation) {
+          alert("퇴실 처리할 기존 예약을 찾을 수 없습니다.");
+          newReservationConflictProcessing = false;
+          if (releaseButton) {
+            releaseButton.disabled = false;
+            releaseButton.textContent = "기존 손님 퇴실 처리";
+          }
+          return;
+        }
+
+        newReservationConflictProcessing = true;
+        if (releaseButton) {
+          releaseButton.disabled = true;
+          releaseButton.textContent = "처리 중...";
+        }
+
+        const releasedAt = new Date().toISOString();
+
+        try {
+          await setDoc(
+            doc(db, "reservations", reservationId),
+            {
+              tableReleased: true,
+              releasedAt: releasedAt,
+            },
+            { merge: true },
+          );
+
+          reservations = reservations.map((item) =>
+            item.id === reservationId
+              ? {
+                  ...item,
+                  tableReleased: true,
+                  releasedAt: releasedAt,
+                }
+              : item,
+          );
+
+          closeNewReservationConflictModal();
+          await addReservation();
+        } catch (error) {
+          console.error("새 예약 충돌 테이블 사용 종료 처리 오류:", error);
+          alert("테이블 사용 종료 처리 중 오류가 발생했습니다.");
+          newReservationConflictProcessing = false;
+          if (releaseButton) {
+            releaseButton.disabled = false;
+            releaseButton.textContent = "기존 손님 퇴실 처리";
+          }
         }
       }
 
@@ -15293,47 +15464,30 @@ ${
         };
 
         // 예약 중복 체크
-        const hasConflict = reservations.some((existing, index) => {
+        const conflictReservation = reservations.find((existing) => {
           if (editingReservationId && existing.id === editingReservationId)
             return false;
 
           return isConflict(reservationData, existing);
         });
 
-        if (hasConflict) {
-          const conflict = reservations.find((existing) => {
-            if (existing.date !== date) return false;
-
-            const newTables = splitValues(table);
-            const oldTables = splitValues(existing.table);
-
-            const newRooms = splitValues(room);
-            const oldRooms = splitValues(existing.room);
-
-            const sameTable = newTables.some((t) => oldTables.includes(t));
-            const sameRoom =
-              seat === "룸" &&
-              existing.seat === "룸" &&
-              newRooms.some((r) => oldRooms.includes(r));
-
-            return (
-              (sameTable || sameRoom) &&
-              isTimeConflict(time, existing.time, seat, existing.seat)
-            );
-          });
-
-          if (conflict) {
-            let message = "";
-            if (conflict.time) message += `${conflict.time} `;
-            if (conflict.name) message += `${conflict.name} `;
-            if (conflict.room && !conflict.table)
-              message += `(${conflict.room} 전체) `;
-            if (conflict.table) message += `(${conflict.table}번 테이블) `;
-            message += "이미 사용 중입니다.";
-            alert(message);
-          } else {
-            alert("겹치는 예약이 있습니다.");
+        if (conflictReservation) {
+          if (!editingReservationId) {
+            openNewReservationConflictModal(conflictReservation);
+            return;
           }
+
+          let message = "";
+          if (conflictReservation.time)
+            message += `${conflictReservation.time} `;
+          if (conflictReservation.name)
+            message += `${conflictReservation.name} `;
+          if (conflictReservation.room && !conflictReservation.table)
+            message += `(${conflictReservation.room} 전체) `;
+          if (conflictReservation.table)
+            message += `(${conflictReservation.table}번 테이블) `;
+          message += "이미 사용 중입니다.";
+          alert(message);
           return;
         }
 
@@ -16077,6 +16231,10 @@ ${
       }
 
       setupBackdropClose("modal", closeModal);
+      setupBackdropClose(
+        "new-reservation-conflict-modal",
+        closeNewReservationConflictModal,
+      );
       setupBackdropClose("import-modal", closeImportModal);
       setupBackdropClose("import-preview-modal", closeImportPreviewModal);
       setupBackdropClose("search-modal", closeSearchModal);
@@ -16092,6 +16250,10 @@ ${
       window.closeSearchModal = closeSearchModal;
       window.openModal = openModal;
       window.closeModal = closeModal;
+      window.closeNewReservationConflictModal =
+        closeNewReservationConflictModal;
+      window.releaseNewReservationConflictAndRetry =
+        releaseNewReservationConflictAndRetry;
       window.addReservation = addReservation;
       window.previewImport = previewImport;
       window.confirmImport = confirmImport;
