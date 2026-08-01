@@ -2782,6 +2782,15 @@
         background: #d1d5db;
       }
 
+      .nav-jump-btn.day-today-active {
+        background: #2563eb;
+        color: #ffffff;
+      }
+
+      .nav-jump-btn.day-today-active:hover {
+        background: #1d4ed8;
+      }
+
       .seat-map-time,
       .seat-map-name,
       .seat-map-people {
@@ -12644,7 +12653,7 @@ ${renderMobileTvSeatMapModal()}
         ">
           <div class="nav-row" style="justify-self:start; grid-template-columns: 44px 88px 44px auto;">
   <button onclick="moveDate(-1)" class="nav-arrow-btn">←</button>
-  <button onclick="goToToday()" class="nav-jump-btn">오늘</button>
+  <button onclick="goToToday()" class="nav-jump-btn${selectedDate === getTodayString() ? " day-today-active" : ""}">오늘</button>
   <button onclick="moveDate(1)" class="nav-arrow-btn">→</button>
   <button onclick="toggleSeatMap()" class="map-btn">M</button>
 </div>
