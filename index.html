@@ -6183,6 +6183,26 @@
           placeholder="알러지, 기념일, 요청사항 등"
         />
 
+        <div id="table-released-field" style="display: none; margin-top: 10px">
+          <label
+            style="
+              display: inline-flex;
+              align-items: center;
+              gap: 6px;
+              margin: 0;
+              font-weight: bold;
+              cursor: pointer;
+            "
+          >
+            <input
+              type="checkbox"
+              id="input-table-released"
+              style="width: auto; margin: 0"
+            />
+            테이블 사용 종료(퇴실)
+          </label>
+        </div>
+
         <div class="modal-actions reservation-modal-actions">
           <button
             id="delete-btn"
@@ -8806,6 +8826,15 @@ ${summary}
       function editPreviewItem(index) {
         const r = importPreviewList[index];
         if (!r) return;
+
+        const tableReleasedInput = document.getElementById(
+          "input-table-released",
+        );
+        const tableReleasedField = document.getElementById(
+          "table-released-field",
+        );
+        if (tableReleasedInput) tableReleasedInput.checked = false;
+        if (tableReleasedField) tableReleasedField.style.display = "none";
 
         editingPreviewIndex = index;
         editingIndex = null;
@@ -14817,6 +14846,14 @@ ${
         if (!requireLogin()) return;
         abandonModalSeatPick();
         closeAllModals();
+        const tableReleasedInput = document.getElementById(
+          "input-table-released",
+        );
+        const tableReleasedField = document.getElementById(
+          "table-released-field",
+        );
+        if (tableReleasedInput) tableReleasedInput.checked = false;
+        if (tableReleasedField) tableReleasedField.style.display = "none";
         editingIndex = null;
         editingReservationId = null;
         const deleteBtn = document.getElementById("delete-btn");
@@ -14842,6 +14879,15 @@ ${
       function closeModal() {
         const shouldReturnToImportPreview =
           editingPreviewIndex !== null && importPreviewList.length > 0;
+
+        const tableReleasedInput = document.getElementById(
+          "input-table-released",
+        );
+        const tableReleasedField = document.getElementById(
+          "table-released-field",
+        );
+        if (tableReleasedInput) tableReleasedInput.checked = false;
+        if (tableReleasedField) tableReleasedField.style.display = "none";
 
         editingIndex = null;
         editingReservationId = null;
@@ -14921,6 +14967,16 @@ ${
       function editReservation(index) {
         if (!requireLogin()) return;
         const r = reservations[index];
+        const tableReleasedInput = document.getElementById(
+          "input-table-released",
+        );
+        const tableReleasedField = document.getElementById(
+          "table-released-field",
+        );
+        if (tableReleasedInput) {
+          tableReleasedInput.checked = r?.tableReleased === true;
+        }
+        if (tableReleasedField) tableReleasedField.style.display = "block";
         editingIndex = index;
         editingReservationId = r?.id || null;
         const deleteBtn = document.getElementById("delete-btn");
@@ -15196,6 +15252,15 @@ ${
         // 사람 수 텍스트 처리
         const peopleText =
           document.getElementById("input-people-text")?.value.trim() || "";
+        const tableReleased = editingReservation
+          ? document.getElementById("input-table-released")?.checked === true
+          : false;
+        const releasedAt = tableReleased
+          ? editingReservation?.tableReleased === true &&
+            editingReservation.releasedAt
+            ? editingReservation.releasedAt
+            : new Date().toISOString()
+          : null;
 
         const reservationData = {
           date,
@@ -15211,6 +15276,8 @@ ${
           menu,
           isNaver,
           memo,
+          tableReleased,
+          releasedAt,
           status: editingReservation
             ? editingReservation.status || "예약"
             : "예약",
