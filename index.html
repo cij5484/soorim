@@ -9082,6 +9082,8 @@ ${summary}
         matchingExisting = null,
         baseReservations = reservations,
       ) {
+        if (reservationToCheck.tableReleased === true) return null;
+
         return (
           baseReservations.find((existing) => {
             if (existing.tableReleased === true) {
