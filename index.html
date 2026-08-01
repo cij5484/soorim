@@ -8570,6 +8570,7 @@
       }
 
       function closeAllModals() {
+        closeNewReservationConflictModal();
         closeModal();
         closeImportModal();
         closeImportPreviewModal();
@@ -8911,8 +8912,14 @@ ${summary}
         modal.classList.add("show");
       }
 
-      function closeNewReservationConflictModal() {
-        const modal = document.getElementById("new-reservation-conflict-modal");
+      function closeNewReservationConflictModal(force = false) {
+        if (newReservationConflictProcessing && !force) {
+          return false;
+        }
+
+        const modal = document.getElementById(
+          "new-reservation-conflict-modal",
+        );
         const message = document.getElementById(
           "new-reservation-conflict-message",
         );
@@ -8927,7 +8934,11 @@ ${summary}
           releaseButton.disabled = false;
           releaseButton.textContent = "기존 손님 퇴실 처리";
         }
-        if (message) message.textContent = "";
+        if (message) {
+          message.textContent = "";
+        }
+
+        return true;
       }
 
       async function releaseNewReservationConflictAndRetry() {
@@ -8971,6 +8982,8 @@ ${summary}
             { merge: true },
           );
 
+          const processedReservationId = reservationId;
+
           reservations = reservations.map((item) =>
             item.id === reservationId
               ? {
@@ -8981,8 +8994,13 @@ ${summary}
               : item,
           );
 
-          closeNewReservationConflictModal();
           await addReservation();
+
+          if (
+            newReservationConflictReservationId === processedReservationId
+          ) {
+            closeNewReservationConflictModal(true);
+          }
         } catch (error) {
           console.error("새 예약 충돌 테이블 사용 종료 처리 오류:", error);
           alert("테이블 사용 종료 처리 중 오류가 발생했습니다.");
