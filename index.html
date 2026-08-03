@@ -1054,7 +1054,7 @@
         z-index: 3000;
         display: none;
         max-width: min(430px, calc(100vw - 32px));
-        padding: 14px;
+        padding: 14px 42px 14px 14px;
         border: 1px solid #d1d5db;
         border-radius: 10px;
         background: white;
@@ -1062,6 +1062,20 @@
         color: #1f2937;
         line-height: 1.55;
         white-space: pre-line;
+      }
+
+      #backup-result-close {
+        position: absolute;
+        top: 6px;
+        right: 8px;
+        width: 30px;
+        height: 30px;
+        padding: 0;
+        border: 0;
+        background: transparent;
+        color: #4b5563;
+        font-size: 24px;
+        line-height: 30px;
       }
 
       #backup-result a { display: block; margin-top: 7px; color: #2563eb; }
@@ -5839,7 +5853,10 @@
             </button>
           </div>
     </header>
-    <div id="backup-result" role="status" aria-live="polite"></div>
+    <div id="backup-result" role="status" aria-live="polite">
+      <button id="backup-result-close" type="button" aria-label="백업 결과 닫기">×</button>
+      <div class="backup-result-message"></div>
+    </div>
 
     <main>
       <div id="month-view" style="display: none"></div>
@@ -7935,6 +7952,8 @@
       let driveAccessToken = "";
       let driveAccessTokenExpiresAt = 0;
       let driveTokenRequestPending = false;
+      let backupResultAutoHideTimer = null;
+      let backupResultClickHandlerBound = false;
 
       function getKoreaDateParts(date = new Date()) {
         const parts = new Intl.DateTimeFormat("en-CA", {
@@ -7964,10 +7983,42 @@
           : "none";
       }
 
-      function setBackupResult(message, files = null) {
+      function hideBackupResult() {
+        const result = document.getElementById("backup-result");
+        if (result) result.style.display = "none";
+        if (backupResultAutoHideTimer) {
+          clearTimeout(backupResultAutoHideTimer);
+          backupResultAutoHideTimer = null;
+        }
+      }
+
+      function handleBackupResultOutsideClick(event) {
+        const result = document.getElementById("backup-result");
+        const backupButton = document.getElementById("backup-btn");
+        if (!result || result.style.display !== "block") return;
+        if (result.contains(event.target) || backupButton?.contains(event.target)) return;
+        hideBackupResult();
+      }
+
+      function bindBackupResultClickHandler() {
+        if (backupResultClickHandlerBound) return;
+        backupResultClickHandlerBound = true;
+        document.addEventListener("click", handleBackupResultOutsideClick);
+      }
+
+      function setBackupResult(message, files = null, autoHide = false) {
         const result = document.getElementById("backup-result");
         if (!result || isTVMode || !window.matchMedia("(min-width: 769px)").matches) return;
-        result.replaceChildren(document.createTextNode(message));
+        hideBackupResult();
+        const closeButton = document.createElement("button");
+        closeButton.id = "backup-result-close";
+        closeButton.type = "button";
+        closeButton.setAttribute("aria-label", "백업 결과 닫기");
+        closeButton.textContent = "×";
+        closeButton.addEventListener("click", hideBackupResult);
+        const messageArea = document.createElement("div");
+        messageArea.className = "backup-result-message";
+        messageArea.appendChild(document.createTextNode(message));
         if (files) {
           files.forEach((file) => {
             const url = URL.createObjectURL(file.blob);
@@ -7976,10 +8027,15 @@
             link.download = file.name;
             link.textContent = `${file.label} 로컬 다운로드`;
             link.addEventListener("click", () => setTimeout(() => URL.revokeObjectURL(url), 1000), { once: true });
-            result.appendChild(link);
+            messageArea.appendChild(link);
           });
         }
+        result.replaceChildren(closeButton, messageArea);
         result.style.display = "block";
+        bindBackupResultClickHandler();
+        if (autoHide) {
+          backupResultAutoHideTimer = setTimeout(hideBackupResult, 10000);
+        }
       }
 
       function clearDriveToken() {
@@ -8208,7 +8264,7 @@
           });
           records.sort((a, b) => String(a.data.date).localeCompare(String(b.data.date)) || String(a.data.time || "").localeCompare(String(b.data.time || "")));
           if (!records.length) {
-            setBackupResult(`백업할 예약이 없습니다\n기간: ${stamp.monthStart} 이후\n비정상 날짜 문서: ${invalidDateCount}건`);
+            setBackupResult(`백업할 예약이 없습니다\n기간: ${stamp.monthStart} 이후\n비정상 날짜 문서: ${invalidDateCount}건`, null, true);
             return;
           }
           files = createBackupFiles(records, generatedAt, stamp.monthStart, stamp);
@@ -8223,7 +8279,7 @@
           }
           const failed = uploadResults.map((result, index) => result.status === "rejected" ? files[index].label : "").filter(Boolean);
           if (failed.length) throw new Error(`${failed.join("/")}_UPLOAD_FAILED`);
-          setBackupResult(`백업 완료\n기간: ${stamp.monthStart} 이후\n예약: ${records.length}건\n비정상 날짜 문서: ${invalidDateCount}건\n폴더: ${DRIVE_FOLDER_NAME}\nJSON: ${files[0].name}\nTXT: ${files[1].name}`);
+          setBackupResult(`백업 완료\n기간: ${stamp.monthStart} 이후\n예약: ${records.length}건\n비정상 날짜 문서: ${invalidDateCount}건\n폴더: ${DRIVE_FOLDER_NAME}\nJSON: ${files[0].name}\nTXT: ${files[1].name}`, null, true);
         } catch (error) {
           const code = error?.message || "";
           if (code === "GOOGLE_CANCELLED") {
