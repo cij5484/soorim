@@ -36,6 +36,13 @@
 - 저장소 루트에서 `py -m http.server 5173 --bind 127.0.0.1`로 열고 `http://127.0.0.1:5173/`에서 언어·이미지·모바일 레이아웃을 점검한다. 이 로컬 주소는 테스트용이며 실제 운영 주소를 대체하지 않는다.
 - 앱 또는 선캐시 파일 변경 시 메뉴 저장소 최신 `service-worker.js`의 `MENU_CACHE_NAME`만 확인해 현재 번호를 한 단계 올린다. 예약 앱의 `CACHE_NAME`과 혼동하거나 함께 수정하지 않는다.
 
+## 3-1. 예약 앱 Google Drive 백업 설정
+
+- Google Cloud 프로젝트에서 **Google Drive API**를 활성화하고 Google Identity Services용 **웹 애플리케이션 OAuth Client ID**를 만든다.
+- 승인된 JavaScript 원본에는 운영 GitHub Pages origin인 `https://cij5484.github.io`를 등록한다. 경로가 아니라 origin 단위이며 로컬 테스트가 필요하면 사용하는 로컬 origin도 별도로 등록한다.
+- 브라우저 코드에 Client Secret이나 API Key를 추가하지 않는다. 백업은 전체 Drive 권한이 아닌 `https://www.googleapis.com/auth/drive.file` 범위만 요청한다.
+- 첫 백업 때 사용자가 Web OAuth Client ID를 입력하고 Google 계정 선택 및 권한 승인 과정을 진행한다. Client ID는 설정값으로 `localStorage`에 저장하지만 access token은 페이지 메모리에만 두며 영구 저장하지 않는다.
+
 ## 4. PWA 캐시 규칙
 
 **번호를 올리는 경우**
