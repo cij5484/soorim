@@ -8131,7 +8131,11 @@
         if (seat === "룸") {
           if (!room) return "(룸)";
           const roomNumbers = room.split(",").map((value) => value.trim().replace(/실$/g, "")).filter((value) => /^[1-5]$/.test(value));
-          const roomLabel = roomNumbers.length ? `${roomNumbers.join(",")}실` : room;
+          const roomLabel = room === "전체"
+            ? "1,2,3,4,5실"
+            : roomNumbers.length
+              ? `${roomNumbers.join(",")}실`
+              : room;
           return `(예약 ${roomLabel}${table ? ` ${table}` : ""})`;
         }
         if (seat === "홀") return table ? `(테이블 ${table})` : "(홀)";
