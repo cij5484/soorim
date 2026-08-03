@@ -52,6 +52,13 @@ Windows에서 `py` 명령이 없으면 같은 Python의 `python -m http.server 5
 - 문자·전화: `smsReservationCustomer()`, `callReservationCustomer()` 계열을 실제 코드에서 재검색한다.
 - 기본세팅·전체세팅: 예약 카드 설정 관련 `toggleSettingStatusById()`, TV 설정 함수와 화면 문구를 함께 확인한다.
 - Firestore/PWA: [9절](#9-firestore-읽기-구조)과 `service-worker.js`.
+- 수동 Google Drive 백업: 로그인한 PC 사용자의 헤더 `백업` 버튼. 한국 시간 기준 현재 달 1일 이후 예약을 `getDocs(query(..., where("date", ">=", 시작일)))`로 한 번만 읽어 `수림예약 백업` 폴더에 JSON과 바탕화면 달력용 TXT를 올린다.
+
+### 수동 Google Drive 백업
+
+- JSON은 Firestore 문서 ID를 `documentId`로 분리하고 `doc.data()`의 원본 필드를 이름 변경이나 누락 없이 보존한다. Timestamp는 초·나노초와 타입 표식을 명시해 직렬화하며 복원 기능은 아직 제공하지 않는다.
+- TXT는 날짜별 헤더, 날짜·시간 정렬, 예약별 3줄, `****` 구분선, CRLF 줄바꿈과 UTF-8 BOM을 사용하는 기존 불러오기 파서 호환 바탕화면 달력 형식이다.
+- 백업 조회는 기존 실시간 `reservations` 배열이나 새 `onSnapshot` 구독을 사용하지 않는다. 백업 기능은 Firestore에 쓰거나 예약 문서를 변경하지 않는다.
 
 ## 5. 좌석 규칙
 
