@@ -2,7 +2,7 @@
 
 - **문서 목적:** 예약 앱과 별도 메뉴판 앱의 안전한 브랜치·테스트·배포 절차를 제공한다.
 - **대상 저장소:** `cij5484/soorim`, `cij5484/soorim-menu`
-- **최종 코드 확인일:** 2026-08-01
+- **최종 코드 확인일:** 2026-08-03
 - **관련 문서:** [전체 목차](README.md) · [예약 앱](01-RESERVATION-APP.md) · [TV 모드](02-TV-MODE.md) · [메뉴판](03-MENU-APP.md) · [안전한 수정](05-SAFE-CHANGE-RULES.md)
 
 > 실제 코드가 문서와 다를 경우 최신 코드가 우선이며 문서를 함께 갱신해야 한다.
@@ -30,10 +30,11 @@
 
 ## 3. 메뉴판 앱 (`cij5484/soorim-menu`)
 
-- 별도 저장소에서 `index.html`, `manifest.json`, `service-worker.js`, `images/`, `icons/`를 수정한다. 예약 저장소의 동명/`menu/` 파일로 대신 배포하지 않는다.
-- 정적 구조가 최신에서도 같은지 확인한 뒤 `py -m http.server 5173 --bind 127.0.0.1`로 열고 `http://127.0.0.1:5173/`에서 언어·이미지·모바일 레이아웃을 점검한다. 최신 외부 저장소의 `package.json` 존재 여부는 현재 **확인 필요**하다.
-- Pages source와 운영 주소는 별도 저장소 Settings → Pages에서 확인한다. 예약 앱 주소를 메뉴판 주소로 쓰지 않는다.
-- 앱/선캐시 변경 시 메뉴 저장소 최신 `service-worker.js`의 `MENU_CACHE_NAME`만 한 단계 올린다.
+- 운영 주소는 `https://cij5484.github.io/soorim-menu/`이며 최신 manifest의 `id`, `start_url`, `scope`는 `/soorim-menu/`이다.
+- 주요 수정 대상은 별도 저장소의 `index.html`, `manifest.json`, `service-worker.js`, `images/`, `icons/menu-icon.svg`이다. 예약 저장소의 동명 파일이나 과거 `menu/` 스냅샷으로 대신 배포하지 않는다.
+- 최신 `main`에는 `package.json`과 GitHub Actions Pages 워크플로가 없다. 빌드 없는 정적 파일을 GitHub Pages 프로젝트 경로 `/soorim-menu/`에서 제공하므로 npm·Vite·React 명령을 사용하지 않는다. GitHub 웹 설정 화면의 Pages source 선택값은 설정을 변경할 때 Settings → Pages에서 별도로 확인한다.
+- 저장소 루트에서 `py -m http.server 5173 --bind 127.0.0.1`로 열고 `http://127.0.0.1:5173/`에서 언어·이미지·모바일 레이아웃을 점검한다. 이 로컬 주소는 테스트용이며 실제 운영 주소를 대체하지 않는다.
+- 앱 또는 선캐시 파일 변경 시 메뉴 저장소 최신 `service-worker.js`의 `MENU_CACHE_NAME`만 확인해 현재 번호를 한 단계 올린다. 예약 앱의 `CACHE_NAME`과 혼동하거나 함께 수정하지 않는다.
 
 ## 4. PWA 캐시 규칙
 

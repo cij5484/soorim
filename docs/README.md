@@ -2,7 +2,7 @@
 
 - **문서 목적:** 예약관리 앱, TV 화면, 외국어 메뉴판의 저장소·개발·배포 기준을 구분하는 중앙 안내서
 - **대상 저장소:** `cij5484/soorim` (메뉴판 참고 저장소: `cij5484/soorim-menu`)
-- **최종 코드 확인일:** 2026-08-01
+- **최종 코드 확인일:** 2026-08-03
 - **관련 문서:** [예약관리 앱](01-RESERVATION-APP.md) · [TV 모드](02-TV-MODE.md) · [메뉴판 앱](03-MENU-APP.md) · [개발·배포](04-DEVELOPMENT-DEPLOYMENT.md) · [안전한 수정](05-SAFE-CHANGE-RULES.md)
 
 > 실제 코드가 문서와 다를 경우 최신 코드가 우선이며 문서를 함께 갱신해야 한다.
@@ -18,7 +18,7 @@
 | 예약관리 앱 | 예약 조회·등록·운영 | `cij5484/soorim` | `https://cij5484.github.io/soorim/app/` (`manifest.json`의 `start_url`) | `index.html`, `app/index.html`, `manifest.json`, `service-worker.js`, `help-data.js` | Firebase Firestore `reservations`; Firebase Authentication | 저장소 파일을 정적으로 제공하는 GitHub Pages 구조. Pages 설정 화면/워크플로 파일은 저장소에서 확인되지 않아 최종 배포 설정은 **확인 필요** | 예 | 매장 PC·모바일 |
 | PC TV 화면 | 당일 예약 현황 표시 | `cij5484/soorim` | `https://cij5484.github.io/soorim/tv/` (`manifest-tv.json`의 `start_url`) | 같은 `index.html`, `tv/index.html`, `manifest-tv.json`, TV 이미지 | Firestore 날짜별 `reservations`; 취소 표시 일부는 브라우저 `localStorage` | 예약 앱과 같은 정적 배포 | 예 | PC/대형 화면 |
 | 모바일 TV 화면 | 모바일용 예약 현황·상태·착석 관리 | `cij5484/soorim` | 위 TV 주소와 동일하며 화면 폭으로 모바일 UI 선택 | 같은 `index.html`, `tv/index.html`, `manifest-tv.json` | 날짜별 `reservations`, `tableOccupancy/{날짜}` | 예약 앱과 같은 정적 배포 | 예 | 모바일 |
-| 외국어 메뉴판 | 다국어 메뉴·매장 안내 | `cij5484/soorim-menu` | **확인 필요** (별도 저장소의 최신 Pages 설정을 다시 확인해야 함) | `index.html`, `manifest.json`, `service-worker.js`, `images/`, `icons/` | 정적 데이터와 언어 선택 `localStorage`; 서버 DB 사용은 확인되지 않음 | GitHub Pages용 정적 구조이나 활성 Pages 주소/배포 설정은 **확인 필요** | 예 | 손님 모바일 |
+| 외국어 메뉴판 | 다국어 메뉴·매장 안내 | 별도 저장소 `cij5484/soorim-menu` | `https://cij5484.github.io/soorim-menu/` | `index.html`, `manifest.json`, `service-worker.js`, `images/`, `icons/menu-icon.svg` | 정적 코드의 메뉴 데이터와 언어 선택 `localStorage` | 빌드 없이 `/soorim-menu/` 경로에 제공하는 GitHub Pages 정적 배포 | 예 | 손님 모바일 중심 |
 
 운영 주소와 로컬 테스트 주소는 다르다. `http://127.0.0.1:5173`은 개발 중 확인에만 쓴다. URL 근거와 제한은 각 상세 문서를 참고한다.
 

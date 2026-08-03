@@ -2,31 +2,31 @@
 
 - **문서 목적:** 별도 메뉴판 저장소의 정적 구조, 언어·이미지·PWA 운영 기준을 예약 앱과 분리해 기록한다.
 - **대상 저장소:** `cij5484/soorim-menu` (`main`, 읽기 전용 조사 대상)
-- **최종 코드 확인일:** 2026-08-01
+- **최종 코드 확인일:** 2026-08-03
 - **관련 문서:** [전체 목차](README.md) · [개발·배포](04-DEVELOPMENT-DEPLOYMENT.md) · [안전한 수정](05-SAFE-CHANGE-RULES.md)
 
-> 실제 코드가 문서와 다를 경우 최신 코드가 우선이며 문서를 함께 갱신해야 한다. 이번 조사 환경에서는 외부 저장소 원격 접속이 차단되어, `cij5484/soorim`에 포함된 읽기 전용 `menu/` 스냅샷과 그 Git 이력으로 구조를 대조했다. 따라서 별도 저장소 최신 `main`의 커밋·운영 주소·현재 캐시는 배포 작업 전에 **확인 필요**하다.
+> `cij5484/soorim-menu` 최신 `main`을 직접 확인해 작성했다. 실제 코드가 문서와 다를 경우 최신 코드가 우선이며 문서를 함께 갱신해야 한다.
 
 ## 1. 기본 정보
 
 - **저장소/브랜치:** `cij5484/soorim-menu`, `main`. 예약 앱과 다른 저장소이므로 예약 앱의 `menu/` 파일을 대신 수정하지 않는다.
-- **운영 주소:** **확인 필요**. 저장소 이름만으로 URL을 추측하지 말고 별도 저장소의 Settings → Pages와 최신 `manifest.json`의 `start_url`을 함께 확인한다.
-- **기술 구조:** 확인한 스냅샷은 `index.html`에 CSS·JavaScript·메뉴 데이터를 둔 빌드 없는 정적 앱이다. `package.json`은 확인되지 않았다.
-- **PWA/기기:** `manifest.json`, `service-worker.js`, 192/512 아이콘이 있는 세로형 standalone PWA이며 손님 모바일 사용을 중심으로 반응형 UI를 제공한다.
+- **운영 주소:** `https://cij5484.github.io/soorim-menu/`. 최신 `manifest.json`의 `id`, `start_url`, `scope`도 모두 `/soorim-menu/`이다.
+- **기술 구조:** `index.html`에 HTML, CSS, JavaScript와 메뉴 데이터를 둔 빌드 없는 정적 앱이다. `package.json`이 없으므로 npm·Vite·React 프로젝트가 아니며 `npm install`, `npm run dev`, `npm run build`를 사용하지 않는다.
+- **PWA/기기:** `manifest.json`과 `service-worker.js`가 있는 세로형 standalone PWA이며, 실제 manifest 아이콘은 `./icons/menu-icon.svg`이다. 손님 모바일 사용을 중심으로 반응형 UI를 제공한다.
 
 ## 2. 주요 파일
 
-확인한 구조에는 다음 파일만 있다.
+최신 `main`에서 확인한 주요 파일은 다음과 같다.
 
 | 경로 | 역할 |
 |---|---|
 | `index.html` | 메뉴, 번역 데이터, 언어 전환, 반응형 UI와 About 수림 |
-| `manifest.json` | 앱 이름, 시작 주소·범위, 아이콘 |
-| `service-worker.js` | 메뉴판 전용 정적 캐시 |
-| `icons/icon-192.png`, `icons/icon-512.png`, `icons/menu-icon.svg` | PWA/메뉴 아이콘 |
-| `images/` | 메뉴 및 와이파이 QR 이미지. 확인된 파일은 `b-course.JPG`, `hoedeopbap.JPG`, `kids-donkatsu.JPG`, `live-octopus.JPG`, `lunch-set.JPG`, `mulhoe.JPG`, `sashimi-red-sea-bream.JPG`, `wifi-qr.JPG`, `wooreok-maeuntang.JPG`, `wooreok-tangsuyuk.JPG` 등 |
+| `manifest.json` | 앱 이름, `/soorim-menu/`의 `id`·`start_url`·`scope`, `./icons/menu-icon.svg` 아이콘 |
+| `service-worker.js` | 메뉴판 전용 정적 캐시. `index.html`이 `./service-worker.js`를 `scope: "./"`로 등록한다. |
+| `icons/menu-icon.svg` | manifest에서 실제 사용하는 PWA 아이콘 |
+| `images/` | `index.html`에서 참조하는 메뉴 및 안내 이미지 |
 
-별도 `README.md`, `package.json`, GitHub Actions Pages 워크플로의 최신 존재 여부는 외부 저장소에서 **확인 필요**하다.
+최신 `main`에는 `README.md`, `package.json`, GitHub Actions Pages 워크플로가 없다. 따라서 별도 빌드 단계 없이 저장소의 정적 파일을 GitHub Pages의 `/soorim-menu/` 프로젝트 경로에서 제공한다. GitHub 웹 설정 화면 내부의 Pages source 선택값은 저장소 파일만으로 확인할 수 없으므로, 배포 설정을 바꿀 때 Settings → Pages에서 확인한다.
 
 ## 3. 지원 언어
 
@@ -52,7 +52,7 @@
 
 ## 6. PWA와 캐시
 
-확인한 스냅샷의 상수는 `MENU_CACHE_NAME`, 참고값은 `soorim-menu-v3`이다. 이 값은 문서 작성 당시 참고일 뿐이며 다음 변경 전에는 **별도 저장소 최신 `service-worker.js` 첫 줄을 다시 확인**한다.
+최신 `service-worker.js`의 상수는 `MENU_CACHE_NAME`, 작성 당시 참고값은 `soorim-menu-v2`이다. 이 값은 영구 고정값이 아니므로 다음 변경 전에는 **별도 저장소 최신 `service-worker.js` 첫 줄을 다시 확인**한다.
 
 - `index.html`, `manifest.json` 또는 선캐시 이미지 등 앱 결과가 바뀌면 현재 번호를 정확히 1 올린다.
 - Markdown 문서만 바꾸면 올리지 않는다.
