@@ -5,6 +5,9 @@
   "start_url": "/soorim/app/",
   "scope": "/soorim/app/",
   "display": "standalone",
+  "launch_handler": {
+    "client_mode": "focus-existing"
+  },
   "background_color": "#eef2f5",
   "theme_color": "#1f4e79",
   "orientation": "portrait",
